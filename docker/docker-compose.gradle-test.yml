@@ -1,0 +1,12 @@
+version: '3.9'
+
+# run docker-compose up to start building and testing this gradle project from very very fresh state.
+# optionally you can delete .gradle folder
+services:
+  gradle:
+    image: song-finder-vocadb-app-build:latest
+    container_name: song-finder-vocadb-app-build
+    build:
+      context: ../
+      dockerfile: docker/clean-env.Dockerfile
+    command: gradle check createDistributable --scan

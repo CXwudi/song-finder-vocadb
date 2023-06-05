@@ -1,0 +1,48 @@
+# version catalog can be used in any gradle build, simply add
+#
+# dependencyResolutionManagement {
+#   versionCatalogs {
+#     create("libs") {
+#       from(files("path/to/libs.versions.toml"))
+#     }
+#   }
+# }
+#
+# to settings.gradle.kts to include the version catalog in your build.
+# any settings.gradle.kts works!
+# see https://docs.gradle.org/current/userguide/platforms.html#sec:sharing-catalogs for more details
+[versions]
+# java version is defined in my.jvm-base.gradle.kts
+# lib versions
+kotlin = "1.8.20" # !important, this must be 1.8.20 for compose 1.4.0
+springBoot = "3.1.0"
+
+# plugin dep versions
+# empty for now
+[libraries]
+# unless there is a keyword conflict or the name is wired
+# bom, naming convention: bom-<name>
+bom-springBoot = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
+bom-kotest = "io.kotest:kotest-bom:5.6.2"
+bom-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.1"
+# plugin dependencies (for both projects and settings), naming convention: s/p + plugin-<name>
+pluginDep-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+pluginDep-kotlinAllopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
+pluginDep-springBoot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot" }
+pluginDep-composeJb = "org.jetbrains.compose:compose-gradle-plugin:1.4.0"
+# "io.spring.gradle:dependency-management-plugin" is unneeded because we prefer Gradle's native dependency management
+settingDep-gradleEnterprise = "com.gradle.enterprise:com.gradle.enterprise.gradle.plugin:3.13.3"
+settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.5.0"
+# dependencies, naming convention: dep-<name>
+dep-kotlinJvmInlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
+dep-kotestExtensionsSpring = "io.kotest.extensions:kotest-extensions-spring:1.1.3"
+dep-mockk = "io.mockk:mockk:1.13.5"
+dep-springMockk = "com.ninja-squad:springmockk:4.0.2"
+
+[plugins]
+# plugins that are used in main build but not in precompiled script plugins
+# when multiple main builds have similar plugin settings on a plugin here,
+# then it have to be moved to a separated precompiled script plugin
+
+# this is only used by the workaround in root build.gradle.kts
+kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
