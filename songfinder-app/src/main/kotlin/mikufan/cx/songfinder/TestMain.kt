@@ -29,7 +29,7 @@ fun main() = application {
     MaterialTheme {
       Column(Modifier.fillMaxSize(), Arrangement.spacedBy(5.dp)) {
         Button(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+          modifier = Modifier.align(Alignment.CenterHorizontally),
           onClick = {
             count.value++
           },
@@ -37,7 +37,7 @@ fun main() = application {
           Text(if (count.value == 0) "Hello World" else "Clicked ${count.value}!")
         }
         Button(
-            modifier = Modifier.align(Alignment.CenterHorizontally),
+          modifier = Modifier.align(Alignment.CenterHorizontally),
           onClick = {
             count.value = 0
           },
