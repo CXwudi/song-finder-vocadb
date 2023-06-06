@@ -6,9 +6,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.Button
-import androidx.compose.material.Text
-import androidx.compose.material.TextField
+import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -34,13 +32,32 @@ fun LoadingScreen(
   modifier: Modifier = Modifier.fillMaxSize(),
 ) {
   val inputFileChosenModel = remember { FileChosenModel() }
-  var startingLine by remember { mutableStateOf(0) }
+  val outputFileChosenModel = remember { FileChosenModel() }
+  var startingLine by remember { mutableStateOf(0UL) }
 
   val inputFile = inputFileChosenModel.file
+  val outputFile = outputFileChosenModel.file
 
-  Column(modifier = modifier) {
+  Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(MyDefaultPadding)) {
+    Text(
+      "Please choose your input and output files.",
+      fontSize = MaterialTheme.typography.h4.fontSize,
+      modifier = Modifier.align(Alignment.CenterHorizontally),
+    )
+    Text(
+      "This window will close as soon as a valid input and output files are chosen.",
+      modifier = Modifier.align(Alignment.CenterHorizontally),
+    )
+    Divider()
     LoadingScreenRow {
-      TooltipAreaWithCard(tip = { Text("The input TXT file. \nIt should only contain a list of song names, \none song name per line.") }) {
+      TooltipAreaWithCard(tip = {
+        Text(
+          "The input TXT file. \n" +
+              "It should only contain a list of song names, \n" +
+              "one song name per line.\n" +
+              "The file must be UTF-8.",
+        )
+      }) {
         Text("Input TXT File:")
       }
       if (inputFile != null) {
@@ -65,25 +82,49 @@ fun LoadingScreen(
       TextField(
         value = startingLine.toString(),
         leadingIcon = { Text("Line:") },
-        onValueChange = { startingLine = it.toIntOrNull() ?: 0 },
+        onValueChange = { startingLine = it.toULongOrNull() ?: 0UL },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
       )
-      val showNegativeNumberDialog by remember { derivedStateOf { startingLine < 0 } }
+      val showNegativeNumberDialog by remember { derivedStateOf { startingLine < 0UL } }
       MyDefaultAlertDialog(
         showNegativeNumberDialog,
         title = { Text("Invalid Number") },
         text = { Text("The number of lines to skip cannot be negative.") },
       ) {
-        startingLine = 0
+        startingLine = 0UL
       }
     }
     LoadingScreenRow {
+      TooltipAreaWithCard(tip = {
+        Text(
+          "The output file. \n" +
+              "It will be a CSV file with a format \n" +
+              "that is readable by VocaDB CSV Import Feature.",
+        )
+      }) {
+        Text("Output CSV File:")
+      }
+      if (outputFile != null) {
+        TooltipAreaWithCard(tip = { Text("Full Path: ${outputFile.absolutePathString()}") }) {
+          Text(outputFile.fileName.toString())
+        }
+      }
+      Button(onClick = { outputFileChosenModel.showFilePicker = true }) {
+        Text(outputFile?.let { "Re-choose CSV File" } ?: "Choose Output CSV File")
+      }
     }
   }
-
-  MyFilePicker(inputFileChosenModel.showFilePicker) {
+  MyFilePicker(inputFileChosenModel.showFilePicker, listOf(".txt")) {
     inputFileChosenModel.file = it
     inputFileChosenModel.showFilePicker = false
+  }
+  MyFilePicker(outputFileChosenModel.showFilePicker, listOf(".csv")) {
+    outputFileChosenModel.file = it
+    outputFileChosenModel.showFilePicker = false
+  }
+  val isReady by remember { derivedStateOf { inputFileChosenModel.file != null && outputFileChosenModel.file != null } }
+  if (isReady) {
+    onReady(IOFiles(inputFileChosenModel.file!!, startingLine, outputFileChosenModel.file!!))
   }
 }
 

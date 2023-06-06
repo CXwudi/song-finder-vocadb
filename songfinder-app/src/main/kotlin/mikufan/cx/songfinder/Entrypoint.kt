@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.model.IOFiles
 import mikufan.cx.songfinder.ui.component.LoadingScreen
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
@@ -24,7 +25,7 @@ import mikufan.cx.songfinder.ui.theme.MyAppTheme
  * @author CX无敌
  * 2023-06-05
  */
-
+private val log = KInlineLogging.logger()
 fun main() = application {
   var targetFiles: IOFiles? by remember { mutableStateOf(null) }
 
@@ -34,9 +35,11 @@ fun main() = application {
       title = "Loading Input and Output Files",
     ) {
       MyApp {
-        LoadingScreen(onReady = {})
+        LoadingScreen(onReady = { targetFiles = it })
       }
     }
+  } else {
+    log.info { "Gotten files: $targetFiles" }
   }
 }
 
