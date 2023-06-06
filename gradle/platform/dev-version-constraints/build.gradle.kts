@@ -32,5 +32,6 @@ dependencies {
     api(libs.dep.kotestExtensionsSpring)
     api(libs.dep.mockk)
     api(libs.dep.springMockk)
+    api(libs.dep.compose.mpFilePicker)
   }
 }
