@@ -8,5 +8,6 @@ import java.nio.file.Path
  */
 data class IOFiles(
   val inputTxt: Path,
+  val startLine: ULong,
   val outputCSV: Path,
 )

@@ -10,4 +10,6 @@ import androidx.compose.ui.unit.dp
  * 2023-06-05
  */
 
-val DefaultModifier = Modifier.fillMaxSize().padding(5.dp)
+val MyDefaultPadding = 5.dp
+
+val MyDefaultModifier = Modifier.fillMaxSize().padding(MyDefaultPadding)
