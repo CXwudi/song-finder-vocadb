@@ -15,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import mikufan.cx.songfinder.model.IOFiles
+import mikufan.cx.songfinder.ui.common.MyDefaultAlertDialog
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
 import mikufan.cx.songfinder.ui.theme.MyDefaultPadding
@@ -67,6 +68,14 @@ fun LoadingScreen(
         onValueChange = { startingLine = it.toIntOrNull() ?: 0 },
         keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
       )
+      val showNegativeNumberDialog by remember { derivedStateOf { startingLine < 0 } }
+      MyDefaultAlertDialog(
+        showNegativeNumberDialog,
+        title = { Text("Invalid Number") },
+        text = { Text("The number of lines to skip cannot be negative.") },
+      ) {
+        startingLine = 0
+      }
     }
     LoadingScreenRow {
     }
