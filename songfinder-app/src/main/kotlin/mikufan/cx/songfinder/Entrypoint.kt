@@ -1,10 +1,13 @@
 package mikufan.cx.songfinder
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.Button
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
 import androidx.compose.runtime.*
@@ -31,7 +34,7 @@ fun main() = application {
       title = "Loading Input and Output Files",
     ) {
       MyApp {
-        LoadingScreen(onStarted = {})
+        LoadingScreen(onReady = {})
       }
     }
   }
@@ -42,7 +45,12 @@ fun MyApp(
   content: @Composable () -> Unit,
 ) {
   MyAppTheme {
-    Surface(modifier = Modifier.fillMaxSize()) {
+    Surface(
+      modifier = Modifier
+        .fillMaxSize()
+        .background(MaterialTheme.colors.background)
+        .padding(5.dp),
+    ) {
       content()
     }
   }
