@@ -1,10 +1,7 @@
 package mikufan.cx.songfinder.ui.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.*
@@ -35,89 +32,18 @@ fun LoadingScreen(
   val outputFileChosenModel = remember { FileChosenModel() }
   var startingLine by remember { mutableStateOf(0UL) }
 
-  val inputFile = inputFileChosenModel.file
-  val outputFile = outputFileChosenModel.file
-
   Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(MyDefaultPadding)) {
-    Text(
-      "Please choose your input and output files.",
-      fontSize = MaterialTheme.typography.h4.fontSize,
-      modifier = Modifier.align(Alignment.CenterHorizontally),
-    )
-    Text(
-      "This window will close as soon as valid input and output files are chosen.",
-      modifier = Modifier.align(Alignment.CenterHorizontally),
-    )
+    LoadingScreenHeader()
     Divider()
-    LoadingScreenRow {
-      TooltipAreaWithCard(tip = {
-        Text(
-          "The input TXT file. \n" +
-              "It should only contain a list of song names, \n" +
-              "one song name per line.\n" +
-              "The file must be UTF-8.",
-        )
-      }) {
-        Text("Input TXT File:")
-      }
-      if (inputFile != null) {
-        TooltipAreaWithCard(tip = { Text("Full Path: ${inputFile.absolutePathString()}") }) {
-          Text(inputFile.fileName.toString())
-        }
-      }
-      Button(onClick = { inputFileChosenModel.showFilePicker = true }) {
-        Text(inputFile?.let { "Re-choose Txt File" } ?: "Choose Input Txt File")
-      }
-    }
-    LoadingScreenRow {
-      TooltipAreaWithCard(tip = {
-        Text(
-          "When reading the input TXT file, \nskip a certain number of lines before reading.\n" +
-              "This is typically useful if you want to continue where you left from.\n" +
-              "By default it is 0, which means no skipping and read from the first line.",
-        )
-      }) {
-        Text("Read input file from")
-      }
-      TextField(
-        value = startingLine.toString(),
-        leadingIcon = { Text("Line:") },
-        onValueChange = { startingLine = it.toULongOrNull() ?: 0UL },
-        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
-      )
-      val showNegativeNumberDialog by remember { derivedStateOf { startingLine < 0UL } }
-      MyDefaultAlertDialog(
-        showNegativeNumberDialog,
-        title = { Text("Invalid Number") },
-        text = { Text("The number of lines to skip cannot be negative.") },
-      ) {
-        startingLine = 0UL
-      }
-    }
-    LoadingScreenRow {
-      TooltipAreaWithCard(tip = {
-        Text(
-          "The output file. \n" +
-              "It will be a CSV file with a format \n" +
-              "that is readable by VocaDB CSV Import Feature.",
-        )
-      }) {
-        Text("Output CSV File:")
-      }
-      if (outputFile != null) {
-        TooltipAreaWithCard(tip = { Text("Full Path: ${outputFile.absolutePathString()}") }) {
-          Text(outputFile.fileName.toString())
-        }
-      }
-      Button(onClick = { outputFileChosenModel.showFilePicker = true }) {
-        Text(outputFile?.let { "Re-choose CSV File" } ?: "Choose Output CSV File")
-      }
-    }
+    InputFilePicker(inputFileChosenModel)
+    StartingLineInputField(startingLine, onStartingLineValueChange = { startingLine = it })
+    OutputFilePicker(outputFileChosenModel)
   }
+
   MyFilePicker(
     inputFileChosenModel.showFilePicker,
     listOf(".txt"),
-    onShowFilePickerChanged = { inputFileChosenModel.showFilePicker = it },
+    onShowStatusChanged = { inputFileChosenModel.showFilePicker = it },
   ) {
     inputFileChosenModel.file = it
   }
@@ -125,14 +51,118 @@ fun LoadingScreen(
   MyFilePicker(
     outputFileChosenModel.showFilePicker,
     listOf(".csv"),
-    onShowFilePickerChanged = { outputFileChosenModel.showFilePicker = it },
+    onShowStatusChanged = { outputFileChosenModel.showFilePicker = it },
   ) {
     outputFileChosenModel.file = it
   }
 
-  val isReady by remember { derivedStateOf { inputFileChosenModel.file != null && outputFileChosenModel.file != null } }
+  val isReady by remember { derivedStateOf { (inputFileChosenModel.file != null) && (outputFileChosenModel.file != null) } }
   if (isReady) {
     onReady(IOFiles(inputFileChosenModel.file!!, startingLine, outputFileChosenModel.file!!))
+  }
+}
+
+@Preview
+@Composable
+fun previewOfLoadingScreen() {
+  MyAppTheme {
+    LoadingScreen(onReady = {})
+  }
+}
+
+@Composable
+private fun ColumnScope.LoadingScreenHeader() {
+  Text(
+    "Please choose your input and output files.",
+    fontSize = MaterialTheme.typography.h4.fontSize,
+    modifier = Modifier.align(Alignment.CenterHorizontally),
+  )
+  Text(
+    "This window will close as soon as valid input and output files are chosen.",
+    modifier = Modifier.align(Alignment.CenterHorizontally),
+  )
+}
+
+@Composable
+private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScreenRow {
+  val inputFile = inputFileChosenModel.file
+  TooltipAreaWithCard(tip = {
+    Text(
+      "The input TXT file. \n" +
+          "It should only contain a list of song names, \n" +
+          "one song name per line.\n" +
+          "The file must be UTF-8.",
+    )
+  }) {
+    Text("Input TXT File:")
+  }
+  if (inputFile != null) {
+    TooltipAreaWithCard(tip = { Text("Full Path: ${inputFile.absolutePathString()}") }) {
+      Text(inputFile.fileName.toString())
+    }
+  }
+  Button(onClick = { inputFileChosenModel.showFilePicker = true }) {
+    Text(inputFile?.let { "Re-choose Txt File" } ?: "Choose Input Txt File")
+  }
+}
+
+@Composable
+private fun StartingLineInputField(startingLine: ULong, onStartingLineValueChange: (ULong) -> Unit) = LoadingScreenRow {
+  TooltipAreaWithCard(tip = {
+    Text(
+      "When reading the input TXT file, \nskip a certain number of lines before reading.\n" +
+          "This is typically useful if you want to continue where you left from.\n" +
+          "By default it is 0, which means no skipping and read from the first line.",
+    )
+  }) {
+    Text("Read input file from")
+  }
+
+  var inputValue by remember { mutableStateOf(0L) }
+  TextField(
+    value = startingLine.toString(),
+    leadingIcon = { Text("Line:") },
+    onValueChange = {
+      inputValue = it.toLongOrNull() ?: 0L
+      if (inputValue >= 0L) {
+        onStartingLineValueChange(inputValue.toULong())
+      } else {
+        onStartingLineValueChange(0UL)
+      }
+    },
+    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+  )
+  val showNegativeNumberDialog by remember { derivedStateOf { inputValue < 0L } }
+  MyDefaultAlertDialog(
+    showNegativeNumberDialog,
+    title = { Text("Invalid Number") },
+    text = { Text("The number of lines to skip cannot be negative.") },
+  ) {
+    inputValue = 0L
+  }
+}
+
+@Composable
+private fun OutputFilePicker(
+  outputFileChosenModel: FileChosenModel,
+) = LoadingScreenRow {
+  val outputFile = outputFileChosenModel.file
+  TooltipAreaWithCard(tip = {
+    Text(
+      "The output file. \n" +
+          "It will be a CSV file with a format \n" +
+          "that is readable by VocaDB CSV Import Feature.",
+    )
+  }) {
+    Text("Output CSV File:")
+  }
+  if (outputFile != null) {
+    TooltipAreaWithCard(tip = { Text("Full Path: ${outputFile.absolutePathString()}") }) {
+      Text(outputFile.fileName.toString())
+    }
+  }
+  Button(onClick = { outputFileChosenModel.showFilePicker = true }) {
+    Text(outputFile?.let { "Re-choose CSV File" } ?: "Choose Output CSV File")
   }
 }
 
@@ -150,7 +180,7 @@ fun LoadingScreenRow(content: @Composable () -> Unit) {
 fun MyFilePicker(
   showFilePicker: Boolean,
   fileExtensions: List<String> = listOf("."),
-  onShowFilePickerChanged: (Boolean) -> Unit = {},
+  onShowStatusChanged: (Boolean) -> Unit = {},
   onFilePicked: (Path) -> Unit,
 ) {
   FilePicker(
@@ -158,7 +188,7 @@ fun MyFilePicker(
     initialDirectory = Path(".").toAbsolutePath().toString(),
     fileExtensions = fileExtensions,
   ) { file ->
-    onShowFilePickerChanged(false)
+    onShowStatusChanged(false)
     file?.path?.let { onFilePicked(Path(it)) }
   }
 }
@@ -166,12 +196,4 @@ fun MyFilePicker(
 class FileChosenModel {
   var file: Path? by mutableStateOf(null)
   var showFilePicker: Boolean by mutableStateOf(false)
-}
-
-@Preview
-@Composable
-fun previewOfLoadingScreen() {
-  MyAppTheme {
-    LoadingScreen(onReady = {})
-  }
 }
