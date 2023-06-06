@@ -45,7 +45,7 @@ fun LoadingScreen(
       modifier = Modifier.align(Alignment.CenterHorizontally),
     )
     Text(
-      "This window will close as soon as a valid input and output files are chosen.",
+      "This window will close as soon as valid input and output files are chosen.",
       modifier = Modifier.align(Alignment.CenterHorizontally),
     )
     Divider()
@@ -114,14 +114,22 @@ fun LoadingScreen(
       }
     }
   }
-  MyFilePicker(inputFileChosenModel.showFilePicker, listOf(".txt")) {
+  MyFilePicker(
+    inputFileChosenModel.showFilePicker,
+    listOf(".txt"),
+    onShowFilePickerChanged = { inputFileChosenModel.showFilePicker = it },
+  ) {
     inputFileChosenModel.file = it
-    inputFileChosenModel.showFilePicker = false
   }
-  MyFilePicker(outputFileChosenModel.showFilePicker, listOf(".csv")) {
+
+  MyFilePicker(
+    outputFileChosenModel.showFilePicker,
+    listOf(".csv"),
+    onShowFilePickerChanged = { outputFileChosenModel.showFilePicker = it },
+  ) {
     outputFileChosenModel.file = it
-    outputFileChosenModel.showFilePicker = false
   }
+
   val isReady by remember { derivedStateOf { inputFileChosenModel.file != null && outputFileChosenModel.file != null } }
   if (isReady) {
     onReady(IOFiles(inputFileChosenModel.file!!, startingLine, outputFileChosenModel.file!!))
@@ -142,6 +150,7 @@ fun LoadingScreenRow(content: @Composable () -> Unit) {
 fun MyFilePicker(
   showFilePicker: Boolean,
   fileExtensions: List<String> = listOf("."),
+  onShowFilePickerChanged: (Boolean) -> Unit = {},
   onFilePicked: (Path) -> Unit,
 ) {
   FilePicker(
@@ -149,6 +158,7 @@ fun MyFilePicker(
     initialDirectory = Path(".").toAbsolutePath().toString(),
     fileExtensions = fileExtensions,
   ) { file ->
+    onShowFilePickerChanged(false)
     file?.path?.let { onFilePicked(Path(it)) }
   }
 }
