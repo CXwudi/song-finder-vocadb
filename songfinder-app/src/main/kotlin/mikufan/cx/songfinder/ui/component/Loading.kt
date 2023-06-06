@@ -4,15 +4,19 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.Button
 import androidx.compose.material.Text
+import androidx.compose.material.TextField
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.KeyboardType
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import mikufan.cx.songfinder.model.IOFiles
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
-import mikufan.cx.songfinder.ui.theme.MyDefaultModifier
+import mikufan.cx.songfinder.ui.theme.MyAppTheme
 import mikufan.cx.songfinder.ui.theme.MyDefaultPadding
 import java.nio.file.Path
 import kotlin.io.path.Path
@@ -26,14 +30,18 @@ import kotlin.io.path.absolutePathString
 @Composable
 fun LoadingScreen(
   onReady: (IOFiles) -> Unit,
-  modifier: Modifier = MyDefaultModifier,
+  modifier: Modifier = Modifier.fillMaxSize(),
 ) {
   val inputFileChosenModel = remember { FileChosenModel() }
+  var startingLine by remember { mutableStateOf(0) }
+
   val inputFile = inputFileChosenModel.file
 
   Column(modifier = modifier) {
     LoadingScreenRow {
-      Text("Input TXT File:")
+      TooltipAreaWithCard(tip = { Text("The input TXT file. \nIt should only contain a list of song names, \none song name per line.") }) {
+        Text("Input TXT File:")
+      }
       if (inputFile != null) {
         TooltipAreaWithCard(tip = { Text("Full Path: ${inputFile.absolutePathString()}") }) {
           Text(inputFile.fileName.toString())
@@ -44,7 +52,23 @@ fun LoadingScreen(
       }
     }
     LoadingScreenRow {
-      Text("Starting from line:")
+      TooltipAreaWithCard(tip = {
+        Text(
+          "When reading the input TXT file, \nskip a certain number of lines before reading.\n" +
+              "This is typically useful if you want to continue where you left from.\n" +
+              "By default it is 0, which means no skipping and read from the first line.",
+        )
+      }) {
+        Text("Read input file from")
+      }
+      TextField(
+        value = startingLine.toString(),
+        leadingIcon = { Text("Line:") },
+        onValueChange = { startingLine = it.toIntOrNull() ?: 0 },
+        keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+      )
+    }
+    LoadingScreenRow {
     }
   }
 
@@ -87,5 +111,7 @@ class FileChosenModel {
 @Preview
 @Composable
 fun previewOfLoadingScreen() {
-  LoadingScreen(onReady = {})
+  MyAppTheme {
+    LoadingScreen(onReady = {})
+  }
 }

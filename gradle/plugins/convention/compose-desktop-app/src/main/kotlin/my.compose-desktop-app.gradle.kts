@@ -11,6 +11,7 @@ fun DependencyHandlerScope.sbs(dep: String? = null, version: String? = null) =
 dependencies {
   // compose desktop
   implementation(compose.desktop.currentOs)
+  implementation(compose.material3)
   implementation("com.darkrockstudios:mpfilepicker")
 
   // kotlin
