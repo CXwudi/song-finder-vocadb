@@ -1,31 +1,18 @@
 package mikufan.cx.songfinder
 
-import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Button
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.model.IOFiles
+import mikufan.cx.songfinder.ui.MyApp
 import mikufan.cx.songfinder.ui.component.LoadingScreen
-import mikufan.cx.songfinder.ui.theme.MyAppTheme
+import org.springframework.boot.autoconfigure.SpringBootApplication
 
 /**
  * @author CX无敌
  * 2023-06-05
  */
-private val log = KInlineLogging.logger()
 fun main() = application {
   var targetFiles: IOFiles? by remember { mutableStateOf(null) }
 
@@ -43,34 +30,7 @@ fun main() = application {
   }
 }
 
-@Composable
-fun MyApp(
-  content: @Composable () -> Unit,
-) {
-  MyAppTheme {
-    Surface(
-      modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .padding(5.dp),
-    ) {
-      content()
-    }
-  }
-}
+@SpringBootApplication
+class SongFinderSpringBootApp
 
-@Preview
-@Composable
-fun previewOfRoot() {
-  MyApp {
-    Column(
-      horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(5.dp),
-    ) {
-      Text("Hello World")
-      Button(onClick = {}) {
-        Text("Click me")
-      }
-    }
-  }
-}
+private val log = KInlineLogging.logger()
