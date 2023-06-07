@@ -36,7 +36,7 @@ fun LoadingScreen(
     LoadingScreenHeader()
     Divider()
     InputFilePicker(inputFileChosenModel)
-    StartingLineInputField(startingLine, onStartingLineValueChange = { startingLine = it })
+    StartingLineInputField { startingLine = it }
     OutputFilePicker(outputFileChosenModel)
   }
 
@@ -101,6 +101,7 @@ private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScre
       Text(inputFile.fileName.toString())
     }
   }
+  Spacer(modifier = Modifier.weight(1f))
   Button(onClick = { inputFileChosenModel.showFilePicker = true }) {
     Text(inputFile?.let { "Re-choose Txt File" } ?: "Choose Input Txt File")
   }
@@ -108,7 +109,7 @@ private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScre
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun StartingLineInputField(startingLine: ULong, onStartingLineValueChange: (ULong) -> Unit) = LoadingScreenRow {
+private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) = LoadingScreenRow {
   TooltipAreaWithCard(tip = {
     Text(
       "When reading the input TXT file, \nskip a certain number of lines before reading.\n" +
@@ -118,18 +119,16 @@ private fun StartingLineInputField(startingLine: ULong, onStartingLineValueChang
   }) {
     Text("Read input file from")
   }
+  Spacer(modifier = Modifier.weight(1f))
 
   var inputValue by remember { mutableStateOf(0L) }
   TextField(
-    value = startingLine.toString(),
+    value = inputValue.toString(),
     leadingIcon = { Text("Line:") },
     onValueChange = {
-      inputValue = it.toLongOrNull() ?: 0L
-      if (inputValue >= 0L) {
-        onStartingLineValueChange(inputValue.toULong())
-      } else {
-        onStartingLineValueChange(0UL)
-      }
+      inputValue = if (it.isBlank()) 0L else it.toLongOrNull() ?: return@TextField
+      val toSetValue = if (inputValue >= 0L) inputValue.toULong() else 0UL
+      onStartingLineValueChange(toSetValue)
     },
     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
   )
@@ -162,13 +161,14 @@ private fun OutputFilePicker(
       Text(outputFile.fileName.toString())
     }
   }
+  Spacer(modifier = Modifier.weight(1f))
   Button(onClick = { outputFileChosenModel.showFilePicker = true }) {
     Text(outputFile?.let { "Re-choose CSV File" } ?: "Choose Output CSV File")
   }
 }
 
 @Composable
-fun LoadingScreenRow(content: @Composable () -> Unit) {
+fun LoadingScreenRow(content: @Composable RowScope.() -> Unit) {
   Row(
     horizontalArrangement = Arrangement.spacedBy(MyDefaultPadding),
     verticalAlignment = Alignment.CenterVertically,
