@@ -3,7 +3,7 @@ package mikufan.cx.songfinder.ui.component
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.*
+import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -74,7 +74,7 @@ fun previewOfLoadingScreen() {
 private fun ColumnScope.LoadingScreenHeader() {
   Text(
     "Please choose your input and output files.",
-    fontSize = MaterialTheme.typography.h4.fontSize,
+    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
     modifier = Modifier.align(Alignment.CenterHorizontally),
   )
   Text(
@@ -106,6 +106,7 @@ private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScre
   }
 }
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StartingLineInputField(startingLine: ULong, onStartingLineValueChange: (ULong) -> Unit) = LoadingScreenRow {
   TooltipAreaWithCard(tip = {
