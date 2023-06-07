@@ -4,6 +4,7 @@ import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.TooltipArea
 import androidx.compose.foundation.TooltipPlacement
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -13,6 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
+import mikufan.cx.songfinder.ui.theme.MyDefaultPadding
 
 /**
  * @author CX无敌
@@ -23,14 +25,14 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun TooltipAreaWithCard(
   delayMillis: Int = 500,
-  tipModifier: Modifier = Modifier.shadow(4.dp),
+  tipModifier: Modifier = Modifier.padding(MyDefaultPadding).shadow(4.dp),
   tip: @Composable () -> Unit,
   content: @Composable () -> Unit,
 ) {
   TooltipArea(
     tooltip = {
       Surface(
-        color = MaterialTheme.colorScheme.background,
+        color = MaterialTheme.colorScheme.surfaceVariant,
         modifier = tipModifier,
         shape = MaterialTheme.shapes.small,
       ) {
