@@ -5,7 +5,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
@@ -13,7 +12,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import mikufan.cx.songfinder.ui.common.FillInSpacer
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
 
 /**
@@ -28,8 +27,7 @@ fun MyApp(
     Surface(
       modifier = Modifier
         .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background)
-        .padding(5.dp),
+        .background(MaterialTheme.colorScheme.background),
     ) {
       content()
     }
@@ -42,12 +40,13 @@ fun previewOfRoot() {
   MyApp {
     Column(
       horizontalAlignment = Alignment.CenterHorizontally,
-      verticalArrangement = Arrangement.spacedBy(5.dp),
+      verticalArrangement = Arrangement.SpaceEvenly,
     ) {
-      Text("Hello World")
       Button(onClick = {}) {
         Text("Click me")
       }
+      Text("Hello World")
+      FillInSpacer()
     }
   }
 }

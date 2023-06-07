@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.unit.DpOffset
 import androidx.compose.ui.unit.dp
-import mikufan.cx.songfinder.ui.theme.MyDefaultPadding
+import mikufan.cx.songfinder.ui.theme.MyDefaultSpacing
 
 /**
  * @author CX无敌
@@ -25,7 +25,7 @@ import mikufan.cx.songfinder.ui.theme.MyDefaultPadding
 @Composable
 fun TooltipAreaWithCard(
   delayMillis: Int = 500,
-  tipModifier: Modifier = Modifier.padding(MyDefaultPadding).shadow(4.dp),
+  tipModifier: Modifier = Modifier.padding(MyDefaultSpacing).shadow(4.dp),
   tip: @Composable () -> Unit,
   content: @Composable () -> Unit,
 ) {

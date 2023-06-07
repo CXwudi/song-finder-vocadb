@@ -10,10 +10,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import mikufan.cx.songfinder.model.IOFiles
+import mikufan.cx.songfinder.ui.common.FillInSpacer
 import mikufan.cx.songfinder.ui.common.MyDefaultAlertDialog
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
-import mikufan.cx.songfinder.ui.theme.MyDefaultPadding
+import mikufan.cx.songfinder.ui.theme.MyDefaultSpacing
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
@@ -32,12 +33,17 @@ fun LoadingScreen(
   val outputFileChosenModel = remember { FileChosenModel() }
   var startingLine by remember { mutableStateOf(0UL) }
 
-  Column(modifier = modifier, verticalArrangement = Arrangement.spacedBy(MyDefaultPadding)) {
+  Column(
+    modifier = modifier.padding(vertical = MyDefaultSpacing),
+    verticalArrangement = Arrangement.spacedBy(MyDefaultSpacing),
+    horizontalAlignment = Alignment.CenterHorizontally,
+  ) {
     LoadingScreenHeader()
     Divider()
     InputFilePicker(inputFileChosenModel)
     StartingLineInputField { startingLine = it }
     OutputFilePicker(outputFileChosenModel)
+    FillInSpacer()
   }
 
   MyFilePicker(
@@ -71,16 +77,18 @@ fun previewOfLoadingScreen() {
 }
 
 @Composable
-private fun ColumnScope.LoadingScreenHeader() {
-  Text(
-    "Please choose your input and output files.",
-    fontSize = MaterialTheme.typography.headlineMedium.fontSize,
-    modifier = Modifier.align(Alignment.CenterHorizontally),
-  )
-  Text(
-    "This window will close as soon as valid input and output files are chosen.",
-    modifier = Modifier.align(Alignment.CenterHorizontally),
-  )
+private fun LoadingScreenHeader() {
+  LoadingScreenRow {
+    Text(
+      "Please choose your input and output files.",
+      fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+    )
+  }
+  LoadingScreenRow {
+    Text(
+      "This window will close as soon as valid input and output files are chosen.",
+    )
+  }
 }
 
 @Composable
@@ -112,9 +120,10 @@ private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScre
 private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) = LoadingScreenRow {
   TooltipAreaWithCard(tip = {
     Text(
-      "When reading the input TXT file, \nskip a certain number of lines before reading.\n" +
-          "This is typically useful if you want to continue where you left from.\n" +
-          "By default it is 0, which means no skipping and read from the first line.",
+      "When reading the input TXT file, \n" +
+          "skip a certain number of lines before reading.\n" +
+          "This is typically useful if to continue where you left from.\n" +
+          "By default it is 0, which means no skipping.",
     )
   }) {
     Text("Read input file from")
@@ -170,7 +179,8 @@ private fun OutputFilePicker(
 @Composable
 fun LoadingScreenRow(content: @Composable RowScope.() -> Unit) {
   Row(
-    horizontalArrangement = Arrangement.spacedBy(MyDefaultPadding),
+    modifier = Modifier.padding(horizontal = MyDefaultSpacing),
+    horizontalArrangement = Arrangement.spacedBy(MyDefaultSpacing),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     content()
