@@ -1,12 +1,15 @@
 package mikufan.cx.songfinder
 
-import androidx.compose.runtime.*
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.model.IOFiles
 import mikufan.cx.songfinder.ui.MyApp
-import mikufan.cx.songfinder.ui.component.LoadingScreen
+import mikufan.cx.songfinder.ui.component.InputWindow
 import org.springframework.boot.autoconfigure.SpringBootApplication
 
 /**
@@ -22,7 +25,7 @@ fun main() = application {
       title = "Loading Input and Output Files",
     ) {
       MyApp {
-        LoadingScreen(onReady = { targetFiles = it })
+        InputWindow(onReady = { targetFiles = it })
       }
     }
   } else {

@@ -3,6 +3,8 @@ package mikufan.cx.songfinder.ui.component
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -13,8 +15,8 @@ import mikufan.cx.songfinder.model.IOFiles
 import mikufan.cx.songfinder.ui.common.FillInSpacer
 import mikufan.cx.songfinder.ui.common.MyDefaultAlertDialog
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
+import mikufan.cx.songfinder.ui.theme.LocalSpacing
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
-import mikufan.cx.songfinder.ui.theme.MyDefaultSpacing
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
@@ -25,7 +27,7 @@ import kotlin.io.path.absolutePathString
  */
 
 @Composable
-fun LoadingScreen(
+fun InputWindow(
   onReady: (IOFiles) -> Unit,
   modifier: Modifier = Modifier.fillMaxSize(),
 ) {
@@ -34,8 +36,8 @@ fun LoadingScreen(
   var startingLine by remember { mutableStateOf(0UL) }
 
   Column(
-    modifier = modifier.padding(vertical = MyDefaultSpacing),
-    verticalArrangement = Arrangement.spacedBy(MyDefaultSpacing),
+    modifier = modifier.padding(vertical = LocalSpacing.current.padding),
+    verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.spacing),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     LoadingScreenHeader()
@@ -72,7 +74,7 @@ fun LoadingScreen(
 @Composable
 fun previewOfLoadingScreen() {
   MyAppTheme {
-    LoadingScreen(onReady = {})
+    InputWindow(onReady = {})
   }
 }
 
@@ -144,7 +146,15 @@ private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) =
   val showNegativeNumberDialog by remember { derivedStateOf { inputValue < 0L } }
   MyDefaultAlertDialog(
     showNegativeNumberDialog,
-    title = { Text("Invalid Number") },
+    title = {
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.spacing),
+      ) {
+        Icon(Icons.Default.Warning, contentDescription = "Warning")
+        Text("Invalid Number", fontSize = MaterialTheme.typography.titleMedium.fontSize, color = MaterialTheme.colorScheme.error)
+      }
+    },
     text = { Text("The number of lines to skip cannot be negative.") },
   ) {
     inputValue = 0L
@@ -179,8 +189,8 @@ private fun OutputFilePicker(
 @Composable
 fun LoadingScreenRow(content: @Composable RowScope.() -> Unit) {
   Row(
-    modifier = Modifier.padding(horizontal = MyDefaultSpacing),
-    horizontalArrangement = Arrangement.spacedBy(MyDefaultSpacing),
+    modifier = Modifier.padding(horizontal = LocalSpacing.current.padding),
+    horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.spacing),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     content()
