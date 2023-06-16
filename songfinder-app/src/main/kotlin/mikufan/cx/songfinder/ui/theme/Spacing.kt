@@ -1,6 +1,9 @@
 package mikufan.cx.songfinder.ui.theme
 
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ProvidableCompositionLocal
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
@@ -10,8 +13,14 @@ import androidx.compose.ui.unit.dp
  * 2023-06-14
  */
 
-val LocalSpacing: ProvidableCompositionLocal<Spacing>
-  get() = staticCompositionLocalOf { Spacing() }
+val MaterialTheme.spacing: Spacing
+  @Composable
+  @ReadOnlyComposable
+  get() = LocalSpacing.current
+
+internal val LocalSpacing: ProvidableCompositionLocal<Spacing> = staticCompositionLocalOf {
+  error("No Spacing provided")
+}
 
 data class Spacing(
   val spacing: Dp = DefaultSpacing,

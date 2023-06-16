@@ -12,11 +12,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import mikufan.cx.songfinder.model.IOFiles
-import mikufan.cx.songfinder.ui.common.FillInSpacer
 import mikufan.cx.songfinder.ui.common.MyDefaultAlertDialog
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
-import mikufan.cx.songfinder.ui.theme.LocalSpacing
-import mikufan.cx.songfinder.ui.theme.MyAppTheme
+import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
+import mikufan.cx.songfinder.ui.theme.spacing
 import java.nio.file.Path
 import kotlin.io.path.Path
 import kotlin.io.path.absolutePathString
@@ -27,7 +26,7 @@ import kotlin.io.path.absolutePathString
  */
 
 @Composable
-fun InputWindow(
+fun InputScreen(
   onReady: (IOFiles) -> Unit,
   modifier: Modifier = Modifier.fillMaxSize(),
 ) {
@@ -36,8 +35,8 @@ fun InputWindow(
   var startingLine by remember { mutableStateOf(0UL) }
 
   Column(
-    modifier = modifier.padding(vertical = LocalSpacing.current.padding),
-    verticalArrangement = Arrangement.spacedBy(LocalSpacing.current.spacing),
+    modifier = modifier.padding(vertical = MaterialTheme.spacing.padding),
+    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
     horizontalAlignment = Alignment.CenterHorizontally,
   ) {
     LoadingScreenHeader()
@@ -45,7 +44,6 @@ fun InputWindow(
     InputFilePicker(inputFileChosenModel)
     StartingLineInputField { startingLine = it }
     OutputFilePicker(outputFileChosenModel)
-    FillInSpacer()
   }
 
   MyFilePicker(
@@ -72,9 +70,9 @@ fun InputWindow(
 
 @Preview
 @Composable
-fun previewOfLoadingScreen() {
-  MyAppTheme {
-    InputWindow(onReady = {})
+fun previewOfInputWindow() {
+  MyAppThemeWithSurface {
+    InputScreen(onReady = {})
   }
 }
 
@@ -149,7 +147,7 @@ private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) =
     title = {
       Row(
         verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.spacing),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
       ) {
         Icon(Icons.Default.Warning, contentDescription = "Warning")
         Text("Invalid Number", fontSize = MaterialTheme.typography.titleMedium.fontSize, color = MaterialTheme.colorScheme.error)
@@ -189,8 +187,8 @@ private fun OutputFilePicker(
 @Composable
 fun LoadingScreenRow(content: @Composable RowScope.() -> Unit) {
   Row(
-    modifier = Modifier.padding(horizontal = LocalSpacing.current.padding),
-    horizontalArrangement = Arrangement.spacedBy(LocalSpacing.current.spacing),
+    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.padding),
+    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     content()
