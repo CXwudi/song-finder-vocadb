@@ -1,0 +1,73 @@
+<mxfile host="app.diagrams.net" modified="2023-06-17T03:57:13.294Z" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36" etag="cbLdulwWMem57wmsBX7H" version="21.4.0" type="device">
+  <diagram name="Page-1" id="Z9su-IpZnA1WicuIkTZz">
+    <mxGraphModel dx="1509" dy="897" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="SqRquksW2nZ5C89mBwd1-2" value="Song Finder" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.containers.window;align=left;verticalAlign=top;spacingLeft=8;strokeColor2=#008cff;strokeColor3=#c4c4c4;fontColor=#666666;mainText=;fontSize=17;labelBackgroundColor=none;whiteSpace=wrap;" parent="1" vertex="1">
+          <mxGeometry x="100" y="120" width="630" height="660" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-1" value="" style="verticalLabelPosition=bottom;shadow=0;dashed=0;align=center;html=1;verticalAlign=top;strokeWidth=1;shape=mxgraph.mockup.misc.progressBar;fillColor=#cccccc;strokeColor=none;fillColor2=#99ddff;barPos=29.782;" vertex="1" parent="1">
+          <mxGeometry x="220" y="160" width="410" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-2" value="&lt;font style=&quot;font-size: 14px;&quot;&gt;5/20 Songs&lt;/font&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;" vertex="1" parent="1">
+          <mxGeometry x="630" y="155" width="90" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-4" value="Song Title:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="124" y="210" width="80" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-5" value="XXXX" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.forms.searchBox;strokeColor=#999999;mainText=;strokeColor2=#008cff;fontColor=#666666;fontSize=17;align=left;spacingLeft=3;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="224" y="210" width="490" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-7" value="Progress:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="125" y="155" width="70" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-8" value="Search Results:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="114" y="250" width="130" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-9" value="" style="verticalLabelPosition=bottom;shadow=0;dashed=0;align=center;html=1;verticalAlign=top;strokeWidth=1;shape=mxgraph.mockup.markup.line;strokeColor=#999999;rounded=0;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="100" y="185" width="630" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-10" value="" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="130" y="290" width="570" height="380" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-11" value="" style="verticalLabelPosition=bottom;shadow=0;dashed=0;align=center;html=1;verticalAlign=top;strokeWidth=1;shape=mxgraph.mockup.markup.line;strokeColor=#999999;rounded=0;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="100" y="670" width="630" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-12" value="No result found?" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="114" y="690" width="126" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-13" value="Override the VocaDB Song ID:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="114" y="720" width="206" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-14" value="xxx" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.forms.pwField;strokeColor=#999999;mainText=;align=left;fontColor=#666666;fontSize=17;spacingLeft=3;rounded=0;fontFamily=Helvetica;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="339" y="720" width="150" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-15" value="Override and continue" style="strokeWidth=1;shadow=0;dashed=0;align=center;html=1;shape=mxgraph.mockup.buttons.button;strokeColor=#666666;fontColor=#ffffff;mainText=;buttonStyle=round;fontSize=17;fontStyle=1;fillColor=#008cff;whiteSpace=wrap;rounded=0;fontFamily=Helvetica;" vertex="1" parent="1">
+          <mxGeometry x="516" y="720" width="204" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-16" value="" style="rounded=1;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;arcSize=50;" vertex="1" parent="1">
+          <mxGeometry x="140" y="370" width="520" height="70" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-17" value="Thumbnail" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="160" y="375" width="120" height="60" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-18" value="Producers feat. Vocal - Song Name" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="310" y="375" width="290" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-19" value="PVs:" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="280" y="405" width="60" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-20" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="330" y="410" width="20" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-21" value="" style="rounded=0;whiteSpace=wrap;html=1;fontFamily=Helvetica;fontSize=14;fontColor=default;fillColor=none;gradientColor=none;" vertex="1" parent="1">
+          <mxGeometry x="355" y="410" width="21" height="20" as="geometry" />
+        </mxCell>
+        <mxCell id="pZRUgpaE8gb7qNiZiESH-22" value="&lt;h1&gt;No Result&lt;/h1&gt;" style="text;html=1;strokeColor=none;fillColor=none;align=center;verticalAlign=middle;whiteSpace=wrap;rounded=0;fontSize=14;fontFamily=Helvetica;fontColor=default;" vertex="1" parent="1">
+          <mxGeometry x="279" y="300" width="270" height="50" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
