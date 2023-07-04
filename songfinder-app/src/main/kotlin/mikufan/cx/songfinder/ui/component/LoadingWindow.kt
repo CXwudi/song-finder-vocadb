@@ -78,7 +78,7 @@ fun LoadingScreen() = Row(
 @Preview
 @Composable
 fun previewOfLoadingWindow() {
-  MyAppThemeWithSurface {
+  MyAppThemeWithSurface(surfaceModifier = Modifier.background(MaterialTheme.colorScheme.background)) {
     LoadingScreen()
   }
 }
