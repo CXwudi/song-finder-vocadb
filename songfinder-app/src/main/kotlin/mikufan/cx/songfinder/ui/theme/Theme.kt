@@ -38,18 +38,22 @@ fun MyAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable 
 }
 
 /**
- * @author CX无敌
- * 2023-06-06
+ * Apply [MyAppTheme] and the surface to the provided content.
+ *
+ * @param surfaceModifier The modifier to apply to the surface.
+ * By default, it fills the maximum size and sets the background color to the [MaterialTheme]'s background color.
+ * @param content The content to be displayed within the surface.
  */
 @Composable
 fun MyAppThemeWithSurface(
+  surfaceModifier: Modifier = Modifier
+    .fillMaxSize()
+    .background(MaterialTheme.colorScheme.background),
   content: @Composable () -> Unit,
 ) {
   MyAppTheme {
     Surface(
-      modifier = Modifier
-        .fillMaxSize()
-        .background(MaterialTheme.colorScheme.background),
+      modifier = surfaceModifier,
     ) {
       content()
     }

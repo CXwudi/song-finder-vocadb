@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,7 +20,6 @@ import kotlinx.coroutines.launch
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.SongFinderSpringBootApp
 import mikufan.cx.songfinder.model.IOFiles
-import mikufan.cx.songfinder.ui.theme.MyAppTheme
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 import mikufan.cx.songfinder.ui.theme.spacing
 import org.springframework.beans.factory.getBean
@@ -53,10 +51,8 @@ fun ApplicationScope.LoadingWindow(ioFiles: IOFiles, args: Array<out String>, on
       title = "Loading App",
       state = rememberWindowState(width = Dp.Unspecified, height = Dp.Unspecified),
     ) {
-      MyAppTheme {
-        Surface(modifier = Modifier.background(MaterialTheme.colorScheme.background)) {
-          LoadingScreen()
-        }
+      MyAppThemeWithSurface(surfaceModifier = Modifier.background(MaterialTheme.colorScheme.background)) {
+        LoadingScreen()
       }
     }
   }
