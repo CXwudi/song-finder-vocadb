@@ -31,7 +31,7 @@ jobs:
     - name: Give permission to gradlew
       run: chmod +x gradlew
       
-    - name: Build with Gradle
+    - name: Check & Build with Gradle
       uses: gradle/gradle-build-action@v2
       with:
         arguments: check createDistributable --scan
