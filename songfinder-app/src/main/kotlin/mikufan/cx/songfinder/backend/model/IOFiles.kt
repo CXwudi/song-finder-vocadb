@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.model
+package mikufan.cx.songfinder.backend.model
 
 import java.nio.file.Path
 
