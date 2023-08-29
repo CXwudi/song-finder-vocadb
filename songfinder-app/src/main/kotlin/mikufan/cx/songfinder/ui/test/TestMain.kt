@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder
+package mikufan.cx.songfinder.ui.test
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
