@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder
+package mikufan.cx.songfinder.component
 
 import io.kotest.matchers.shouldBe
 import mikufan.cx.songfinder.backend.component.InputFileLineReader
@@ -13,11 +13,11 @@ import java.nio.file.Paths
 
 @SpringBootTestWithTestProfile
 @DirtiesContext
-class SongFinderSpringBootAppTest(
+class InputFileLineReaderTest(
   private val inputFileLineReader: InputFileLineReader,
 ) : SpringShouldSpec({
-  context("app") {
-    should("start with dummy ioFiles") {
+  context("file reader") {
+    should("read starting from the 2nd line") {
       inputFileLineReader.readNext() shouldBe "dummy2"
       inputFileLineReader.readNext() shouldBe "dummy3"
       inputFileLineReader.readNext() shouldBe null
