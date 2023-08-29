@@ -40,7 +40,7 @@ class InputFileLineReader(
 }
 
 @Configuration
-class ProgressMaintainerFactory {
+class InputFileLineReaderFactory {
 
   @Bean
   fun create(ioFile: IOFiles): InputFileLineReader {
