@@ -3,10 +3,6 @@
 services:
   app:
     container_name: song-finder-vocadb-test-runner
-    environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/vocadb_site
-      - SPRING_DATASOURCE_USERNAME=vocadb
-      - SPRING_DATASOURCE_PASSWORD=my_password
     command: gradle check --scan
 
   mariadb:
@@ -15,4 +11,4 @@ services:
       - "3306:3306"
     volumes:
       - ./import-test-data/:/hoshizora.sql/output/
-      - ./import-script/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql
+      - ./import-script/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql # we could just use the db files, but this will lose the env var

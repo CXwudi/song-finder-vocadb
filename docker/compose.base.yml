@@ -9,9 +9,9 @@ services:
       context: ../
       dockerfile: docker/clean-env.Dockerfile
     environment:
-      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/vocadb_site
-      - SPRING_DATASOURCE_USERNAME=vocadb
-      - SPRING_DATASOURCE_PASSWORD=my_password
+      - SPRING_DATASOURCE_URL=jdbc:mariadb://mariadb:3306/${MYSQL_DATABASE}
+      - SPRING_DATASOURCE_USERNAME=${MYSQL_USER}
+      - SPRING_DATASOURCE_PASSWORD=${MYSQL_PASSWORD}
     depends_on:
       mariadb:
         condition: service_healthy
