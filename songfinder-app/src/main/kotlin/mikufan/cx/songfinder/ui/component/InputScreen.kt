@@ -115,7 +115,6 @@ private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScre
   }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) = LoadingScreenRow {
   TooltipAreaWithCard(tip = {
@@ -142,21 +141,23 @@ private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) =
     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
   )
   val showNegativeNumberDialog by remember { derivedStateOf { inputValue < 0L } }
-  MyDefaultAlertDialog(
-    showNegativeNumberDialog,
-    title = {
-      Row(
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
-      ) {
-        Icon(Icons.Default.Warning, contentDescription = "Warning")
-        Text("Invalid Number", fontSize = MaterialTheme.typography.titleMedium.fontSize, color = MaterialTheme.colorScheme.error)
-      }
-    },
-    text = { Text("The number of lines to skip cannot be negative.") },
-  ) {
-    inputValue = 0L
+  if (showNegativeNumberDialog) {
+    MyDefaultAlertDialog(
+      title = {
+        Row(
+          verticalAlignment = Alignment.CenterVertically,
+          horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
+        ) {
+          Icon(Icons.Default.Warning, contentDescription = "Warning")
+          Text("Invalid Number", fontSize = MaterialTheme.typography.titleMedium.fontSize, color = MaterialTheme.colorScheme.error)
+        }
+      },
+      text = { Text("The number of lines to skip cannot be negative.") },
+    ) {
+      inputValue = 0L
+    }
   }
+
 }
 
 @Composable
@@ -204,8 +205,9 @@ fun MyFilePicker(
 ) {
   FilePicker(
     showFilePicker,
-    initialDirectory = Path(".").toAbsolutePath().toString(),
-    fileExtensions = fileExtensions,
+    // something wrong here causing the file picker to not show up
+//    initialDirectory = Path(".").toAbsolutePath().toString(),
+//    fileExtensions = fileExtensions,
   ) { file ->
     onShowStatusChanged(false)
     file?.path?.let { onFilePicked(Path(it)) }
