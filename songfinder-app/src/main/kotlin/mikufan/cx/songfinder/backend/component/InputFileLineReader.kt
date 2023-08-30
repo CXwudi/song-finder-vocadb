@@ -39,7 +39,7 @@ class InputFileLineReader(
   }
 }
 
-@Configuration
+@Configuration(proxyBeanMethods = false)
 class InputFileLineReaderFactory {
 
   @Bean
