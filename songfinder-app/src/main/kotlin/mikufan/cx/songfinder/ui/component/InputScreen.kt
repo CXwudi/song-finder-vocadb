@@ -1,7 +1,9 @@
 package mikufan.cx.songfinder.ui.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -12,7 +14,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import mikufan.cx.songfinder.backend.model.IOFiles
+import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.MyDefaultAlertDialog
+import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 import mikufan.cx.songfinder.ui.theme.spacing
@@ -28,17 +32,13 @@ import kotlin.io.path.absolutePathString
 @Composable
 fun InputScreen(
   onReady: (IOFiles) -> Unit,
-  modifier: Modifier = Modifier.fillMaxSize(),
+  modifier: Modifier = Modifier,
 ) {
   val inputFileChosenModel = remember { FileChosenModel() }
   val outputFileChosenModel = remember { FileChosenModel() }
   var startingLine by remember { mutableStateOf(0UL) }
 
-  Column(
-    modifier = modifier.padding(vertical = MaterialTheme.spacing.padding),
-    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
-    horizontalAlignment = Alignment.CenterHorizontally,
-  ) {
+  ColumnCentralizedWithSpacing {
     LoadingScreenHeader()
     Divider()
     InputFilePicker(inputFileChosenModel)
@@ -78,13 +78,13 @@ fun previewOfInputWindow() {
 
 @Composable
 private fun LoadingScreenHeader() {
-  LoadingScreenRow {
+  RowCentralizedWithSpacing {
     Text(
       "Please choose your input and output files.",
       fontSize = MaterialTheme.typography.headlineMedium.fontSize,
     )
   }
-  LoadingScreenRow {
+  RowCentralizedWithSpacing {
     Text(
       "This window will close as soon as valid input and output files are chosen.",
     )
@@ -92,7 +92,7 @@ private fun LoadingScreenHeader() {
 }
 
 @Composable
-private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScreenRow {
+private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = RowCentralizedWithSpacing {
   val inputFile = inputFileChosenModel.file
   TooltipAreaWithCard(tip = {
     Text(
@@ -116,7 +116,7 @@ private fun InputFilePicker(inputFileChosenModel: FileChosenModel) = LoadingScre
 }
 
 @Composable
-private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) = LoadingScreenRow {
+private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) = RowCentralizedWithSpacing {
   TooltipAreaWithCard(tip = {
     Text(
       "When reading the input TXT file, \n" +
@@ -149,7 +149,11 @@ private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) =
           horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
         ) {
           Icon(Icons.Default.Warning, contentDescription = "Warning")
-          Text("Invalid Number", fontSize = MaterialTheme.typography.titleMedium.fontSize, color = MaterialTheme.colorScheme.error)
+          Text(
+            "Invalid Number",
+            fontSize = MaterialTheme.typography.titleMedium.fontSize,
+            color = MaterialTheme.colorScheme.error
+          )
         }
       },
       text = { Text("The number of lines to skip cannot be negative.") },
@@ -163,7 +167,7 @@ private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) =
 @Composable
 private fun OutputFilePicker(
   outputFileChosenModel: FileChosenModel,
-) = LoadingScreenRow {
+) = RowCentralizedWithSpacing {
   val outputFile = outputFileChosenModel.file
   TooltipAreaWithCard(tip = {
     Text(
@@ -182,17 +186,6 @@ private fun OutputFilePicker(
   Spacer(modifier = Modifier.weight(1f))
   Button(onClick = { outputFileChosenModel.showFilePicker = true }) {
     Text(outputFile?.let { "Re-choose CSV File" } ?: "Choose Output CSV File")
-  }
-}
-
-@Composable
-fun LoadingScreenRow(content: @Composable RowScope.() -> Unit) {
-  Row(
-    modifier = Modifier.padding(horizontal = MaterialTheme.spacing.padding),
-    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
-    verticalAlignment = Alignment.CenterVertically,
-  ) {
-    content()
   }
 }
 

@@ -2,14 +2,10 @@ package mikufan.cx.songfinder.ui.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.window.ApplicationScope
@@ -20,8 +16,8 @@ import kotlinx.coroutines.launch
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.SongFinderSpringBootApp
 import mikufan.cx.songfinder.backend.model.IOFiles
+import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
-import mikufan.cx.songfinder.ui.theme.spacing
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.runApplication
 import org.springframework.context.ConfigurableApplicationContext
@@ -66,11 +62,7 @@ fun launchSpringBootApp(ioFiles: IOFiles, args: Array<out String>): Configurable
   }
 
 @Composable
-fun LoadingScreen() = Row(
-  verticalAlignment = Alignment.CenterVertically,
-  horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
-  modifier = Modifier.padding(MaterialTheme.spacing.padding),
-) {
+fun LoadingScreen() = RowCentralizedWithSpacing {
   CircularProgressIndicator()
   Text("Loading...")
 }
