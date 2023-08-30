@@ -10,5 +10,8 @@ class ProgressController(
   private val inputFileLineReader: InputFileLineReader,
 ) {
 
-  fun getCurrentCountState() = progressTracker.currentCountState
+  val currentCountState
+    get() = progressTracker.currentCountState
+
+  val totalCount = progressTracker.totalCount
 }
