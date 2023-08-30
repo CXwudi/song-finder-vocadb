@@ -27,7 +27,6 @@ bom-kotest = "io.kotest:kotest-bom:5.6.2"
 bom-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3"
 # plugin dependencies (for both projects and settings), naming convention: s/p + plugin-<name>
 pluginDep-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
-pluginDep-kotlinAllopen = { module = "org.jetbrains.kotlin:kotlin-allopen", version.ref = "kotlin" }
 pluginDep-springBoot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot" }
 pluginDep-composeJb = "org.jetbrains.compose:compose-gradle-plugin:1.5.0"
 # "io.spring.gradle:dependency-management-plugin" is unneeded because we prefer Gradle's native dependency management
@@ -47,3 +46,5 @@ dep-compose-mpFilePicker = "com.darkrockstudios:mpfilepicker:2.0.2"
 
 # this is only used by the workaround in root build.gradle.kts
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+# used by the app
+kotlinAllopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
