@@ -9,7 +9,6 @@ dependencies {
   // compose desktop
   implementation(compose.desktop.currentOs)
   implementation(compose.material3)
-  implementation("com.darkrockstudios:mpfilepicker")
 
   // kotlin
   implementation(kotlin("stdlib"))

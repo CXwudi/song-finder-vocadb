@@ -8,28 +8,31 @@ fun DependencyHandlerScope.sbs(dep: String? = null, version: String? = null) =
 
 
 dependencies {
+  // compose
+  implementation(libs.dep.composeFilePicker)
+
   // kotest
-  testImplementation(platform("io.kotest:kotest-bom"))
+  testImplementation(platform(libs.bom.kotest))
   testImplementation("io.kotest:kotest-runner-junit5")
 
   // spring boot
-  versionConstraints(platform("org.springframework.boot:spring-boot-dependencies"))
+  versionConstraints(platform(libs.bom.springBoot))
   implementation(sbs())
   modules {
     module(sbs("logging")) {
       replacedBy(sbs("log4j2"))
     }
   }
-  implementation("com.github.CXwudi:kotlin-jvm-inline-logging")
+  implementation(libs.dep.kotlinJvmInlineLogging)
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
   implementation(sbs("jdbc"))
   runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
   testImplementation(sbs("test")) {
     exclude(group = "org.mockito")
   }
-  testImplementation("io.kotest.extensions:kotest-extensions-spring")
-  testImplementation("io.mockk:mockk")
-  testImplementation("com.ninja-squad:springmockk")
+  testImplementation(libs.dep.kotestExtensionsSpring)
+  testImplementation(libs.dep.mockk)
+  testImplementation(libs.dep.springMockk)
 }
 
 compose.desktop {

@@ -16,6 +16,7 @@
 # lib versions
 kotlin = "1.9.0" # !important, this must be 1.8.20 for compose 1.4.0
 springBoot = "3.1.3"
+composeIcons = "1.1.0"
 
 # plugin dep versions
 # empty for now
@@ -37,7 +38,9 @@ dep-kotlinJvmInlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
 dep-kotestExtensionsSpring = "io.kotest.extensions:kotest-extensions-spring:1.1.3"
 dep-mockk = "io.mockk:mockk:1.13.7"
 dep-springMockk = "com.ninja-squad:springmockk:4.0.2"
-dep-compose-mpFilePicker = "com.darkrockstudios:mpfilepicker:2.0.2"
+dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:2.0.2"
+dep-composeSimpleIcons = { module = "br.com.devsrsouza.compose.icons:simple-icons", version.ref = "composeIcons" }
+dep-composeKamelImage = "media.kamel:kamel-image:0.7.2"
 
 [plugins]
 # plugins that are used in main build but not in precompiled script plugins

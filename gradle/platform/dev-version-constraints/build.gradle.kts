@@ -19,19 +19,6 @@ dependencies {
   // add your api() here to manage dependencies not defined in a bom or gradle platform
   constraints {
     // maven bom or gradle platform
-    api(libs.bom.kotest)
-    // here, we prefer spring boot's version management for non-spring projects.
-    // you can replace it with something else (like micronaut bom) if you want
-    // see https://docs.spring.io/spring-boot/docs/current/reference/html/dependency-versions.html
-    // to check what lib is included
-    api(libs.bom.springBoot)
-    api(libs.bom.coroutines) // enable if spring screws up coroutines
-
-    // main build dependencies, be used in the actual app and lib build.gradle.kts
-    api(libs.dep.kotlinJvmInlineLogging)
-    api(libs.dep.kotestExtensionsSpring)
-    api(libs.dep.mockk)
-    api(libs.dep.springMockk)
-    api(libs.dep.compose.mpFilePicker)
+    api(libs.bom.coroutines)
   }
 }
