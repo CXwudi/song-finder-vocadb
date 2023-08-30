@@ -33,7 +33,10 @@ fun main(vararg args: String) = application {
       LoadingWindow(targetFiles!!, args) { springCtx = it }
     } else {
       Window(
-        onCloseRequest = ::exitApplication,
+        onCloseRequest = {
+          springCtx!!.close()
+          exitApplication()
+        },
         title = "Song Finder powered by VocaDB",
       ) {
         MyAppThemeWithSurface {
