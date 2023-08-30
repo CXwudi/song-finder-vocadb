@@ -1,4 +1,5 @@
 # this compose file can be used in CI env where it runs the test in very fresh env
+# it needs to be used with docker\compose.base.yml
 
 services:
   app:

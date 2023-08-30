@@ -1,6 +1,1 @@
-spring:
-  datasource:
-    # require the test database in ./docker/docker-compose.gradle-test.yml is running
-    url: jdbc:mariadb://localhost:3306/vocadb_site
-    username: vocadb
-    password: my_password
+
