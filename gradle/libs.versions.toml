@@ -47,4 +47,4 @@ dep-compose-mpFilePicker = "com.darkrockstudios:mpfilepicker:2.0.2"
 # this is only used by the workaround in root build.gradle.kts
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 # used by the app
-kotlinAllopen = { id = "org.jetbrains.kotlin.plugin.allopen", version.ref = "kotlin" }
+kotlinSpring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }

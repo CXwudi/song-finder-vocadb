@@ -1,6 +1,6 @@
 plugins {
   id("my.compose-desktop-app")
-  alias(libs.plugins.kotlinAllopen)
+  alias(libs.plugins.kotlinSpring)
 }
 
 fun DependencyHandlerScope.sbs(dep: String? = null, version: String? = null) =
