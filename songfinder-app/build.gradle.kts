@@ -38,6 +38,9 @@ dependencies {
 compose.desktop {
   application {
     mainClass = "mikufan.cx.songfinder.EntrypointKt"
+    nativeDistributions {
+      includeAllModules = true
+    }
   }
 }
 
