@@ -10,6 +10,8 @@ fun DependencyHandlerScope.sbs(dep: String? = null, version: String? = null) =
 dependencies {
   // compose
   implementation(libs.dep.composeFilePicker)
+  implementation(libs.dep.composeSimpleIcons)
+  implementation(libs.dep.composeKamelImage)
 
   // kotest
   testImplementation(platform(libs.bom.kotest))
