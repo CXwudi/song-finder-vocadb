@@ -48,7 +48,7 @@ fun InputScreen(
 
   MyFilePicker(
     inputFileChosenModel.showFilePicker,
-    listOf(".txt"),
+    listOf("txt"),
     onShowStatusChanged = { inputFileChosenModel.showFilePicker = it },
   ) {
     inputFileChosenModel.file = it
@@ -56,7 +56,7 @@ fun InputScreen(
 
   MyFilePicker(
     outputFileChosenModel.showFilePicker,
-    listOf(".csv"),
+    listOf("csv"),
     onShowStatusChanged = { outputFileChosenModel.showFilePicker = it },
   ) {
     outputFileChosenModel.file = it
@@ -198,9 +198,8 @@ fun MyFilePicker(
 ) {
   FilePicker(
     showFilePicker,
-    // something wrong here causing the file picker to not show up
-//    initialDirectory = Path(".").toAbsolutePath().toString(),
-//    fileExtensions = fileExtensions,
+    initialDirectory = Path(".").toAbsolutePath().normalize().toString(),
+    fileExtensions = fileExtensions,
   ) { file ->
     onShowStatusChanged(false)
     file?.path?.let { onFilePicked(Path(it)) }
