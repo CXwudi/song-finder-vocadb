@@ -192,7 +192,7 @@ private fun OutputFilePicker(
 @Composable
 fun MyFilePicker(
   showFilePicker: Boolean,
-  fileExtensions: List<String> = listOf("."),
+  fileExtensions: List<String> = emptyList(),
   onShowStatusChanged: (Boolean) -> Unit = {},
   onFilePicked: (Path) -> Unit,
 ) {
