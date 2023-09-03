@@ -59,7 +59,7 @@ class OutputCsvLineWriterFactory {
       )
       .readValues<Map<String, String>>(outputFile.toFile())
       .forEach {
-        count = maxOf(count, it["order"]!!.toULong())
+        count = maxOf(count, requireNotNull(it["order"]?.toULong()) { "Make sure the first column exists"})
       }
     count + 1uL
   }
