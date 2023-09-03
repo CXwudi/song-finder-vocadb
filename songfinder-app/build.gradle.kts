@@ -17,7 +17,7 @@ dependencies {
   testImplementation(platform(libs.bom.kotest))
   testImplementation("io.kotest:kotest-runner-junit5")
 
-  // spring boot
+  // backend by spring boot
   versionConstraints(platform(libs.bom.springBoot))
   implementation(sbs())
   modules {
@@ -29,6 +29,8 @@ dependencies {
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
   implementation(sbs("jdbc"))
   runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
+  implementation(sbs("json"))
+  implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
   testImplementation(sbs("test")) {
     exclude(group = "org.mockito")
   }
