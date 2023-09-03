@@ -43,7 +43,7 @@ class InputFileLineReader(
 class InputFileLineReaderFactory {
 
   @Bean
-  fun create(ioFile: IOFiles): InputFileLineReader {
+  fun inputFileLineReader(ioFile: IOFiles): InputFileLineReader {
     val startLine = ioFile.startLine
     val toSkip: ULong = if (startLine < 1uL) 0uL else startLine - 1uL
 
