@@ -7,6 +7,7 @@ import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.model.IOFiles
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import kotlin.io.path.bufferedReader
 
 /**
  * Tracks progress based on counts.
@@ -49,7 +50,7 @@ class ProgressTrackerFactory {
     val inputTxt = ioFiles.inputTxt
 
     log.debug { "Opening input file $inputTxt to count the total amount of songs" }
-    inputTxt.toFile().bufferedReader().lineSequence()
+    inputTxt.bufferedReader().lineSequence()
       .filter { it.isNotBlank() }
       .forEach { _ -> count++ }
     return ProgressTracker(count, startLine)
