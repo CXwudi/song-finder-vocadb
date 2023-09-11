@@ -38,7 +38,7 @@ dep-kotlinJvmInlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
 dep-kotestExtensionsSpring = "io.kotest.extensions:kotest-extensions-spring:1.1.3"
 dep-mockk = "io.mockk:mockk:1.13.7"
 dep-springMockk = "com.ninja-squad:springmockk:4.0.2"
-dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:2.0.2"
+dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:2.1.0"
 dep-composeSimpleIcons = { module = "br.com.devsrsouza.compose.icons:simple-icons", version.ref = "composeIcons" }
 dep-composeKamelImage = "media.kamel:kamel-image:0.7.3"
 
