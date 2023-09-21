@@ -15,7 +15,7 @@
 # java version is defined in my.jvm-base.gradle.kts
 # lib versions
 kotlin = "1.9.0" # !important, this must be 1.8.20 for compose 1.4.0
-springBoot = "3.1.3"
+springBoot = "3.1.4"
 composeIcons = "1.1.0"
 
 # plugin dep versions
