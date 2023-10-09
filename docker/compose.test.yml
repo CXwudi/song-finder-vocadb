@@ -1,5 +1,6 @@
-# this compose file can be used in CI env where it runs the test in very fresh env
-# it needs to be used with docker\compose.base.yml
+# this compose file can be used to run test cases in very fresh env
+# it needs to be used with docker\compose.base.yml altogether
+# it needs the test dataset to be available in ./import-test-data and ./import-script/mariadb.sql
 
 services:
   app:
@@ -11,5 +12,6 @@ services:
     ports:
       - "3306:3306"
     volumes:
+      # only rely on the importing feature, we don't save the db data into a volume
       - ./import-test-data/:/hoshizora.sql/output/
       - ./import-script/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql # we could just use the db files, but this will lose the env var

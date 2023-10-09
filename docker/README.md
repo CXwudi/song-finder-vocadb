@@ -7,14 +7,24 @@ However, the test data set is too large to be uploaded to the repository, so you
 
 ## Where to download
 
-download link: https://mega.nz/file/W4swmATB#n6PzU7gAI2aLz0W625XucCAWV7Ym9C_Dy5KsozRZFis
+### Use prebuilt data set
+
+Download link: https://mega.nz/file/W4swmATB#n6PzU7gAI2aLz0W625XucCAWV7Ym9C_Dy5KsozRZFis
+
+Extract the `import-script` folder and `import-test-data` folder into the `./docker` folder
+
+### Generate your own
+
+Just follow this repository: https://github.com/CXwudi/hoshizora.sql
+
+And you will get the `mariadb.sql` file and all CSV files in the `output` folder in hoshizora.sql project folder.
+
+Move `mariadb.sql` to `./docker/import-script` and all CSV files to `./docker/import-test-data` in this project.
 
 ## How to use
 
-Extract the `import-script` folder and `import-test-data` into the `./docker` folder
+To run the database only, run `docker compose -f compose.base.yml -f compose.test.yml up mariadb -d`
 
-To run the database only, run `docker-compose -f compose.base.yml -f compose.test.yml up mariadb -d`
-
-To run tests, run `docker-compose -f compose.base.yml -f compose.test.yml up`
+To run tests, run `docker compose -f compose.base.yml -f compose.test.yml up`
 
 When rerunning the test, make sure to delete the `song-finder-vocadb-test-runner` image so that newest code can be picked up.
