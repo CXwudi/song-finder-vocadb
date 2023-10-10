@@ -15,9 +15,12 @@ Extract the `import-script` folder and `import-test-data` folder into the `./doc
 
 ### Generate your own
 
-Just follow this repository: https://github.com/CXwudi/hoshizora.sql
+Clone this repository: https://github.com/CXwudi/hoshizora.sql,
+and follow up to step 2.
 
-And you will get the `mariadb.sql` file and all CSV files in the `output` folder in hoshizora.sql project folder.
+Run `docker compose --profile initializer up hoshizora` in the `./docker` folder.
+
+And you will get the `mariadb.sql` file and all CSV files in the `./output` folder.
 
 Move `mariadb.sql` to `./docker/import-script` and all CSV files to `./docker/import-test-data` in this project.
 
