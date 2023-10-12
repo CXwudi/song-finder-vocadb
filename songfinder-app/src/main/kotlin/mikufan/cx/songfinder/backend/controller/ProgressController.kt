@@ -14,4 +14,7 @@ class ProgressController(
     get() = progressTracker.currentCountState
 
   val totalCount = progressTracker.totalCount
+
+  val isFinished
+    get() = progressTracker.currentCountState.value > progressTracker.totalCount
 }
