@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
  */
 
 @Composable
-fun ColumnScope.FillInSpacer(furtherModifier: Modifier = Modifier) = Spacer(modifier = Modifier.weight(1f).then(furtherModifier))
+fun ColumnScope.FillInSpacer(modifier: Modifier = Modifier, furtherModifier: Modifier = Modifier) = Spacer(modifier = modifier.weight(1f).then(furtherModifier))
 
 @Composable
-fun RowScope.FillInSpacer(furtherModifier: Modifier = Modifier) = Spacer(modifier = Modifier.weight(1f).then(furtherModifier))
+fun RowScope.FillInSpacer(modifier: Modifier = Modifier, furtherModifier: Modifier = Modifier) = Spacer(modifier = modifier.weight(1f).then(furtherModifier))
