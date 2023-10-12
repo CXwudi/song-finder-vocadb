@@ -40,7 +40,7 @@ dep-mockk = "io.mockk:mockk:1.13.8"
 dep-springMockk = "com.ninja-squad:springmockk:4.0.2"
 dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:2.1.0"
 dep-composeSimpleIcons = { module = "br.com.devsrsouza.compose.icons:simple-icons", version.ref = "composeIcons" }
-dep-composeKamelImage = "media.kamel:kamel-image:0.7.3"
+#dep-composeKamelImage = "media.kamel:kamel-image:0.7.3" # too much deps such as ktor, although it is a powerful library
 
 [plugins]
 # plugins that are used in main build but not in precompiled script plugins

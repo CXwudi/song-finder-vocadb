@@ -11,7 +11,7 @@ dependencies {
   // compose
   implementation(libs.dep.composeFilePicker)
   implementation(libs.dep.composeSimpleIcons)
-  implementation(libs.dep.composeKamelImage)
+//  implementation(libs.dep.composeKamelImage)
 
   // kotest
   testImplementation(platform(libs.bom.kotest))
