@@ -11,10 +11,10 @@ class ProgressController(
 ) {
 
   val currentCountState
-    get() = progressTracker.currentCountState
+    get() = progressTracker.currentIndexState
 
   val totalCount = progressTracker.totalCount
 
   val isFinished
-    get() = progressTracker.currentCountState.value > progressTracker.totalCount
+    get() = progressTracker.currentIndexState.value >= progressTracker.totalCount
 }

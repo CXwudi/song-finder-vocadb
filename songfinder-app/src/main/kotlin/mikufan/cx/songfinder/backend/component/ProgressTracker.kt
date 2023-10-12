@@ -13,30 +13,30 @@ import kotlin.io.path.bufferedReader
  * Tracks progress based on counts.
  *
  * @property totalCount The total count.
- * @property _currentCount The mutable state representing the current count.
- * @property currentCountState The state representing the current count that can trigger re-composition in compose components.
- * @constructor Creates a ProgressTracker instance with the specified total count and optional current count.
+ * @property _currentIndex The mutable state representing the current index.
+ * @property currentIndexState The state representing the current index that can trigger re-composition in compose components.
+ * @constructor Creates a ProgressTracker instance with the specified total count and optional current index.
  */
 class ProgressTracker(
   val totalCount: ULong,
-  currentCount: ULong = 1uL,
+  currentIndex: ULong = 0uL,
 ) {
-  private var _currentCount:MutableState<ULong> = mutableStateOf(currentCount)
+  private var _currentIndex:MutableState<ULong> = mutableStateOf(currentIndex)
 
   /**
-   * Represents the current count state.
+   * Represents the current index state.
    *
-   * This variable provides access to the current count state, which is of type [State].
+   * This variable provides access to the current index state, which is of type [State].
    * It is used for compose component to trigger re-composition when the value in this state is changed.
    *
-   * @return the current count state
+   * @return the current index state
    */
-  val currentCountState: State<ULong>
-    get() = _currentCount
+  val currentIndexState: State<ULong>
+    get() = _currentIndex
 
 
   fun increment() {
-    _currentCount.value += 1uL
+    _currentIndex.value += 1uL
   }
 }
 
@@ -45,7 +45,7 @@ class ProgressTrackerFactory {
 
   @Bean
   fun progressTracker(ioFiles: IOFiles): ProgressTracker {
-    val startLine = maxOf(1uL, ioFiles.startLine)
+    val startIndex = maxOf(1uL, ioFiles.startLine) - 1uL
     var count = 0uL
     val inputTxt = ioFiles.inputTxt
 
@@ -53,7 +53,7 @@ class ProgressTrackerFactory {
     inputTxt.bufferedReader().lineSequence()
       .filter { it.isNotBlank() }
       .forEach { _ -> count++ }
-    return ProgressTracker(count, startLine)
+    return ProgressTracker(count, startIndex)
   }
 }
 

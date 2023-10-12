@@ -14,12 +14,12 @@ import kotlin.io.path.bufferedWriter
 import kotlin.io.path.notExists
 
 class OutputCsvLineWriter(
-  private var currentCount: ULong,
+  private var nextCount: ULong,
   private val csvWriter: BufferedWriter,
 ) {
 
   fun writeSongId(vocadbId: ULong) {
-    val line = "${currentCount++},$vocadbId,"
+    val line = "${nextCount++},$vocadbId,"
     csvWriter.write(line)
     csvWriter.newLine()
     csvWriter.flush()
@@ -37,12 +37,12 @@ class OutputCsvLineWriterFactory {
   @Bean
   fun outputCsvLineWriter(ioFiles: IOFiles): OutputCsvLineWriter {
     val outputFile = ioFiles.outputCSV
-    val startCount = determineStartCount(outputFile)
+    val nextCount = determineStartingNextCount(outputFile)
     val fileWriter = outputFile.bufferedWriter(options = arrayOf(StandardOpenOption.APPEND))
-    return OutputCsvLineWriter(startCount, fileWriter)
+    return OutputCsvLineWriter(nextCount, fileWriter)
   }
 
-  private fun determineStartCount(outputFile: Path): ULong = if (outputFile.notExists()) {
+  private fun determineStartingNextCount(outputFile: Path): ULong = if (outputFile.notExists()) {
     1uL
   } else {
     var count = 0uL
