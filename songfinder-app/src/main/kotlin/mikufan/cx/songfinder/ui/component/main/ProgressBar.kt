@@ -4,6 +4,7 @@ import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.spring
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -21,22 +22,22 @@ import org.springframework.beans.factory.getBean
 
 
 @Composable
-fun ProgressBar() {
+fun ProgressBar(modifier: Modifier = Modifier) {
   val controller = SpringCtx.current.getBean<ProgressController>()
   val currentCount by controller.currentCountState
   val totalCount = remember { controller.totalCount }
-  RealProgressBar(currentCount, totalCount)
+  RealProgressBar(currentCount, totalCount, modifier)
 }
 
 @Composable
-fun RealProgressBar(currentCount: ULong, totalCount: ULong) = RowCentralizedWithSpacing {
+fun RealProgressBar(currentCount: ULong, totalCount: ULong, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
   Text("Progress:")
   BeautifulProgressIndicator((currentCount.toDouble() / totalCount.toDouble()).toFloat())
   Text("$currentCount/$totalCount Songs")
 }
 
 @Composable
-internal fun BeautifulProgressIndicator(progress: Float) {
+internal fun RowScope.BeautifulProgressIndicator(progress: Float, modifier: Modifier = Modifier) {
   val progressAnimated by animateFloatAsState(
     targetValue = progress,
     animationSpec = spring(
@@ -46,7 +47,7 @@ internal fun BeautifulProgressIndicator(progress: Float) {
   )
   LinearProgressIndicator(
     progress = progressAnimated,
-    modifier = Modifier.clip(MaterialTheme.shapes.medium),
+    modifier = modifier.clip(MaterialTheme.shapes.medium).weight(1f),
     strokeCap = StrokeCap.Round,
   )
 }
