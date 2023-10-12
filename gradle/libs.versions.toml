@@ -40,7 +40,8 @@ dep-mockk = "io.mockk:mockk:1.13.8"
 dep-springMockk = "com.ninja-squad:springmockk:4.0.2"
 dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:2.1.0"
 dep-composeSimpleIcons = { module = "br.com.devsrsouza.compose.icons:simple-icons", version.ref = "composeIcons" }
-#dep-composeKamelImage = "media.kamel:kamel-image:0.7.3" # too much deps such as ktor, although it is a powerful library
+dep-composeKamelImage = "media.kamel:kamel-image:0.7.3" # it is a powerful library but contain too much dependencies
+dep-ktorJavaClient = "io.ktor:ktor-client-java:2.3.5" # required by kamel-image
 
 [plugins]
 # plugins that are used in main build but not in precompiled script plugins
