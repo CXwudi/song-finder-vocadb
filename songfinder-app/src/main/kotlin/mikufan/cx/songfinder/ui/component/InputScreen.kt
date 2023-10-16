@@ -120,9 +120,9 @@ private fun StartingLineInputField(onStartingLineValueChange: (ULong) -> Unit) =
   TooltipAreaWithCard(tip = {
     Text(
       "When reading the input TXT file, \n" +
-          "skip a certain number of lines before reading.\n" +
+          "start at the certain line before reading.\n" +
           "This is typically useful if to continue where you left from.\n" +
-          "By default it is 0, which means no skipping.",
+          "By default it is 0, which means start from beginning.",
     )
   }) {
     Text("Read input file from")
