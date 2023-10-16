@@ -53,7 +53,8 @@ class ProgressTrackerFactory {
     inputTxt.bufferedReader().lineSequence()
       .filter { it.isNotBlank() }
       .forEach { _ -> count++ }
-    return ProgressTracker(count, startIndex)
+    val realStartIndex = minOf(startIndex, count)
+    return ProgressTracker(count, realStartIndex)
   }
 }
 
