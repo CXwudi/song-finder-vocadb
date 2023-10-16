@@ -50,10 +50,14 @@ class InputFileLineReaderFactory {
     val inputTxt = ioFile.inputTxt
     log.debug { "Opening input file $inputTxt to get ready for user's progress" }
     val inputFileReader = inputTxt.toFile().bufferedReader()
-    val itr = inputFileReader.lineSequence().iterator()
+    val itr = inputFileReader.lineSequence()
+      .filter { it.isNotBlank() }
+      .iterator()
     if (toSkip > 0uL) {
       for (i in 0uL until toSkip) {
-        itr.next()
+        if (itr.hasNext()) {
+          itr.next()
+        }
       }
     }
 
