@@ -7,11 +7,8 @@ import androidx.compose.ui.Modifier
 
 @Composable
 fun FinishMessagePanel(modifier: Modifier = Modifier) {
-  val bodyLarge = MaterialTheme.typography.bodyLarge
   Text(
     "All Done!",
-    fontSize = bodyLarge.fontSize,
-    fontFamily = bodyLarge.fontFamily,
-    fontWeight = bodyLarge.fontWeight,
+    style = MaterialTheme.typography.titleMedium,
   )
 }

@@ -81,7 +81,7 @@ private fun LoadingScreenHeader() {
   RowCentralizedWithSpacing {
     Text(
       "Please choose your input and output files.",
-      fontSize = MaterialTheme.typography.headlineMedium.fontSize,
+      style = MaterialTheme.typography.headlineMedium
     )
   }
   RowCentralizedWithSpacing {
