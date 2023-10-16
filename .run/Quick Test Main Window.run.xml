@@ -1,8 +1,9 @@
 <component name="ProjectRunConfigurationManager">
-  <configuration default="false" name="Entrypoint Dev" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+  <configuration default="false" name="Quick Test Main Window" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
     <option name="ACTIVE_PROFILES" value="dev" />
     <module name="Song_Finder_powered_by_VocaDB.songfinder-app.main" />
-    <option name="SPRING_BOOT_MAIN_CLASS" value="mikufan.cx.songfinder.EntrypointKt" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="mikufan.cx.songfinder.QuickEntryPointForTest" />
+    <option name="WORKING_DIRECTORY" value="file://songfinder-app" />
     <extension name="coverage">
       <pattern>
         <option name="PATTERN" value="mikufan.cx.songfinder.*" />
