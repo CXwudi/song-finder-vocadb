@@ -23,7 +23,7 @@ fun SearchPanel(modifier: Modifier = Modifier) {
 
 @Composable
 fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
-  var title by remember { mutableStateOf(title) }
+  var inputTitle by remember { mutableStateOf(title) }
   TooltipAreaWithCard(
     tip = {
       Text(
@@ -38,9 +38,9 @@ fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralized
       horizontalArrangement = Arrangement.Start
     ) {
       OutlinedTextField(
-        value = title,
+        value = inputTitle,
         onValueChange = {
-          title = it
+          inputTitle = it
           // TODO: do the search in backend
         },
         label = {
