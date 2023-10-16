@@ -25,6 +25,7 @@ import mikufan.cx.songfinder.ui.theme.spacing
 @Composable
 fun TooltipAreaWithCard(
   delayMillis: Int = 500,
+  modifier: Modifier = Modifier,
   tipModifier: Modifier = Modifier.padding(MaterialTheme.spacing.padding).shadow(4.dp),
   tip: @Composable () -> Unit,
   content: @Composable () -> Unit,
@@ -44,6 +45,7 @@ fun TooltipAreaWithCard(
       offset = DpOffset(x = 10.dp, y = 0.dp),
     ),
     delayMillis = delayMillis,
+    modifier = modifier,
   ) {
     content()
   }
