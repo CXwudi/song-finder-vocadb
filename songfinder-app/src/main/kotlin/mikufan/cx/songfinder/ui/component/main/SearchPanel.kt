@@ -43,13 +43,14 @@ fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralized
 
 @Composable
 internal fun RowScope.searchTextField(title: String) {
+  // TODO: in the near future this state must be moved to the backend
   var inputTitle by remember { mutableStateOf(title) }
 
   OutlinedTextField(
     value = inputTitle,
     onValueChange = {
       inputTitle = it
-      // TODO: do the search in backend
+      // TODO: do the search in backend, sent the inputTitle to the corresponding state
     },
     label = {
       RowCentralizedWithSpacing(
@@ -61,6 +62,6 @@ internal fun RowScope.searchTextField(title: String) {
       }
     },
     maxLines = 1,
-    modifier = Modifier.Companion.weight(1f),
+    modifier = Modifier.weight(1f),
   )
 }

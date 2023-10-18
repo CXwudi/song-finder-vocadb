@@ -16,6 +16,10 @@ class AppLaunchTest : SpringShouldSpec({
     }
   }
 }) {
+  /*
+   * Unfortunately, impossible to extract this common configuration in common code.
+   * So have to copy this in every single spring boot test
+   */
   @TestConfiguration
   class DummyConfig {
     @Bean
