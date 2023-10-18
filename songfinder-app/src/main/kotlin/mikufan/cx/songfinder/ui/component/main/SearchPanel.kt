@@ -8,15 +8,14 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
-import mikufan.cx.songfinder.SpringCtx
 import mikufan.cx.songfinder.backend.controller.IOController
+import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
-import org.springframework.beans.factory.getBean
 
 @Composable
 fun SearchPanel(modifier: Modifier = Modifier) {
-  val ioController = SpringCtx.current.getBean<IOController>()
+  val ioController = getSpringBean<IOController>()
   val titleToSearch by ioController.currentLineState
   RealSearchBar(titleToSearch, modifier)
 }
@@ -27,7 +26,7 @@ fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralized
   TooltipAreaWithCard(
     tip = {
       Text(
-        "Search for the VocaDB record based on the title,\n " +
+        "Search for the VocaDB record based on the title,\n" +
             "using the VocaDB Dump Database."
       )
     },

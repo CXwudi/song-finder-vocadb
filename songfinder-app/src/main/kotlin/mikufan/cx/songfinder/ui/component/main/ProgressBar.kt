@@ -14,16 +14,16 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
-import mikufan.cx.songfinder.SpringCtx
 import mikufan.cx.songfinder.backend.controller.ProgressController
+import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
+import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
-import org.springframework.beans.factory.getBean
 
 
 @Composable
 fun ProgressBar(modifier: Modifier = Modifier) {
-  val controller = SpringCtx.current.getBean<ProgressController>()
+  val controller = getSpringBean<ProgressController>()
   val currentCount by controller.currentCountState
   val totalCount = remember { controller.totalCount }
   RealProgressBar(currentCount, totalCount, modifier)
@@ -31,9 +31,34 @@ fun ProgressBar(modifier: Modifier = Modifier) {
 
 @Composable
 fun RealProgressBar(currentCount: ULong, totalCount: ULong, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
-  Text("Progress:")
-  BeautifulProgressIndicator((currentCount.toDouble() / totalCount.toDouble()).toFloat())
+  TooltipAreaWithCard(
+    tip = {
+      progressTooltipText()
+    },
+  ) {
+    Text("Progress:")
+  }
+  TooltipAreaWithCard(
+    tip = {
+      progressTooltipText()
+    },
+    modifier = modifier.weight(1f),
+  ) {
+    RowCentralizedWithSpacing(modifier = Modifier) {
+      BeautifulProgressIndicator((currentCount.toDouble() / totalCount.toDouble()).toFloat())
+    }
+  }
   Text("$currentCount/$totalCount Songs")
+
+}
+
+@Composable
+private fun progressTooltipText() {
+  Text(
+    "The progress of the current task,\n" +
+        "which is the number of songs that have been processed\n" +
+        "divided by the total number of songs to be processed."
+  )
 }
 
 @Composable
