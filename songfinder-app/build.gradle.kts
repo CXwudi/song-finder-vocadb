@@ -31,7 +31,7 @@ dependencies {
   }
   implementation(libs.dep.kotlinJvmInlineLogging)
   annotationProcessor("org.springframework.boot:spring-boot-configuration-processor")
-  implementation(sbs("jdbc"))
+  implementation(sbs("data-jdbc"))
   runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
   implementation(sbs("json"))
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
