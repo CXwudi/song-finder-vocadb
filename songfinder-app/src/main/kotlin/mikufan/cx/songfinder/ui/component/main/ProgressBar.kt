@@ -24,13 +24,13 @@ import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 @Composable
 fun ProgressBar(modifier: Modifier = Modifier) {
   val controller = getSpringBean<ProgressController>()
-  val currentIndex by controller.currentIndexState
+  val currentCount by controller.currentCountState
   val totalCount = remember { controller.totalCount }
-  RealProgressBar(currentIndex, totalCount, modifier)
+  RealProgressBar(currentCount, totalCount, modifier)
 }
 
 @Composable
-fun RealProgressBar(currentIndex: ULong, totalCount: ULong, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
+fun RealProgressBar(currentCount: ULong, totalCount: ULong, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
   TooltipAreaWithCard(
     tip = {
       progressTooltipText()
@@ -45,10 +45,10 @@ fun RealProgressBar(currentIndex: ULong, totalCount: ULong, modifier: Modifier =
     modifier = modifier.weight(1f),
   ) {
     RowCentralizedWithSpacing(modifier = Modifier) {
-      BeautifulProgressIndicator((currentIndex.toDouble() / totalCount.toDouble()).toFloat())
+      BeautifulProgressIndicator((currentCount.toDouble() / totalCount.toDouble()).toFloat())
     }
   }
-  Text("$currentIndex/$totalCount Songs")
+  Text("$currentCount/$totalCount Songs")
 
 }
 

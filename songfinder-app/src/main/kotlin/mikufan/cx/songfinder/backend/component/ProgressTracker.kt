@@ -1,5 +1,8 @@
 package mikufan.cx.songfinder.backend.component
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.model.IOFiles
 import org.springframework.context.annotation.Bean
@@ -16,15 +19,25 @@ import kotlin.io.path.bufferedReader
  */
 class ProgressTracker(
   val totalCount: ULong,
-  var currentIndex: ULong = 0uL,
+  currentIndex: ULong = 0uL,
 ) {
+  private var _currentIndex:MutableState<ULong> = mutableStateOf(currentIndex)
+
+  /**
+   * Represents the current index state.
+   *
+   * This variable provides access to the current index state, which is of type [State].
+   * It is used for compose component to trigger re-composition when the value in this state is changed.
+   *
+   * @return the current index state
+   */
+  val currentIndexState: State<ULong>
+    get() = _currentIndex
+
 
   fun increment() {
-    currentIndex += 1uL
+    _currentIndex.value += 1uL
   }
-
-  val isFinished
-    get() = currentIndex >= totalCount
 }
 
 @Configuration(proxyBeanMethods = false)
