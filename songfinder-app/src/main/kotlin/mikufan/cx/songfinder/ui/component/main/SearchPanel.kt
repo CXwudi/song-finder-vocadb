@@ -1,6 +1,7 @@
 package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
@@ -22,7 +23,6 @@ fun SearchPanel(modifier: Modifier = Modifier) {
 
 @Composable
 fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
-  var inputTitle by remember { mutableStateOf(title) }
   TooltipAreaWithCard(
     tip = {
       Text(
@@ -36,25 +36,31 @@ fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralized
       modifier = Modifier,
       horizontalArrangement = Arrangement.Start
     ) {
-      OutlinedTextField(
-        value = inputTitle,
-        onValueChange = {
-          inputTitle = it
-          // TODO: do the search in backend
-        },
-        label = {
-          RowCentralizedWithSpacing(
-            modifier = Modifier,
-            horizontalArrangement = Arrangement.SpaceBetween
-          ) {
-            Icon(Icons.Default.Search, contentDescription = "Search Icon")
-            Text("Search Song Title")
-          }
-        },
-        maxLines = 1,
-        modifier = Modifier.weight(1f),
-      )
+      searchTextField(title)
     }
-
   }
+}
+
+@Composable
+internal fun RowScope.searchTextField(title: String) {
+  var inputTitle by remember { mutableStateOf(title) }
+
+  OutlinedTextField(
+    value = inputTitle,
+    onValueChange = {
+      inputTitle = it
+      // TODO: do the search in backend
+    },
+    label = {
+      RowCentralizedWithSpacing(
+        modifier = Modifier,
+        horizontalArrangement = Arrangement.SpaceBetween
+      ) {
+        Icon(Icons.Default.Search, contentDescription = "Search Icon")
+        Text("Search Song Title")
+      }
+    },
+    maxLines = 1,
+    modifier = Modifier.Companion.weight(1f),
+  )
 }
