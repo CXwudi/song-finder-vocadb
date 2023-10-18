@@ -1,5 +1,8 @@
 package mikufan.cx.songfinder.backend.component
 
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
+import androidx.compose.runtime.mutableStateOf
 import jakarta.annotation.PreDestroy
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.model.IOFiles
@@ -9,7 +12,7 @@ import java.io.BufferedReader
 
 /**
  * Handle the file reading of the input file.
- * It tracks the current line and read next line when [readNext] is called.
+ * It tracks the current line and reads next line when [readNext] is called.
  *
  * @property inputFileReader The BufferedReader used for reading lines from the input file.
  * @property itr The iterator over the lines of the input file.
@@ -23,7 +26,12 @@ class InputFileLineReader(
   private val itr: Iterator<String>,
 ) {
 
-  fun readNext(): String? {
+  private var _currentLineState: MutableState<String> = mutableStateOf(readNext() ?: "")
+
+  val currentLineState: State<String>
+    get() = _currentLineState
+
+  internal fun readNext(): String? {
     while (itr.hasNext()) {
       val line = itr.next()
       if (line.isNotBlank()) {
@@ -31,6 +39,10 @@ class InputFileLineReader(
       }
     }
     return null
+  }
+
+  fun readNextToState() {
+    _currentLineState.value = readNext() ?: throw IllegalStateException("No more lines to read")
   }
 
   @PreDestroy
