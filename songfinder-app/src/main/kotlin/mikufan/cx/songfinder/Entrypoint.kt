@@ -9,7 +9,6 @@ import mikufan.cx.songfinder.ui.component.InputScreen
 import mikufan.cx.songfinder.ui.component.LoadingWindow
 import mikufan.cx.songfinder.ui.component.MainScreen
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
-import org.springframework.boot.autoconfigure.SpringBootApplication
 import org.springframework.context.ConfigurableApplicationContext
 import kotlin.io.path.Path
 
@@ -21,16 +20,21 @@ fun main(vararg args: String) = application {
   var targetFiles: IOFiles? by remember { mutableStateOf(null) }
 
   if (targetFiles == null) {
-    Window(
-      onCloseRequest = ::exitApplication,
-      title = "Loading Input and Output Files",
-    ) {
-      MyAppThemeWithSurface {
-        InputScreen(onReady = { targetFiles = it })
-      }
-    }
+    launchInputApplication { targetFiles = it }
   } else {
     launchMainApplication(targetFiles, args)
+  }
+}
+
+@Composable
+private fun ApplicationScope.launchInputApplication(onTargetFilesReady: (IOFiles) -> Unit) {
+  Window(
+    onCloseRequest = ::exitApplication,
+    title = "Loading Input and Output Files",
+  ) {
+    MyAppThemeWithSurface {
+      InputScreen(onReady = onTargetFilesReady)
+    }
   }
 }
 
@@ -57,13 +61,6 @@ private fun ApplicationScope.launchMainApplication(
       }
     }
   }
-}
-
-@SpringBootApplication
-class SongFinderSpringBootApp
-
-val SpringCtx = staticCompositionLocalOf<ConfigurableApplicationContext> {
-  error("Spring Context is not initialized yet")
 }
 
 object QuickEntryPointForTest {
