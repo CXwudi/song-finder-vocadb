@@ -39,10 +39,3 @@ enum class SongType {
   Illustration,
   Other
 }
-
-enum class NameLanguage {
-  Unspecified,
-  Japanese,
-  Romaji,
-  English
-}
