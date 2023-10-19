@@ -1,5 +1,7 @@
-package mikufan.cx.songfinder.backend.db.entity
+package mikufan.cx.songfinder.backend.db.projection
 
+import mikufan.cx.songfinder.backend.db.entity.NameLanguage
+import mikufan.cx.songfinder.backend.db.entity.SongType
 import java.time.LocalDateTime
 
 data class SongWithNames(
