@@ -9,6 +9,15 @@ class SongSearchService(
 ) {
 
   fun triggerSearch(title: String) {
+    // search step
+    // 1. search songs by title
 
+    // 2. find the default name of each song
+
+    // 3. search all PVs
+
+    // 4. search all artists
+
+    // 5. find all default names of each artist
   }
 }
