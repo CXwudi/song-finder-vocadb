@@ -7,6 +7,5 @@ spring:
 
 logging:
   level:
-    mikufan:
-      cx:
-        songfinder: debug
+    mikufan.cx.songfinder: debug
+    org.springframework.jdbc.core: debug
