@@ -1,5 +1,6 @@
 package mikufan.cx.songfinder.backend.component
 
+import io.kotest.assertions.throwables.shouldThrow
 import io.kotest.core.spec.style.ShouldSpec
 import io.kotest.matchers.shouldBe
 import io.mockk.mockk
@@ -18,9 +19,10 @@ class InputFileLineReaderTest : ShouldSpec({
           outputCSV = mockk()
         )
       ).apply {
-        readNext() shouldBe "dummy2"
-        readNext() shouldBe "dummy3"
-        readNext() shouldBe null
+        currentLineState.value shouldBe "dummy2"
+        readNextToState()
+        currentLineState.value shouldBe "dummy3"
+        shouldThrow<IllegalStateException> { readNextToState() }
       }
     }
   }

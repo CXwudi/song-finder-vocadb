@@ -31,7 +31,11 @@ class InputFileLineReader(
   val currentLineState: State<String>
     get() = _currentLineState
 
-  internal fun readNext(): String? {
+  fun readNextToState() {
+    _currentLineState.value = readNext() ?: throw IllegalStateException("No more lines to read")
+  }
+
+  private fun readNext(): String? {
     while (itr.hasNext()) {
       val line = itr.next()
       if (line.isNotBlank()) {
@@ -39,10 +43,6 @@ class InputFileLineReader(
       }
     }
     return null
-  }
-
-  fun readNextToState() {
-    _currentLineState.value = readNext() ?: throw IllegalStateException("No more lines to read")
   }
 
   @PreDestroy
