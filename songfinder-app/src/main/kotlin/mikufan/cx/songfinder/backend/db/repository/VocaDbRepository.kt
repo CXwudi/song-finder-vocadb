@@ -6,4 +6,4 @@ import org.springframework.data.repository.NoRepositoryBean
 import org.springframework.data.repository.PagingAndSortingRepository
 
 @NoRepositoryBean
-interface VocaDbCoroutineRepository<T, ID> : CrudRepository<T, ID>, ListCrudRepository<T, ID>, PagingAndSortingRepository<T, ID>
+interface VocaDbRepository<T, ID> : CrudRepository<T, ID>, ListCrudRepository<T, ID>, PagingAndSortingRepository<T, ID>
