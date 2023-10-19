@@ -14,7 +14,7 @@ data class Pv(
   val name: String,
   val pvId: String,
   val pvType: PvType,
-  @Column("pv_service")
+  @Column("service")
   val pvService: PvService,
   val extendedMetadata: String?,
   val publishDate: LocalDateTime?,
