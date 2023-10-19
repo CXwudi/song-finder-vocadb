@@ -16,8 +16,8 @@ class SongNameRepositoryTest(
 ) : SpringShouldSpec({
   context("SongNameRepository") {
     should("find all names by ID") {
-      val names = songNameRepository.findAllBySongId(205091)
-      println("names = $names")
+      val names = songNameRepository.findAllBySongIdInAndLanguageIn(listOf(205091))
+      println("names = ${names.joinToString("\n", "[\n", "\n]")} ")
       names.size shouldBe 3
       names.first { it.language == NameLanguage.Romaji }.name shouldBe "Kie Yuku Omoi"
       names.first { it.language == NameLanguage.Japanese}.name shouldBe "消えゆく想い"
