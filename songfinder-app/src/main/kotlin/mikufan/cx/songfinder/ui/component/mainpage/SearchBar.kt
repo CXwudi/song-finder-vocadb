@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.ui.component.main
+package mikufan.cx.songfinder.ui.component.mainpage
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.RowScope
@@ -7,22 +7,40 @@ import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
-import mikufan.cx.songfinder.backend.controller.IOController
+import mikufan.cx.songfinder.backend.controller.mainpage.SearchBarController
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 
 @Composable
-fun SearchPanel(modifier: Modifier = Modifier) {
-  val ioController = getSpringBean<IOController>()
-  val titleToSearch by ioController.currentLineState
-  RealSearchBar(titleToSearch, modifier)
+fun SearchBar(modifier: Modifier = Modifier) {
+  val controller = getSpringBean<SearchBarController>()
+  val inputState = controller.currentInputState
+  val searchFunc = controller::search
+  val model = SearchBarModel(
+    inputState,
+    controller::setInput,
+  )
+  DoSearch(inputState.value, searchFunc)
+  RealSearchBar(model, modifier)
 }
 
 @Composable
-fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
+fun DoSearch(value: String, searchFunc: suspend () -> Unit) {
+  LaunchedEffect(value) {
+    searchFunc()
+  }
+}
+
+@Composable
+fun RealSearchBar(
+  model: SearchBarModel,
+  modifier: Modifier = Modifier
+) = RowCentralizedWithSpacing {
   TooltipAreaWithCard(
     tip = {
       Text(
@@ -36,21 +54,20 @@ fun RealSearchBar(title: String, modifier: Modifier = Modifier) = RowCentralized
       modifier = Modifier,
       horizontalArrangement = Arrangement.Start
     ) {
-      searchTextField(title)
+      searchTextField(model)
     }
   }
 }
 
 @Composable
-internal fun RowScope.searchTextField(title: String) {
-  // TODO: in the near future this state must be moved to the backend
-  var inputTitle by remember { mutableStateOf(title) }
-
+internal fun RowScope.searchTextField(
+  model: SearchBarModel
+) {
+  val (currentInputState, onValueChange) = model
   OutlinedTextField(
-    value = inputTitle,
+    value = currentInputState.value,
     onValueChange = {
-      inputTitle = it
-      // TODO: do the search in backend, sent the inputTitle to the corresponding state
+      onValueChange(it)
     },
     label = {
       RowCentralizedWithSpacing(
@@ -65,3 +82,8 @@ internal fun RowScope.searchTextField(title: String) {
     modifier = Modifier.weight(1f),
   )
 }
+
+data class SearchBarModel(
+  val currentInputState: State<String>,
+  val onValueChange: (newInput: String) -> Unit,
+)
