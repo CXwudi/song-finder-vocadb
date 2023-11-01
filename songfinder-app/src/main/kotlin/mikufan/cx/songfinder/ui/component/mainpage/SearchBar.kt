@@ -11,6 +11,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.ui.Modifier
+import kotlinx.coroutines.delay
 import mikufan.cx.songfinder.backend.controller.mainpage.SearchBarController
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
@@ -32,6 +33,7 @@ fun SearchBar(modifier: Modifier = Modifier) {
 @Composable
 fun DoSearch(value: String, searchFunc: suspend () -> Unit) {
   LaunchedEffect(value) {
+    delay(100) // still do a small delay waiting for user input
     searchFunc()
   }
 }

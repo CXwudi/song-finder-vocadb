@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 @Table("songs")
 data class Song(
   @Id
-  val id: Int?,
+  val id: Long,
   val lengthSeconds: Int,
   val maxMilliBpm: Int?,
   val minMilliBpm: Int?,

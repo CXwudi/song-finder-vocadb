@@ -1,6 +1,7 @@
 package mikufan.cx.songfinder.backend.model
 
 import mikufan.cx.songfinder.backend.db.entity.PvService
+import mikufan.cx.songfinder.backend.db.entity.PvType
 import mikufan.cx.songfinder.backend.db.entity.SongType
 import java.time.LocalDateTime
 
@@ -39,5 +40,6 @@ data class SongSearchResult(
 
 data class PVInfo(
   val id: String,
-  val pvService: PvService
+  val pvService: PvService,
+  val pvType: PvType
 )

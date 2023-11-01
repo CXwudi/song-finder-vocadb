@@ -37,5 +37,7 @@ enum class PvService {
   File,
   LocalFile,
   Creofuga,
-  Bandcamp
+  Bandcamp;
+
+  fun isOnlineService() = this != File && this != LocalFile
 }

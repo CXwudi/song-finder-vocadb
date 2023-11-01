@@ -18,6 +18,16 @@ class SearchBarController(
   }
 
   suspend fun search() {
-    songSearchService.search(searchInputStateModel.currentInputState.value)
+    try {
+      val title = searchInputStateModel.currentInputState.value
+      if (title.isNotEmpty()) {
+        val results = songSearchService.search(title)
+        println(results.joinToString("\n"))
+      } else {
+        // TODO: do something
+      }
+    } catch (e: Exception) {
+      println(e)
+    }
   }
 }
