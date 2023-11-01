@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.backend.component
+package mikufan.cx.songfinder.backend.service
 
 import io.kotest.assertions.fail
 import io.kotest.core.spec.style.ShouldSpec

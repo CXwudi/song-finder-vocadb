@@ -3,16 +3,16 @@ package mikufan.cx.songfinder.ui.component
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
-import mikufan.cx.songfinder.SpringCtx
-import mikufan.cx.songfinder.backend.controller.ProgressController
+import androidx.compose.runtime.mutableStateOf
+import mikufan.cx.songfinder.backend.controller.MainScreenController
+import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
-import mikufan.cx.songfinder.ui.component.main.*
+import mikufan.cx.songfinder.ui.component.mainpage.*
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
-import org.springframework.beans.factory.getBean
 
 @Composable
 fun MainScreen() {
-  val finished = SpringCtx.current.getBean<ProgressController>().isFinished
+  val finished = getSpringBean<MainScreenController>().isFinished
   RealMainScreen(finished)
 }
 
@@ -24,7 +24,7 @@ fun RealMainScreen(isAllFinished: Boolean) = ColumnCentralizedWithSpacing {
   if (isAllFinished) {
     FinishMessagePanel()
   } else {
-    SearchPanel()
+    SearchBar()
   }
 
 }
@@ -37,7 +37,11 @@ fun PreviewMainScreen() {
     ColumnCentralizedWithSpacing {
       RealProgressBar(39u, 100u)
       Divider()
-      RealSearchBar("DECO*27 - ヒバナ (Hibana) feat. Hatsune Miku")
+      RealSearchBar(
+        SearchBarModel(
+          mutableStateOf(""),
+        ) {}
+      )
     }
   }
 }

@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.backend.component
+package mikufan.cx.songfinder.backend.service
 
 import com.fasterxml.jackson.dataformat.csv.CsvMapper
 import com.fasterxml.jackson.dataformat.csv.CsvParser

@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.ui.component.main
+package mikufan.cx.songfinder.ui.component.mainpage
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
@@ -14,7 +14,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
-import mikufan.cx.songfinder.backend.controller.ProgressController
+import mikufan.cx.songfinder.backend.controller.mainpage.ProgressBarController
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
@@ -23,8 +23,8 @@ import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 
 @Composable
 fun ProgressBar(modifier: Modifier = Modifier) {
-  val controller = getSpringBean<ProgressController>()
-  val currentCount by controller.currentCountState
+  val controller = getSpringBean<ProgressBarController>()
+  val currentCount by controller.currentIndexState
   val totalCount = remember { controller.totalCount }
   RealProgressBar(currentCount, totalCount, modifier)
 }
