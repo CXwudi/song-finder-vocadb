@@ -14,7 +14,7 @@
 [versions]
 # java version is defined in my.jvm-base.gradle.kts
 # lib versions
-kotlin = "1.9.10" # !important, the version is upbounded by each compose multiplatform version
+kotlin = "1.9.20" # !important, the version is upbounded by each compose multiplatform version
 springBoot = "3.1.5"
 composeIcons = "1.1.0"
 
@@ -29,7 +29,7 @@ bom-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.7.3"
 # plugin dependencies (for both projects and settings), naming convention: s/p + plugin-<name>
 pluginDep-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 pluginDep-springBoot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot" }
-pluginDep-composeJb = "org.jetbrains.compose:compose-gradle-plugin:1.5.3"
+pluginDep-composeJb = "org.jetbrains.compose:compose-gradle-plugin:1.5.10"
 # "io.spring.gradle:dependency-management-plugin" is unneeded because we prefer Gradle's native dependency management
 settingDep-gradleEnterprise = "com.gradle.enterprise:com.gradle.enterprise.gradle.plugin:3.15.1"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.7.0"
