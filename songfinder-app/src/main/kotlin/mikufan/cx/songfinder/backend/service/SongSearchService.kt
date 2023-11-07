@@ -1,6 +1,7 @@
 package mikufan.cx.songfinder.backend.service
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mikufan.cx.inlinelogging.KInlineLogging
@@ -11,6 +12,24 @@ import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
 import org.springframework.stereotype.Service
 
+/**
+ * Typealias representing a unique identifier for a song.
+ */
+private typealias SongId = Long
+/**
+ * Typealias representing the ID of an artist.
+ */
+private typealias ArtistId = Long
+
+/**
+ * Service class that provides functionality to search for songs.
+ *
+ * @property songRepo The repository for songs.
+ * @property songNameRepo The repository for song names.
+ * @property pvRepo The repository for PVs.
+ * @property artistRepo The repository for artists.
+ * @property artistNameRepo The repository for artist names.
+ */
 @Service
 class SongSearchService(
   private val songRepo: SongRepository,
@@ -20,112 +39,175 @@ class SongSearchService(
   private val artistNameRepo: ArtistNameRepository,
 ) {
 
+  companion object {
+    const val UNKNOWN = "Unknown"
+  }
+
+  /**
+   * Searches for songs based on the given title.
+   *
+   * @param title The title to search for.
+   * @return A list of SongSearchResult objects matching the search criteria.
+   */
   suspend fun search(title: String): List<SongSearchResult> = withContext(Dispatchers.IO) {
     log.info { "Searching '$title'" }
-    // search step
+    // search steps:
     // 1. search songs by title
     val songs = songRepo.findByAllPossibleNamesContain(title)
+    log.debug { "found ${songs.size} entries" }
     if (songs.isEmpty()) {
       log.info { "No song found for '$title'" }
       return@withContext emptyList<SongSearchResult>()
     }
     val songIds = songs.map { it.id }
-    val songIdToSong: Map<Long, Song> = songs.associateBy { it.id }
-    log.debug { "found ${songs.size} entries" }
-    val songIdToBuilders: Map<Long, SongSearchResult.Builder> = songs.associate {
-      it.id to SongSearchResult.Builder().type(it.songType).publishDate(it.publishDate)
-    }
-    // 2. find the default name of each song
-    val songIdToBuildersThatNeedToCheckUnspecifiedName = fillNamesAndGetThoseThatNeedMoreChecks(songs, songIdToBuilders)
+    val songIdToSong: Map<SongId, Song> = songs.associateBy { it.id }
 
-    val songIdToUnspecifiedNames: Map<Long, List<SongName>> = if (songIdToBuildersThatNeedToCheckUnspecifiedName.isNotEmpty()) {
-      songNameRepo.findAllBySongIdInAndLanguageIn(
-        songIdToBuildersThatNeedToCheckUnspecifiedName.keys.toList(),
-        listOf(NameLanguage.Unspecified),
-      )
+    // 2. find the name of each song with unspecified name
+    val songIdsOfUnspecifiedName = songs
+      .filter { it.defaultNameLanguage == NameLanguage.Unspecified }
+      .map { it.id }
+    log.debug { "${songIdsOfUnspecifiedName.size} songs has unspecified names, requires additional checking" }
+    val songIdOfUnspecifiedNameToNames: Map<SongId, List<SongName>> =
+      songNameRepo.findAllBySongIdInAndLanguageIn(songIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
         .groupBy { it.songId }
-    } else {
-      emptyMap()
-    }
-    val fillNameTask = launch {
-      fillRestOfNames(songIdToBuildersThatNeedToCheckUnspecifiedName, songIdToUnspecifiedNames, songIdToSong)
-    }
 
-    log.debug { "filled all song names" }
     // 3. search all PVs
-    val songIdToPvs = pvRepo.findAllBySongIdIn(songIds)
+    val songIdToPv: Map<SongId, List<Pv>> = pvRepo.findAllBySongIdIn(songIds)
       .groupBy { it.songId }
-    val fillPvTask = launch { fillPvs(songIdToBuilders, songIdToPvs) }
-    log.debug { "filled all PVs" }
+    log.debug { "found ${songIdToPv} PVs" }
+
     // 4. search all artists
-    val artistsBySong: List<ArtistInSong> = artistRepo.findAllBySongIdsIn(songIds)
-    // 5. find all default names of each artist
-    val artistIdToNames: Map<Long, List<ArtistName>> =
-      artistNameRepo.findAllByArtistIdInAndLanguageIn(artistsBySong.mapTo(mutableSetOf()) { it.id }.toList())
+    val artistsInSongs = artistRepo.findAllBySongIdsIn(songIds)
+    val songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>> = artistsInSongs.groupBy { it.songId }
+    log.debug { "found ${artistsInSongs.size} artists" }
+
+    // 5. find the name of each artist with unspecified name
+    val artistIdsOfUnspecifiedName = artistsInSongs
+      .filter { it.defaultNameLanguage == NameLanguage.Unspecified }
+      .map { it.id }
+    val artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>> =
+      artistNameRepo.findAllByArtistIdInAndLanguageIn(artistIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
         .groupBy { it.artistId }
 
+    // 6. concurrently assemble the result, with order preserving
+    withContext(Dispatchers.Default) {
+      songs.map { song ->
+        async {
+          SongSearchResult.Builder().apply {
+            id(song.id)
+            val titleTask = launch { title(findDefaultLanguageTitle(song, songIdOfUnspecifiedNameToNames)) }
+            type(song.songType)
+            publishDate(song.publishDate)
+            val pvsTask = launch { setPvs(fillPvs(song.id, songIdToPv)) }
+            val vocalsTask = launch { setVocals(fillVocals(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames)) }
 
-    log.info { "Found '$title'" }
-    fillNameTask.join()
-    fillPvTask.join()
-    songIdToBuilders.values.map { it.build() }
+            titleTask.join()
+            pvsTask.join()
+            vocalsTask.join()
+          }.build()
+        }
+      }.map { it.await() }
+    }
   }
 
-  private fun fillRestOfNames(
-    songIdToBuildersThatNeedCheck: Map<Long, SongSearchResult.Builder>,
-    songIdToNames: Map<Long, List<SongName>>,
-    songById: Map<Long, Song>
-  ) {
-    val songIdToUnspecifiedName = songIdToNames.mapValues { (_, names) ->
-      names.filter { it.language == NameLanguage.Unspecified }
-    }
-
-    for ((songId, builder) in songIdToBuildersThatNeedCheck) {
-      val names = songIdToUnspecifiedName[songId]
+  /**
+   * Finds the default language title for a given song.
+   *
+   * @param song The song for which to find the default title.
+   * @param songIdOfUnspecifiedNameToNames A map containing the song ID as key and a list of song names as value.
+   * Only those with default name to unspecified names are included.
+   * @return The default language title for the song.
+   */
+  private fun findDefaultLanguageTitle(
+    song: Song,
+    songIdOfUnspecifiedNameToNames: Map<SongId, List<SongName>>
+  ): String = when (song.defaultNameLanguage) {
+    NameLanguage.Japanese -> song.japaneseName
+    NameLanguage.English -> song.englishName
+    NameLanguage.Romaji -> song.romajiName
+    NameLanguage.Unspecified -> {
+      val names = songIdOfUnspecifiedNameToNames[song.id]
       if (names.isNullOrEmpty()) {
-        log.warn { "No default name found for song $songId, will use Japanese Name as default" }
-        builder.title(
-          songById[songId]?.japaneseName
-            ?: throw IllegalStateException("Should not found no result of song ID $songId here")
-        )
+        log.warn { "No default name found for song ${song.id}, will use Japanese Name '${song.japaneseName}' as default" }
+        song.japaneseName
       } else {
-        builder.title(names.first().name)
+        names.first().name
       }
     }
   }
 
-  private fun fillNamesAndGetThoseThatNeedMoreChecks(
-    songs: List<Song>,
-    songIdToBuilder: Map<Long, SongSearchResult.Builder>,
-  ): Map<Long, SongSearchResult.Builder> = buildMap {
-    for (song in songs) {
-      val builder = songIdToBuilder[song.id] ?: throw IllegalStateException(
-        "Should not found no result of song ID ${song.id} here"
-      )
-      when (song.defaultNameLanguage) {
-        NameLanguage.Japanese -> builder.title(song.japaneseName)
-        NameLanguage.English -> builder.title(song.englishName)
-        NameLanguage.Romaji -> builder.title(song.romajiName)
-        else -> {
-          put(song.id, builder)
-        }
-      }
-    }
-  }
-
+  /**
+   * Fills the PVs for a given song ID using a map of song IDs to PVs.
+   *
+   * @param songId The ID of the song for which to retrieve the PVs.
+   * @param songIdToPvs A map of song IDs to lists of PVs.
+   * @return A list of PVInfo objects representing the PVs for the given song ID if found; otherwise, an empty list.
+   */
   private fun fillPvs(
-    resultBuilders: Map<Long, SongSearchResult.Builder>,
-    songIdToPvs: Map<Long, List<Pv>>
-  ) {
-    for ((songId, pvs) in songIdToPvs) {
-      val builder = resultBuilders[songId] ?: throw IllegalStateException(
-        "Should not found no result of song ID $songId here"
-      )
-      for (pv in pvs) {
-        if (pv.pvService.isOnlineService()) {
-          builder.addPV(PVInfo(pv.pvId, pv.pvService, pv.pvType))
+    songId: SongId,
+    songIdToPvs: Map<SongId, List<Pv>>
+  ): List<PVInfo> = songIdToPvs[songId]?.let { pvs ->
+    pvs.filter { it.pvService.isOnlineService() }
+      .map { PVInfo(it.pvId, it.pvService, it.pvType) }
+  } ?: emptyList<PVInfo>().also {
+    log.warn { "No PV found for song $songId" }
+  }
+
+  /**
+   * Extracts the vocals (virtual singers) for a given song ID.
+   *
+   * @param id The ID of the song.
+   * @param songIdToArtistsInSongs A map that contains song IDs as keys and corresponding artist lists as values.
+   * @param artistIdWithUnspecifiedNameToNames A map that contains artist IDs with unspecified names as keys and corresponding artist names as values.
+   * @return A list of strings representing the vocals for the given song ID.
+   * @throws IllegalStateException if no result is found for the given song ID.
+   */
+  private fun fillVocals(
+    id: SongId,
+    songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>>,
+    artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>>
+  ): List<String> {
+    val artistsInSong = songIdToArtistsInSongs[id]
+      ?: throw IllegalStateException("Very unlikely to found no artists of song ID $id here")
+    return artistsInSong
+      .filter {
+        it.artistType.isVirtualSinger() || it.roles.any { role -> role in setOf(ArtistRole.Vocalist) }
+            || it.artistType in setOf(ArtistType.Vocalist, ArtistType.OtherVocalist)
+      }.map { artistInSong ->
+        val name = when (artistInSong.defaultNameLanguage) {
+          NameLanguage.Japanese -> artistInSong.japaneseName
+          NameLanguage.English -> artistInSong.englishName
+          NameLanguage.Romaji -> artistInSong.romajiName
+          NameLanguage.Unspecified -> {
+            val names = artistIdWithUnspecifiedNameToNames[artistInSong.id]
+            if (names.isNullOrEmpty()) {
+              log.warn { "No default name found for artist ${artistInSong.id}, will use Japanese Name '${artistInSong.japaneseName}' as default" }
+              artistInSong.japaneseName
+            } else {
+              names.first().name
+            }
+          }
         }
+        removeUnknown(name)
       }
+  }
+
+  /**
+   * Removes the occurrences of the word 'Unknown', 'unknown' and '()' from the given artist string.
+   *
+   * @param artistStr the artist string to remove the occurrences from
+   * @return the modified artist string with the occurrences removed
+   */
+  private fun removeUnknown(artistStr: String): String {
+    return if (artistStr.lowercase().contains("${UNKNOWN.lowercase()} producer")) {
+      artistStr
+    } else {
+      artistStr
+        .replace(UNKNOWN.lowercase(), "")
+        .replace(UNKNOWN.uppercase(), "")
+        .replace(UNKNOWN, "")
+        .replace(" ()", "")
+        .replace("()", "")
     }
   }
 }

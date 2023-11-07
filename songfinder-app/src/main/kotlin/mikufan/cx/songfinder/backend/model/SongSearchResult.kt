@@ -6,6 +6,7 @@ import mikufan.cx.songfinder.backend.db.entity.SongType
 import java.time.LocalDateTime
 
 data class SongSearchResult(
+  val id: Long,
   val title: String,
   val type: SongType,
   val vocals: List<String>,
@@ -15,6 +16,7 @@ data class SongSearchResult(
 ) {
 
   class Builder {
+    private var id: Long = -1
     private lateinit var title: String
     private lateinit var type: SongType
     private var vocals: MutableList<String> = ArrayList()
@@ -22,6 +24,7 @@ data class SongSearchResult(
     private var publishDate: LocalDateTime? = null
     private var pvs: MutableList<PVInfo> = ArrayList()
 
+    fun id(id: Long) = apply { this.id = id }
     fun title(title: String) = apply { this.title = title }
     fun type(type: SongType) = apply { this.type = type }
     fun addVocal(vocal: String) = apply { this.vocals.add(vocal) }
@@ -33,7 +36,7 @@ data class SongSearchResult(
     fun setPvs(pvs: List<PVInfo>) = apply { this.pvs = pvs.toMutableList() }
 
     fun build(): SongSearchResult {
-      return SongSearchResult(title, type, vocals, producers, publishDate, pvs)
+      return SongSearchResult(id, title, type, vocals, producers, publishDate, pvs)
     }
   }
 }
