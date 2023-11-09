@@ -5,6 +5,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import mikufan.cx.songfinder.backend.controller.MainScreenController
+import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.component.mainpage.*
@@ -40,7 +41,9 @@ fun PreviewMainScreen() {
       RealSearchBar(
         SearchBarModel(
           mutableStateOf(""),
-        ) {}
+          mutableStateOf(SearchStatus.Done),
+          {},
+        )
       )
     }
   }

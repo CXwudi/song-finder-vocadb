@@ -3,16 +3,20 @@ package mikufan.cx.songfinder.ui.component.mainpage
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.SearchBarController
+import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
@@ -21,18 +25,21 @@ import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 fun SearchBar(modifier: Modifier = Modifier) {
   val controller = getSpringBean<SearchBarController>()
   val inputState = controller.currentInputState
+  val searchStatusState = controller.currentSearchStatusState
   val searchFunc = controller::search
   val model = SearchBarModel(
     inputState,
+    searchStatusState,
     controller::setInput,
   )
-  DoSearch(inputState.value, searchFunc)
+  DoSearchComposition(inputState.value, searchFunc)
   RealSearchBar(model, modifier)
 }
 
 @Composable
-fun DoSearch(value: String, searchFunc: suspend () -> Unit) {
-  LaunchedEffect(value) {
+fun DoSearchComposition(value: String, searchFunc: suspend () -> Unit) {
+  val scope = rememberCoroutineScope()
+  scope.launch {
     delay(100) // still do a small delay waiting for user input
     searchFunc()
   }
@@ -59,13 +66,14 @@ fun RealSearchBar(
       searchTextField(model)
     }
   }
+  SearchProgressIndicator(model.searchStatusState.value)
 }
 
 @Composable
 internal fun RowScope.searchTextField(
   model: SearchBarModel
 ) {
-  val (currentInputState, onValueChange) = model
+  val (currentInputState, _, onValueChange) = model
   OutlinedTextField(
     value = currentInputState.value,
     onValueChange = {
@@ -85,7 +93,20 @@ internal fun RowScope.searchTextField(
   )
 }
 
+@Composable
+fun SearchProgressIndicator(status: SearchStatus) {
+  when (status) {
+    SearchStatus.Searching -> {
+      CircularProgressIndicator()
+    }
+    SearchStatus.Done -> {
+      Icon(Icons.Default.Done, contentDescription = "Search is Done")
+    }
+  }
+}
+
 data class SearchBarModel(
   val currentInputState: State<String>,
+  val searchStatusState: State<SearchStatus>,
   val onValueChange: (newInput: String) -> Unit,
 )
