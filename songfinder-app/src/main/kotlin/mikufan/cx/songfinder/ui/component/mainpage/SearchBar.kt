@@ -10,11 +10,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import kotlinx.coroutines.delay
-import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.SearchBarController
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
@@ -38,8 +37,11 @@ fun SearchBar(modifier: Modifier = Modifier) {
 
 @Composable
 fun DoSearchComposition(value: String, searchFunc: suspend () -> Unit) {
-  val scope = rememberCoroutineScope()
-  scope.launch {
+//  val scope = rememberCoroutineScope()
+  LaunchedEffect(value) {
+//      println("start $value")
+//      delay(1300)
+//      println("end $value")
     delay(100) // still do a small delay waiting for user input
     searchFunc()
   }
@@ -63,14 +65,14 @@ fun RealSearchBar(
       modifier = Modifier,
       horizontalArrangement = Arrangement.Start
     ) {
-      searchTextField(model)
+      SearchTextField(model)
     }
   }
   SearchProgressIndicator(model.searchStatusState.value)
 }
 
 @Composable
-internal fun RowScope.searchTextField(
+internal fun RowScope.SearchTextField(
   model: SearchBarModel
 ) {
   val (currentInputState, _, onValueChange) = model
@@ -97,11 +99,33 @@ internal fun RowScope.searchTextField(
 fun SearchProgressIndicator(status: SearchStatus) {
   when (status) {
     SearchStatus.Searching -> {
-      CircularProgressIndicator()
+      OnSearchingIndicator()
     }
     SearchStatus.Done -> {
-      Icon(Icons.Default.Done, contentDescription = "Search is Done")
+      IsDoneIndicator()
     }
+  }
+}
+
+@Composable
+fun OnSearchingIndicator() {
+  TooltipAreaWithCard(
+    tip = {
+      Text("Searching for the song, please wait...")
+    },
+  ) {
+    CircularProgressIndicator()
+  }
+}
+
+@Composable
+fun IsDoneIndicator() {
+  TooltipAreaWithCard(
+    tip = {
+      Text("Search is done")
+    },
+  ) {
+    Icon(Icons.Default.Done, contentDescription = "Search is Done")
   }
 }
 
