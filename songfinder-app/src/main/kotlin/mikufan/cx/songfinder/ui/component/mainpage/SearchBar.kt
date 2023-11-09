@@ -55,8 +55,10 @@ fun RealSearchBar(
   TooltipAreaWithCard(
     tip = {
       Text(
-        "Search for the VocaDB record based on the title,\n" +
-            "using the VocaDB Dump Database."
+        """
+          Search for the VocaDB record based on the title,
+          using the VocaDB Dump Database.
+        """.trimIndent()
       )
     },
     modifier = modifier.weight(1f),
@@ -101,6 +103,7 @@ fun SearchProgressIndicator(status: SearchStatus) {
     SearchStatus.Searching -> {
       OnSearchingIndicator()
     }
+
     SearchStatus.Done -> {
       IsDoneIndicator()
     }
