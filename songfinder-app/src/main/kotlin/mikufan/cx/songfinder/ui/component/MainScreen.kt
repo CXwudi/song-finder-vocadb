@@ -3,6 +3,7 @@ package mikufan.cx.songfinder.ui.component
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import mikufan.cx.songfinder.backend.controller.MainScreenController
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
@@ -13,21 +14,23 @@ import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 
 @Composable
 fun MainScreen() {
-  val finished = getSpringBean<MainScreenController>().isFinished
-  RealMainScreen(finished)
+  val finishedState = getSpringBean<MainScreenController>().isFinishedState
+  RealMainScreen(finishedState)
 }
 
 
 @Composable
-fun RealMainScreen(isAllFinished: Boolean) = ColumnCentralizedWithSpacing {
+fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnCentralizedWithSpacing {
   ProgressBar()
   Divider()
-  if (isAllFinished) {
-    FinishMessagePanel()
-  } else {
-    SearchBar()
-  }
+  RestOfPart(isAllFinished.value)
+}
 
+@Composable
+fun RestOfPart(isAllFinished: Boolean) = if (isAllFinished) {
+  FinishMessagePanel()
+} else {
+  SearchBar()
 }
 
 
