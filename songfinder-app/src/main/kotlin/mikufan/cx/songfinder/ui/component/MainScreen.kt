@@ -31,6 +31,7 @@ fun RestOfPart(isAllFinished: Boolean) = if (isAllFinished) {
   FinishMessagePanel()
 } else {
   SearchBar()
+  ResultPanel()
 }
 
 
