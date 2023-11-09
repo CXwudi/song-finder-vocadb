@@ -60,7 +60,6 @@ class SongSearchService(
       return@withContext emptyList<SongSearchResult>()
     }
     val songIds = songs.map { it.id }
-    val songIdToSong: Map<SongId, Song> = songs.associateBy { it.id }
 
     // 2. find the name of each song with unspecified name
     val songIdsOfUnspecifiedName = songs
@@ -100,15 +99,19 @@ class SongSearchService(
             publishDate(song.publishDate)
             val pvsTask = launch { setPvs(fillPvs(song.id, songIdToPv)) }
             val vocalsTask = launch { setVocals(fillVocals(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames)) }
-
+            val producerTask = launch { setProducers(fillProducers(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames)) }
             titleTask.join()
             pvsTask.join()
             vocalsTask.join()
+            producerTask.join()
           }.build()
         }
       }.map { it.await() }
+    }.also {
+      log.info { "Found ${it.size} results for '$title'" }
     }
   }
+
 
   /**
    * Finds the default language title for a given song.
@@ -166,14 +169,52 @@ class SongSearchService(
     id: SongId,
     songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>>,
     artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>>
+  ): List<String> = fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
+    it.artistType.isVirtualSinger() || it.artistType in setOf(ArtistType.Vocalist, ArtistType.OtherVocalist)
+        || it.roles.any { role -> role in setOf(ArtistRole.Vocalist) }
+  }
+
+
+  /**
+   * Fills the list of producers for a given ID.
+   *
+   * @param id The ID of the entity to fill the producers for.
+   * @param songIdToArtistsInSongs A map of song IDs to lists of artists in songs.
+   * @param artistIdWithUnspecifiedNameToNames A map of artist IDs with unspecified names to lists of artist names.
+   * @return A list of producers for the given ID.
+   */
+  private fun fillProducers(
+    id: Long,
+    songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>>,
+    artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>>
+  ): List<String> = fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
+    it.artistType.isSongProducer() || it.artistType in setOf(ArtistType.OtherGroup, ArtistType.OtherIndividual)
+        || it.roles.any { role -> role.isProducerRole() }
+  }
+
+  /**
+   * Fills a list of artist names based on the given parameters.
+   *
+   * @param id The ID of the song for which to fill the artist names.
+   * @param songIdToArtistsInSongs A map that contains the mapping of song IDs to a list of artists for each song.
+   * @param artistIdWithUnspecifiedNameToNames A map that contains the mapping of artist IDs with unspecified names to
+   * a list of names for each artist.
+   * @param filter A lambda function used to filter the artist list.
+   * @return A list of filled artist names based on the given parameters.
+   *
+   * @throws IllegalStateException if no artists are found for the specified song ID.
+   */
+  private fun fillBy(
+    id: Long,
+    songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>>,
+    artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>>,
+    filter: (ArtistInSong) -> Boolean
   ): List<String> {
     val artistsInSong = songIdToArtistsInSongs[id]
       ?: throw IllegalStateException("Very unlikely to found no artists of song ID $id here")
     return artistsInSong
-      .filter {
-        it.artistType.isVirtualSinger() || it.roles.any { role -> role in setOf(ArtistRole.Vocalist) }
-            || it.artistType in setOf(ArtistType.Vocalist, ArtistType.OtherVocalist)
-      }.map { artistInSong ->
+      .filter(filter)
+      .map { artistInSong ->
         val name = when (artistInSong.defaultNameLanguage) {
           NameLanguage.Japanese -> artistInSong.japaneseName
           NameLanguage.English -> artistInSong.englishName

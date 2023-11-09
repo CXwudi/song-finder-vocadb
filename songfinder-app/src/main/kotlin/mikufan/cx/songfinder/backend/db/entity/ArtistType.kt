@@ -7,7 +7,7 @@ enum class ArtistType {
   VoiSona, NewType, Voiceroid;
 
   fun isVirtualSinger() = this in setOf(
-    Vocaloid, UTAU,  CeVIO, OtherVoiceSynthesizer, SynthesizerV, NEUTRINO,
+    Vocaloid, UTAU, Utaite, CeVIO, OtherVoiceSynthesizer, SynthesizerV, NEUTRINO,
     VoiSona, NewType, Voiceroid
   )
 

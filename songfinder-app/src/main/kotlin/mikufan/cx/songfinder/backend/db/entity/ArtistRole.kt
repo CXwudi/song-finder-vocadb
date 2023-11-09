@@ -28,4 +28,8 @@ enum class ArtistRole(val bit: Int) {
       }
     }
   }
+
+  fun isProducerRole() = this in setOf(
+    Arranger, Composer, Mastering, Mixer, Encoder, Chorus
+  )
 }
