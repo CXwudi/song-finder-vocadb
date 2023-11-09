@@ -2,7 +2,6 @@ package mikufan.cx.songfinder.backend.service
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.db.entity.*
@@ -41,6 +40,8 @@ class SongSearchService(
 
   companion object {
     const val UNKNOWN = "Unknown"
+    val ioDispatcher = Dispatchers.IO
+    val defaultDispatcher = Dispatchers.Default
   }
 
   /**
@@ -49,15 +50,17 @@ class SongSearchService(
    * @param title The title to search for.
    * @return A list of SongSearchResult objects matching the search criteria.
    */
-  suspend fun search(title: String): List<SongSearchResult> = withContext(Dispatchers.IO) {
+  suspend fun search(title: String): List<SongSearchResult> {
     log.info { "Searching '$title'" }
     // search steps:
     // 1. search songs by title
-    val songs = songRepo.findByAllPossibleNamesContain(title)
+    val songs = withContext(ioDispatcher) {
+      songRepo.findByAllPossibleNamesContain(title)
+    }
     log.debug { "found ${songs.size} entries" }
     if (songs.isEmpty()) {
       log.info { "No song found for '$title'" }
-      return@withContext emptyList<SongSearchResult>()
+      return emptyList()
     }
     val songIds = songs.map { it.id }
 
@@ -67,16 +70,22 @@ class SongSearchService(
       .map { it.id }
     log.debug { "${songIdsOfUnspecifiedName.size} songs has unspecified names, requires additional checking" }
     val songIdOfUnspecifiedNameToNames: Map<SongId, List<SongName>> =
-      songNameRepo.findAllBySongIdInAndLanguageIn(songIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
+      withContext(ioDispatcher) {
+        songNameRepo.findAllBySongIdInAndLanguageIn(songIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
+      }
         .groupBy { it.songId }
 
     // 3. search all PVs
-    val songIdToPv: Map<SongId, List<Pv>> = pvRepo.findAllBySongIdIn(songIds)
+    val songIdToPv: Map<SongId, List<Pv>> = withContext(ioDispatcher) {
+      pvRepo.findAllBySongIdIn(songIds)
+    }
       .groupBy { it.songId }
     log.debug { "found ${songIdToPv} PVs" }
 
     // 4. search all artists
-    val artistsInSongs = artistRepo.findAllBySongIdsIn(songIds)
+    val artistsInSongs = withContext(ioDispatcher) {
+      artistRepo.findAllBySongIdsIn(songIds)
+    }
     val songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>> = artistsInSongs.groupBy { it.songId }
     log.debug { "found ${artistsInSongs.size} artists" }
 
@@ -85,31 +94,34 @@ class SongSearchService(
       .filter { it.defaultNameLanguage == NameLanguage.Unspecified }
       .map { it.id }
     val artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>> =
-      artistNameRepo.findAllByArtistIdInAndLanguageIn(artistIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
+      withContext(ioDispatcher) {
+        artistNameRepo.findAllByArtistIdInAndLanguageIn(artistIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
+      }
         .groupBy { it.artistId }
 
     // 6. concurrently assemble the result, with order preserving
-    withContext(Dispatchers.Default) {
+    val results = withContext(defaultDispatcher) {
       songs.map { song ->
+        val titleTask = async { findDefaultLanguageTitle(song, songIdOfUnspecifiedNameToNames) }
+        val pvsTask =  async { fillPvs(song.id, songIdToPv) }
+        val vocalsTask = async { fillVocals(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) }
+        val producerTask = async { fillProducers(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) }
         async {
-          SongSearchResult.Builder().apply {
-            id(song.id)
-            val titleTask = launch { title(findDefaultLanguageTitle(song, songIdOfUnspecifiedNameToNames)) }
-            type(song.songType)
-            publishDate(song.publishDate)
-            val pvsTask = launch { setPvs(fillPvs(song.id, songIdToPv)) }
-            val vocalsTask = launch { setVocals(fillVocals(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames)) }
-            val producerTask = launch { setProducers(fillProducers(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames)) }
-            titleTask.join()
-            pvsTask.join()
-            vocalsTask.join()
-            producerTask.join()
-          }.build()
+          SongSearchResult(
+            id = song.id,
+            title = titleTask.await(),
+            type = song.songType,
+            publishDate = song.publishDate,
+            pvs = pvsTask.await(),
+            vocals = vocalsTask.await(),
+            producers = producerTask.await()
+          )
         }
       }.map { it.await() }
-    }.also {
-      log.info { "Found ${it.size} results for '$title'" }
     }
+
+    log.info { "Found ${results.size} results for '$title'" }
+    return results
   }
 
 
