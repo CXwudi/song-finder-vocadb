@@ -1,17 +1,22 @@
 package mikufan.cx.songfinder.backend.controller.mainpage
 
 import androidx.compose.runtime.State
+import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.service.SongSearchService
 import mikufan.cx.songfinder.backend.statemodel.SearchInputStateModel
+import mikufan.cx.songfinder.backend.statemodel.SearchResultStatusModel
+import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import org.springframework.stereotype.Controller
 
 @Controller
 class SearchBarController(
   private val searchInputStateModel: SearchInputStateModel,
+  private val searchResultStatusModel: SearchResultStatusModel,
   private val songSearchService: SongSearchService,
 ) {
 
   val currentInputState: State<String> get() = searchInputStateModel.currentInputState
+  val currentSearchStatusState: State<SearchStatus> = searchResultStatusModel.statusState
 
   fun setInput(newInput: String) {
     searchInputStateModel.update(newInput)
@@ -20,14 +25,17 @@ class SearchBarController(
   suspend fun search() {
     try {
       val title = searchInputStateModel.currentInputState.value
-      if (title.isNotEmpty()) {
-        val results = songSearchService.search(title)
-        println(results.joinToString("\n"))
+      searchResultStatusModel.setAsSearching()
+      val results = if (title.isNotEmpty()) {
+        songSearchService.search(title)
       } else {
-        // TODO: do something
+        emptyList()
       }
+      searchResultStatusModel.setAsDoneWith(results)
     } catch (e: Exception) {
-      println(e)
+      log.warn(e) { "Exception happened during search, what is that?" }
     }
   }
 }
+
+private val log = KInlineLogging.logger()
