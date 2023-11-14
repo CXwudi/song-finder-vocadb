@@ -20,6 +20,11 @@ import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 
+/**
+ * Composable function for displaying a search bar.
+ *
+ * @param modifier The modifier to be applied to the search bar.
+ */
 @Composable
 fun SearchBar(modifier: Modifier = Modifier) {
   val controller = getSpringBean<SearchBarController>()
@@ -35,6 +40,12 @@ fun SearchBar(modifier: Modifier = Modifier) {
   RealSearchBar(model, modifier)
 }
 
+/**
+ * Performs a search operation after a small delay for user input.
+ *
+ * @param value the search value provided by the user.
+ * @param searchFunc the suspend function to execute the search operation.
+ */
 @Composable
 fun DoSearchComposition(value: String, searchFunc: suspend () -> Unit) {
 //  val scope = rememberCoroutineScope()
@@ -42,11 +53,18 @@ fun DoSearchComposition(value: String, searchFunc: suspend () -> Unit) {
 //      println("start $value")
 //      delay(1300)
 //      println("end $value")
-    delay(100) // still do a small delay waiting for user input
+    delay(500) // still do a small delay waiting for user input
     searchFunc()
   }
 }
 
+/**
+ * Displays a real search bar that allows users to search for a VocaDB record based on the title.
+ * It utilizes the VocaDB Dump Database for the search.
+ *
+ * @param model the SearchBarModel used to manage the state of the search bar.
+ * @param modifier the modifier to be applied to the search bar.
+ */
 @Composable
 fun RealSearchBar(
   model: SearchBarModel,
@@ -73,6 +91,11 @@ fun RealSearchBar(
   SearchProgressIndicator(model.searchStatusState.value)
 }
 
+/**
+ * A composable method that renders a search text field.
+ *
+ * @param model The [SearchBarModel] containing the current input state, label, and change handler.
+ */
 @Composable
 internal fun RowScope.SearchTextField(
   model: SearchBarModel
@@ -97,19 +120,31 @@ internal fun RowScope.SearchTextField(
   )
 }
 
+/**
+ * Displays a progress indicator based on the given search status.
+ *
+ * @param status The current search status.
+ */
 @Composable
 fun SearchProgressIndicator(status: SearchStatus) {
   when (status) {
     SearchStatus.Searching -> {
       OnSearchingIndicator()
     }
-
     SearchStatus.Done -> {
       IsDoneIndicator()
     }
   }
 }
 
+/**
+ * Displays a searching indicator with a tooltip and a circular progress indicator.
+ *
+ * @Composable
+ * fun OnSearchingIndicator()
+ *
+ * When called, the method will display a tooltip area with a "Searching for the song, please wait..." text and a circular progress indicator.
+ */
 @Composable
 fun OnSearchingIndicator() {
   TooltipAreaWithCard(
@@ -121,6 +156,12 @@ fun OnSearchingIndicator() {
   }
 }
 
+/**
+ * Composable function that displays an indicator for a completed search.
+ *
+ * When called, it displays a tooltip area with a card containing the text "Search is done".
+ * Additionally, it shows an icon representing the completion of the search.
+ */
 @Composable
 fun IsDoneIndicator() {
   TooltipAreaWithCard(
@@ -132,6 +173,13 @@ fun IsDoneIndicator() {
   }
 }
 
+/**
+ * Represents the model for a search bar component.
+ *
+ * @property currentInputState The state representing the current input value of the search bar.
+ * @property searchStatusState The state representing the search status of the search bar.
+ * @property onValueChange The callback function that is invoked when the input value of the search bar changes.
+ */
 data class SearchBarModel(
   val currentInputState: State<String>,
   val searchStatusState: State<SearchStatus>,
