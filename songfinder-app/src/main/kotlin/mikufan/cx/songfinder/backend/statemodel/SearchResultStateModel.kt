@@ -8,7 +8,7 @@ import mikufan.cx.songfinder.backend.model.SongSearchResult
 import org.springframework.stereotype.Component
 
 @Component
-class SearchResultStatusModel {
+class SearchResultStateModel {
   val statusState: MutableState<SearchStatus> = mutableStateOf(SearchStatus.Searching)
   val resultState: SnapshotStateList<SongSearchResult> = mutableStateListOf()
 
