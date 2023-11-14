@@ -1,9 +1,12 @@
 package mikufan.cx.songfinder
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.unit.DpSize
+import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ApplicationScope
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
+import androidx.compose.ui.window.rememberWindowState
 import mikufan.cx.songfinder.backend.model.IOFiles
 import mikufan.cx.songfinder.ui.component.InputScreen
 import mikufan.cx.songfinder.ui.component.LoadingWindow
@@ -48,11 +51,12 @@ private fun ApplicationScope.launchMainApplication(
     LoadingWindow(targetFiles!!, args) { springCtx = it }
   } else {
     Window(
+      title = "Song Finder powered by VocaDB",
+      state = rememberWindowState(size = DpSize(1280.dp, 720.dp)),
       onCloseRequest = {
         springCtx!!.close()
         exitApplication()
       },
-      title = "Song Finder powered by VocaDB",
     ) {
       MyAppThemeWithSurface {
         CompositionLocalProvider(SpringCtx provides springCtx!!) {
