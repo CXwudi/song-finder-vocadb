@@ -1,6 +1,6 @@
 package mikufan.cx.songfinder.ui.component.mainpage
 
-import androidx.compose.material.Text
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import mikufan.cx.songfinder.backend.model.SongSearchResult
 

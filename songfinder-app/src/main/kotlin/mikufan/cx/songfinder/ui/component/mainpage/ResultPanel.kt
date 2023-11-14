@@ -1,5 +1,6 @@
 package mikufan.cx.songfinder.ui.component.mainpage
 
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -12,6 +13,7 @@ import mikufan.cx.songfinder.backend.controller.mainpage.ResultPanelController
 import mikufan.cx.songfinder.backend.model.SongSearchResult
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
+import mikufan.cx.songfinder.ui.theme.spacing
 
 /**
  * Composable function to display the result panel.
@@ -33,11 +35,11 @@ fun ResultPanel() {
 @Composable
 fun RealResultPanel(resultList: List<SongSearchResult>, modifier: Modifier = Modifier) {
   if (resultList.isEmpty()) {
-    RowCentralizedWithSpacing {
+    RowCentralizedWithSpacing(furtherModifier = modifier) {
       Text("No result found", style = MaterialTheme.typography.titleMedium)
     }
   } else {
-    ResultPanelGrid(resultList) { result ->
+    ResultPanelGrid(resultList, modifier) { result ->
       ResultGridCell(result)
     }
   }
@@ -52,10 +54,12 @@ fun RealResultPanel(resultList: List<SongSearchResult>, modifier: Modifier = Mod
 @Composable
 fun ResultPanelGrid(
   resultList: List<SongSearchResult>,
+  modifier: Modifier = Modifier,
   cellContent: @Composable (SongSearchResult) -> Unit,
 ) {
   LazyVerticalGrid(
     columns = GridCells.Adaptive(256.dp),
+    modifier = modifier.padding(horizontal = MaterialTheme.spacing.padding),
   ) {
     items(
       items = resultList,
