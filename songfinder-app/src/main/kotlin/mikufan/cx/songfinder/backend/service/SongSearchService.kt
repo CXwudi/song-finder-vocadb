@@ -103,7 +103,7 @@ class SongSearchService(
     val results = withContext(defaultDispatcher) {
       songs.map { song ->
         val titleTask = async { findDefaultLanguageTitle(song, songIdOfUnspecifiedNameToNames) }
-        val pvsTask =  async { fillPvs(song.id, songIdToPv) }
+        val pvsTask = async { fillPvs(song.id, songIdToPv) }
         val vocalsTask = async { fillVocals(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) }
         val producerTask = async { fillProducers(song.id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) }
         async {
@@ -181,9 +181,21 @@ class SongSearchService(
     id: SongId,
     songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>>,
     artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>>
-  ): List<String> = fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
-    it.artistType.isVirtualSinger() || it.artistType in setOf(ArtistType.Vocalist, ArtistType.OtherVocalist)
-        || it.roles.any { role -> role in setOf(ArtistRole.Vocalist) }
+  ): List<String> {
+    val vocals = fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
+      val isVirtualSinger = it.artistType.isVirtualSinger() && it.roles.any { role -> role == ArtistRole.Default }
+      val isVocalist = it.artistType.isVocalist() && it.roles.any { role -> role == ArtistRole.Default }
+      isVirtualSinger || isVocalist
+    }.toMutableList()
+    if (vocals.isEmpty()) {
+      vocals += fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
+        it.roles.any { role -> role in setOf(ArtistRole.Vocalist) }
+      }
+    }
+    if (vocals.isEmpty()) {
+      log.warn { "No vocals found for song $id, the song might be a highly uncompleted draft" }
+    }
+    return vocals
   }
 
 
@@ -199,9 +211,19 @@ class SongSearchService(
     id: Long,
     songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>>,
     artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>>
-  ): List<String> = fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
-    it.artistType.isSongProducer() || it.artistType in setOf(ArtistType.OtherGroup, ArtistType.OtherIndividual)
-        || it.roles.any { role -> role.isProducerRole() }
+  ): List<String> {
+    val producers = fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
+      it.artistType.isSongProducer() && it.roles.any { role -> role == ArtistRole.Default }
+    }.toMutableList()
+    if (producers.isEmpty()) {
+      producers += fillBy(id, songIdToArtistsInSongs, artistIdWithUnspecifiedNameToNames) {
+        it.roles.any { role -> role.isProducerRole() }
+      }
+    }
+    if (producers.isEmpty()) {
+      log.warn { "No producers found for song $id, the song might be a highly uncompleted draft" }
+    }
+    return producers
   }
 
   /**
@@ -221,29 +243,26 @@ class SongSearchService(
     songIdToArtistsInSongs: Map<SongId, List<ArtistInSong>>,
     artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>>,
     filter: (ArtistInSong) -> Boolean
-  ): List<String> {
-    val artistsInSong = songIdToArtistsInSongs[id]
-      ?: throw IllegalStateException("Very unlikely to found no artists of song ID $id here")
-    return artistsInSong
-      .filter(filter)
-      .map { artistInSong ->
-        val name = when (artistInSong.defaultNameLanguage) {
-          NameLanguage.Japanese -> artistInSong.japaneseName
-          NameLanguage.English -> artistInSong.englishName
-          NameLanguage.Romaji -> artistInSong.romajiName
-          NameLanguage.Unspecified -> {
-            val names = artistIdWithUnspecifiedNameToNames[artistInSong.id]
-            if (names.isNullOrEmpty()) {
-              log.warn { "No default name found for artist ${artistInSong.id}, will use Japanese Name '${artistInSong.japaneseName}' as default" }
-              artistInSong.japaneseName
-            } else {
-              names.first().name
-            }
+  ): List<String> = songIdToArtistsInSongs[id]?.let { artistsList ->
+    artistsList.filter(filter).map { artistInSong ->
+      val name = when (artistInSong.defaultNameLanguage) {
+        NameLanguage.Japanese -> artistInSong.japaneseName
+        NameLanguage.English -> artistInSong.englishName
+        NameLanguage.Romaji -> artistInSong.romajiName
+        NameLanguage.Unspecified -> {
+          val names = artistIdWithUnspecifiedNameToNames[artistInSong.id]
+          if (names.isNullOrEmpty()) {
+            log.warn { "No default name found for artist ${artistInSong.id}, will use Japanese Name '${artistInSong.japaneseName}' as default" }
+            artistInSong.japaneseName
+          } else {
+            names.first().name
           }
         }
-        removeUnknown(name)
       }
+      removeUnknown(name)
+    }
   }
+    ?: emptyList()
 
   /**
    * Removes the occurrences of the word 'Unknown', 'unknown' and '()' from the given artist string.
