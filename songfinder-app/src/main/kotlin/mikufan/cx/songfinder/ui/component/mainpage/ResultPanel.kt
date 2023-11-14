@@ -2,6 +2,7 @@ package mikufan.cx.songfinder.ui.component.mainpage
 
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.MaterialTheme
@@ -55,7 +56,7 @@ fun RealResultPanel(resultList: List<SongSearchResult>, modifier: Modifier = Mod
 fun ResultPanelGrid(
   resultList: List<SongSearchResult>,
   modifier: Modifier = Modifier,
-  cellContent: @Composable (SongSearchResult) -> Unit,
+  cellContent: @Composable LazyGridItemScope.(SongSearchResult) -> Unit,
 ) {
   LazyVerticalGrid(
     columns = GridCells.Adaptive(256.dp),
