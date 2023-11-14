@@ -18,6 +18,7 @@ class SearchResultStatusModel {
 
   fun setAsDoneWith(results: List<SongSearchResult>) {
     statusState.value = SearchStatus.Done
+    resultState.clear()
     resultState.addAll(results)
   }
 }
