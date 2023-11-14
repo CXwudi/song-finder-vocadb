@@ -11,7 +11,11 @@ enum class ArtistType {
     VoiSona, NewType, Voiceroid
   )
 
+  fun isVocalist() = this in setOf(
+    Vocalist, OtherVocalist
+  )
+
   fun isSongProducer() = this in setOf(
-    Circle, Producer
+    Circle, Producer, CoverArtist
   )
 }
