@@ -1,0 +1,15 @@
+# this compose file can be used to run an adminer instance to inspect the db
+# it needs to be used with docker\compose.base.yml and docker\compose.test.yml altogether
+
+services:
+  adminer:
+    image: adminer
+    container_name: song-finder-vocadb-test-adminer
+    ports:
+      - "8080:8080"
+    depends_on:
+      - mariadb
+    environment:
+      ADMINER_DEFAULT_SERVER: mariadb
+      ADMINER_DEFAULT_USERNAME: ${MYSQL_USER}
+      ADMINER_DEFAULT_PASSWORD: ${MYSQL_PASSWORD}

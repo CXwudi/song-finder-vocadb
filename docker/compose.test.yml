@@ -15,3 +15,8 @@ services:
       # only rely on the importing feature, we don't save the db data into a volume
       - ./import-test-data/:/hoshizora.sql/output/
       - ./import-script/mariadb.sql:/docker-entrypoint-initdb.d/mariadb.sql # we could just use the db files, but this will lose the env var
+      - db:/var/lib/mysql
+
+volumes:
+  db:
+    name: vocadump-db
