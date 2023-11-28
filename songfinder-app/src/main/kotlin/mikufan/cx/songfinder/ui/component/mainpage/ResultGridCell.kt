@@ -14,6 +14,6 @@ fun LazyGridItemScope.ResultGridCell(result: SongSearchResult) {
 }
 
 @Composable
-private fun DebugUsedCell(result: SongSearchResult, modifier: Modifier = Modifier) {
+fun DebugUsedCell(result: SongSearchResult, modifier: Modifier = Modifier) {
   Text(result.toString(), modifier = modifier)
 }

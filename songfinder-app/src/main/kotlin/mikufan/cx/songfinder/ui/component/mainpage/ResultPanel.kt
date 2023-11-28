@@ -24,7 +24,9 @@ import mikufan.cx.songfinder.ui.theme.spacing
 fun ResultPanel() {
   val controller = getSpringBean<ResultPanelController>()
   val resultList = controller.currentResultState
-  RealResultPanel(resultList)
+  RealResultPanel(resultList) { result ->
+    ResultGridCell(result)
+  }
 }
 
 /**
@@ -34,15 +36,17 @@ fun ResultPanel() {
  * @param modifier The modifier to be applied to the panel.
  */
 @Composable
-fun RealResultPanel(resultList: List<SongSearchResult>, modifier: Modifier = Modifier) {
+fun RealResultPanel(
+  resultList: List<SongSearchResult>,
+  modifier: Modifier = Modifier,
+  cellContent: @Composable LazyGridItemScope.(SongSearchResult) -> Unit,
+) {
   if (resultList.isEmpty()) {
     RowCentralizedWithSpacing(furtherModifier = modifier) {
       Text("No result found", style = MaterialTheme.typography.titleMedium)
     }
   } else {
-    ResultPanelGrid(resultList, modifier) { result ->
-      ResultGridCell(result)
-    }
+    ResultPanelGrid(resultList, modifier, cellContent)
   }
 }
 

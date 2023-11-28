@@ -1,10 +1,12 @@
 package mikufan.cx.songfinder.ui.component
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Modifier
 import mikufan.cx.songfinder.backend.controller.MainScreenController
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.db.entity.PvType
@@ -41,6 +43,7 @@ fun RestOfPart(isAllFinished: Boolean) = if (isAllFinished) {
 }
 
 
+@OptIn(ExperimentalFoundationApi::class)
 @Preview
 @Composable
 fun PreviewMainScreen() {
@@ -73,7 +76,9 @@ fun PreviewMainScreen() {
             )
           )
         )
-      )
+      ) {
+        DebugUsedCell(it, Modifier.animateItemPlacement())
+      }
     }
   }
 }
