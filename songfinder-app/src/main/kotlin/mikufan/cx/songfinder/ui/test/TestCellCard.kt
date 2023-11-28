@@ -33,8 +33,8 @@ fun main() = application {
     MyAppThemeWithSurface(darkTheme = false) {
       LazyVerticalGrid(
         columns = GridCells.Adaptive(300.dp),
-        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.padding),
-        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.padding),
+        horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+        verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
         modifier = Modifier.padding(horizontal = MaterialTheme.spacing.padding),
       ) {
         item {
@@ -52,25 +52,25 @@ fun main() = application {
 @Composable
 fun MusicCard() {
   Card(
-    shape = RoundedCornerShape(8.dp),
+    shape = RoundedCornerShape(MaterialTheme.spacing.cornerShapeLarger),
     modifier = Modifier.clickable {
       println("clicked")
     }
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier.padding(8.dp)
+      modifier = Modifier.padding(MaterialTheme.spacing.paddingLarger)
     ) {
       Image(
         painter = painterResource("image/√ 甘露とビターシップ _ 初音ミク [sm38203271].jpg"),
         contentDescription = "Thumbnail",
         modifier = Modifier
           .size(120.dp)
-          .clip(RoundedCornerShape(4.dp))
+          .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape))
       )
       Column(
         modifier = Modifier
-          .padding(horizontal = 8.dp)
+          .padding(horizontal = MaterialTheme.spacing.paddingLarger)
 //          .fillMaxWidth()
       ) {
         Row(

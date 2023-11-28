@@ -1,5 +1,6 @@
 package mikufan.cx.songfinder.ui.component.mainpage
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
@@ -64,6 +65,8 @@ fun ResultPanelGrid(
 ) {
   LazyVerticalGrid(
     columns = GridCells.Adaptive(256.dp),
+    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
     modifier = modifier.padding(horizontal = MaterialTheme.spacing.padding),
   ) {
     items(
