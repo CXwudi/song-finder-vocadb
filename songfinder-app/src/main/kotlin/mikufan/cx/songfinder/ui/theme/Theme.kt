@@ -46,12 +46,13 @@ fun MyAppTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable 
  */
 @Composable
 fun MyAppThemeWithSurface(
+  darkTheme: Boolean = isSystemInDarkTheme(),
   surfaceModifier: Modifier = Modifier
     .fillMaxSize()
     .background(MaterialTheme.colorScheme.background),
   content: @Composable () -> Unit,
 ) {
-  MyAppTheme {
+  MyAppTheme(darkTheme) {
     Surface(
       modifier = surfaceModifier,
     ) {
