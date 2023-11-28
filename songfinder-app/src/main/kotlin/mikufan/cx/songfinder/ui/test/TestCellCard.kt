@@ -25,6 +25,7 @@ import androidx.compose.ui.window.application
 import compose.icons.SimpleIcons
 import compose.icons.simpleicons.Niconico
 import compose.icons.simpleicons.Youtube
+import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 import mikufan.cx.songfinder.ui.theme.spacing
 
@@ -51,89 +52,102 @@ fun main() = application {
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MusicCard() {
-  Card(
-    shape = RoundedCornerShape(MaterialTheme.spacing.cornerShapeLarger),
-    modifier = Modifier.clickable {
-      println("clicked")
+  TooltipAreaWithCard(
+    tip = {
+      Text("Click to select this song")
     }
   ) {
-    Row(
-      verticalAlignment = Alignment.CenterVertically,
-      modifier = Modifier.padding(MaterialTheme.spacing.paddingLarger)
+    Card(
+      shape = RoundedCornerShape(MaterialTheme.spacing.cornerShapeLarger),
+      modifier = Modifier.clickable {
+        println("clicked")
+      }
     ) {
-      Image(
-        painter = painterResource("image/√ 甘露とビターシップ _ 初音ミク [sm38203271].jpg"),
-        contentDescription = "Thumbnail",
-        modifier = Modifier
-          .size(120.dp)
-          .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape))
-      )
-      Column(
-        modifier = Modifier
-          .padding(horizontal = MaterialTheme.spacing.paddingLarger)
-//          .fillMaxWidth()
+      Row(
+        verticalAlignment = Alignment.CenterVertically,
+        modifier = Modifier.padding(MaterialTheme.spacing.paddingLarger)
       ) {
-        Row(
-          horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing, Alignment.CenterHorizontally),
-          modifier = Modifier.fillMaxWidth()
+        Image(
+          painter = painterResource("image/√ 甘露とビターシップ _ 初音ミク [sm38203271].jpg"),
+          contentDescription = "Thumbnail",
+          modifier = Modifier
+            .size(120.dp)
+            .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape))
+        )
+        Column(
+          modifier = Modifier
+            .padding(horizontal = MaterialTheme.spacing.paddingLarger)
+//          .fillMaxWidth()
         ) {
-          val uriHandler = LocalUriHandler.current
+          Row(
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing, Alignment.CenterHorizontally),
+            modifier = Modifier.fillMaxWidth()
+          ) {
+            val uriHandler = LocalUriHandler.current
+            TooltipAreaWithCard(
+              tip = {
+                Text("Click to open the song page")
+              }
+            ) {
+              Text(
+                text = "Song Name",
+                style = MaterialTheme.typography.titleLarge,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                modifier = Modifier.basicMarquee().clickable {
+                  uriHandler.openUri("https://vocadb.net/S/313646")
+                },
+              )
+            }
+          }
           Text(
-            text = "Song Name",
-            style = MaterialTheme.typography.titleLarge,
+            text = "Producers feat. Vocal",
+            style = MaterialTheme.typography.titleMedium,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
-            modifier = Modifier.basicMarquee().clickable {
-              uriHandler.openUri("https://vocadb.net/S/313646")
-            },
+            modifier = Modifier.basicMarquee(),
           )
-        }
-        Text(
-          text = "Producers feat. Vocal",
-          style = MaterialTheme.typography.titleMedium,
-          maxLines = 1,
-          overflow = TextOverflow.Ellipsis,
-          modifier = Modifier.basicMarquee(),
-        )
-        Text(
-          text = "Published at: 2014-08-31",
-          style = MaterialTheme.typography.bodyMedium,
-          maxLines = 1,
-          modifier = Modifier.basicMarquee(),
-        )
-        Text(
-          text = "Song Type: Original",
-          style = MaterialTheme.typography.bodyMedium,
-          maxLines = 1,
-          modifier = Modifier.basicMarquee(),
-        )
-        Row(
-          horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
-          verticalAlignment = Alignment.CenterVertically,
-//          modifier = Modifier.fillMaxWidth()
-        ) {
-          val uriHandler = LocalUriHandler.current
-
           Text(
-            text = "PVs:",
+            text = "Published at: 2014-08-31",
             style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            modifier = Modifier.basicMarquee(),
           )
-          Icon(
-            imageVector = SimpleIcons.Niconico,
-            contentDescription = "PV1",
-            modifier = Modifier.size(24.dp).clickable {
-              uriHandler.openUri("https://www.nicovideo.jp/watch/sm38203271")
-            }
+          Text(
+            text = "Song Type: Original",
+            style = MaterialTheme.typography.bodyMedium,
+            maxLines = 1,
+            modifier = Modifier.basicMarquee(),
           )
-          Icon(
-            imageVector = SimpleIcons.Youtube,
-            contentDescription = "PV2",
-            modifier = Modifier.size(24.dp).clickable {
-              uriHandler.openUri("https://www.youtube.com/watch?v=W4Rw7to4dig")
-            }
-          )
+          Row(
+            horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+            verticalAlignment = Alignment.CenterVertically,
+//          modifier = Modifier.fillMaxWidth()
+          ) {
+            val uriHandler = LocalUriHandler.current
+
+            Text(
+              text = "PVs:",
+              style = MaterialTheme.typography.bodyMedium,
+            )
+            Icon(
+              imageVector = SimpleIcons.Niconico,
+              contentDescription = "PV1",
+              modifier = Modifier.size(24.dp).clickable {
+                uriHandler.openUri("https://www.nicovideo.jp/watch/sm38203271")
+              }
+            )
+            Icon(
+              imageVector = SimpleIcons.Youtube,
+              contentDescription = "PV2",
+              modifier = Modifier.size(24.dp).clickable {
+                uriHandler.openUri("https://www.youtube.com/watch?v=W4Rw7to4dig")
+              }
+            )
+          }
         }
       }
     }
   }
+
 }
