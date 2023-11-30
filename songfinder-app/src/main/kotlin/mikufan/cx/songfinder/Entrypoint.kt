@@ -72,7 +72,7 @@ object QuickEntryPointForTest {
   fun main(args: Array<String>) = application {
     launchMainApplication(
       IOFiles(
-        Path("src/test/resources/test-data/dummy-input.txt"),
+        Path("src/test/resources/test-data/2014 Vocaloid List.txt"),
         0u,
         Path("src/test/resources/test-data/dummy-output.csv")
       ),
