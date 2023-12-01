@@ -31,16 +31,19 @@ fun MainScreen() {
 fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnCentralizedWithSpacing {
   ProgressBar()
   Divider()
-  RestOfPart(isAllFinished.value)
+  RestOfPart(isAllFinished.value, { FinishMessagePanel() }, {
+    SearchBar()
+    ResultPanel()
+  })
 }
 
 @Composable
-fun RestOfPart(isAllFinished: Boolean) = if (isAllFinished) {
-  FinishMessagePanel()
-} else {
-  SearchBar()
-  ResultPanel()
-}
+fun RestOfPart(isAllFinished: Boolean, isAllFinishedContent: @Composable () -> Unit, notFinishedContent: @Composable () -> Unit) =
+  if (isAllFinished) {
+    isAllFinishedContent()
+  } else {
+    notFinishedContent()
+  }
 
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -51,33 +54,35 @@ fun PreviewMainScreen() {
     ColumnCentralizedWithSpacing {
       RealProgressBar(39u, 100u)
       Divider()
-      RealSearchBar(
-        SearchBarModel(
-          mutableStateOf(""),
-          mutableStateOf(SearchStatus.Done),
-          {},
+      RestOfPart(false, {}) {
+        RealSearchBar(
+          SearchBarModel(
+            mutableStateOf(""),
+            mutableStateOf(SearchStatus.Done),
+            {},
+          )
         )
-      )
-      RealResultPanel(
-        listOf(
-          SongSearchResult(
-            id = 123L,
-            title = "title",
-            type = SongType.Original,
-            vocals = listOf("vocal1", "vocal2"),
-            producers = listOf("producer1", "producer2"),
-            publishDate = LocalDateTime.now(),
-            pvs = listOf(
-              PVInfo(
-                id = "sm123",
-                pvService = PvService.NicoNicoDouga,
-                pvType = PvType.Original,
+        RealResultPanel(
+          listOf(
+            SongSearchResult(
+              id = 123L,
+              title = "title",
+              type = SongType.Original,
+              vocals = listOf("vocal1", "vocal2"),
+              producers = listOf("producer1", "producer2"),
+              publishDate = LocalDateTime.now(),
+              pvs = listOf(
+                PVInfo(
+                  id = "sm123",
+                  pvService = PvService.NicoNicoDouga,
+                  pvType = PvType.Original,
+                )
               )
             )
           )
-        )
-      ) {
-        DebugUsedCell(it, Modifier.animateItemPlacement())
+        ) {
+          DebugUsedCell(it, Modifier.animateItemPlacement())
+        }
       }
     }
   }
