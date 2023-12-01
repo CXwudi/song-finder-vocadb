@@ -1,8 +1,6 @@
 package mikufan.cx.songfinder.ui.component.mainpage
 
-import androidx.compose.animation.animateContentSize
-import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Search
@@ -13,7 +11,9 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.SearchBarController
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
@@ -45,6 +45,9 @@ fun SearchBar(modifier: Modifier = Modifier) {
  * (which is when the input value changes)
  *
  * @param value the search value provided by the user.
+ * This parameter is not used in the code,
+ * but it is necessary to trigger recomposition upon the right timing,
+ * which is when the input is changed.
  * @param searchFunc the suspend function to execute the search operation.
  */
 @Composable
@@ -84,7 +87,9 @@ fun RealSearchBar(
       SearchTextField(model)
     }
   }
-  SearchProgressIndicator(model.searchStatusState.value)
+  Box(modifier = modifier.defaultMinSize(minWidth = 48.dp)) {
+    SearchProgressIndicator(model.searchStatusState.value, modifier.align(Alignment.Center))
+  }
 }
 
 /**
@@ -112,7 +117,7 @@ internal fun RowScope.SearchTextField(
       }
     },
     maxLines = 1,
-    modifier = Modifier.weight(1f).animateContentSize(),
+    modifier = Modifier.fillMaxWidth(),
   )
 }
 
@@ -122,13 +127,13 @@ internal fun RowScope.SearchTextField(
  * @param status The current search status.
  */
 @Composable
-fun SearchProgressIndicator(status: SearchStatus) {
+fun SearchProgressIndicator(status: SearchStatus, alignment: Modifier) {
   when (status) {
     SearchStatus.Searching -> {
-      OnSearchingIndicator()
+      OnSearchingIndicator(alignment)
     }
     SearchStatus.Done -> {
-      IsDoneIndicator()
+      IsDoneIndicator(alignment)
     }
   }
 }
@@ -142,11 +147,12 @@ fun SearchProgressIndicator(status: SearchStatus) {
  * When called, the method will display a tooltip area with a "Searching for the song, please wait..." text and a circular progress indicator.
  */
 @Composable
-fun OnSearchingIndicator() {
+fun OnSearchingIndicator(alignment: Modifier) {
   TooltipAreaWithCard(
     tip = {
       Text("Searching for the song, please wait...")
     },
+    modifier = alignment,
   ) {
     CircularProgressIndicator()
   }
@@ -159,11 +165,12 @@ fun OnSearchingIndicator() {
  * Additionally, it shows an icon representing the completion of the search.
  */
 @Composable
-fun IsDoneIndicator() {
+fun IsDoneIndicator(alignment: Modifier) {
   TooltipAreaWithCard(
     tip = {
       Text("Search is done")
     },
+    modifier = alignment,
   ) {
     Icon(Icons.Default.Done, contentDescription = "Search is Done")
   }
