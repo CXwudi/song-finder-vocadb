@@ -52,7 +52,7 @@ private fun ApplicationScope.launchMainApplication(
   } else {
     Window(
       title = "Song Finder powered by VocaDB",
-      state = rememberWindowState(size = DpSize(1280.dp, 720.dp)),
+      state = rememberWindowState(size = DpSize(1280.dp, 900.dp)),
       onCloseRequest = {
         springCtx!!.close()
         exitApplication()
