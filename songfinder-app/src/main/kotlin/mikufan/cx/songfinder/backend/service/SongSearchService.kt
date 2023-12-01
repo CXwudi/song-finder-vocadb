@@ -117,7 +117,9 @@ class SongSearchService(
             producers = producerTask.await()
           )
         }
-      }.map { it.await() }
+      }
+        .map { it.await() }
+        .sortedBy { it.publishDate }
     }
 
     log.info { "Found ${results.size} results for '$title'" }
