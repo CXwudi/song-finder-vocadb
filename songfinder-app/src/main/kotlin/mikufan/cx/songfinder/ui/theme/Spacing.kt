@@ -25,8 +25,10 @@ internal val LocalSpacing: ProvidableCompositionLocal<Spacing> = staticCompositi
 data class Spacing(
   val spacing: Dp = 5.dp,
   val spacingSmaller: Dp = 4.dp,
+  val spacingLarge: Dp = 8.dp,
   val cornerShape: Dp = spacingSmaller,
-  val cornerShapeLarger: Dp = cornerShape * 2,
+  val cornerShapeLarge: Dp = cornerShape * 2,
+  val cornerShapeExtraLarge: Dp = cornerShape * 4,
   val padding: Dp = 5.dp,
-  val paddingLarger: Dp = 8.dp,
+  val paddingLarge: Dp = 8.dp,
 )
