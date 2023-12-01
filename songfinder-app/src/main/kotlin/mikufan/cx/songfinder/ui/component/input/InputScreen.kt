@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.ui.component
+package mikufan.cx.songfinder.ui.component.input
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.Arrangement

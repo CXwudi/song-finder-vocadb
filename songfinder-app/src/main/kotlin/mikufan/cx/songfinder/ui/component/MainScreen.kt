@@ -18,7 +18,7 @@ import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
-import mikufan.cx.songfinder.ui.component.mainpage.*
+import mikufan.cx.songfinder.ui.component.main.*
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 import java.time.LocalDateTime
 

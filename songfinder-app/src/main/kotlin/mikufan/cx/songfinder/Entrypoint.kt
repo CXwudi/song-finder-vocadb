@@ -8,9 +8,9 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import mikufan.cx.songfinder.backend.model.IOFiles
-import mikufan.cx.songfinder.ui.component.InputScreen
-import mikufan.cx.songfinder.ui.component.LoadingWindow
 import mikufan.cx.songfinder.ui.component.MainScreen
+import mikufan.cx.songfinder.ui.component.input.InputScreen
+import mikufan.cx.songfinder.ui.component.loading.LoadingWindow
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 import org.springframework.context.ConfigurableApplicationContext
 import kotlin.io.path.Path

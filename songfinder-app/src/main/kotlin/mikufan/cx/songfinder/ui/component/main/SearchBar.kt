@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.ui.component.mainpage
+package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons

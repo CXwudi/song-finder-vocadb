@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.ui.component.mainpage
+package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text

@@ -1,4 +1,4 @@
-package mikufan.cx.songfinder.ui.component.mainpage
+package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.animation.core.Spring
 import androidx.compose.animation.core.animateFloatAsState
