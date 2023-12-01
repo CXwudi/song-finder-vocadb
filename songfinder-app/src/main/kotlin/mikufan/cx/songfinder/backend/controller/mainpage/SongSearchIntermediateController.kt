@@ -11,6 +11,7 @@ import org.springframework.stereotype.Controller
 /**
  * Intermediate controller for song search functionality.
  * This class handles triggering the search and updating the search state.
+ * It also handles the cancellation of the previous search job if a new search is triggered.
  * @property searchInputStateModel The state model for search input.
  * @property searchOptionsStateModel The state model for search options.
  * @property searchResultStateModel The state model for search results.
@@ -30,9 +31,9 @@ class SongSearchIntermediateController(
   var searchJob: Job? = null
 
   /**
-   * Triggers a search operation with an optional delay.
+   * Triggers a search operation with an optional delay. Cancels the previous search job if it exists.
    *
-   * @param wait The optional delay in milliseconds before starting the search.
+   * @param wait The delay in milliseconds before starting the search. Defaults to 500ms.
    */
   suspend fun triggerSearch(wait: Long = 500) = coroutineScope {
     searchJob?.cancel()
