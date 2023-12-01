@@ -81,8 +81,8 @@ fun ResultPanelGrid(
   ) {
     LazyVerticalGrid(
       columns = GridCells.Adaptive(256.dp),
-      horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
-      verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+      horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
+      verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
 //      modifier = modifier.padding(end = MaterialTheme.spacing.paddingLarge),
       state = gridState,
     ) {

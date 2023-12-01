@@ -11,10 +11,10 @@ interface SongRepository : VocaDbRepository<Song, Long> {
     FROM songs s
       JOIN song_names sn ON s.id = sn.song_id
     WHERE
-      s.japanese_name LIKE concat('%', :title, '%')
-      OR s.english_name LIKE concat('%', :title, '%')
-      OR s.romaji_name LIKE concat('%', :title, '%')
-      OR sn.value LIKE concat('%', :title, '%')
+      s.japanese_name REGEXP :title
+      OR s.english_name REGEXP :title
+      OR s.romaji_name REGEXP :title
+      OR sn.value REGEXP :title
   """)
-  fun findByAllPossibleNamesContain(title: String): List<Song>
+  fun findByAllPossibleNames(title: String): List<Song>
 }

@@ -29,7 +29,7 @@ class SongRepositoryTest(
 
     should("find all songs that contains a string in any naming") {
       val title = "shinagawa"
-      val songs = songRepository.findByAllPossibleNamesContain(title)
+      val songs = songRepository.findByAllPossibleNames(title)
       println("songs = ${songs.joinToString("\n", "[\n", "\n]")}")
       songs.size shouldBe 4
     }

@@ -6,6 +6,7 @@ import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import mikufan.cx.songfinder.backend.controller.MainScreenController
 import mikufan.cx.songfinder.backend.db.entity.PvService
@@ -13,6 +14,7 @@ import mikufan.cx.songfinder.backend.db.entity.PvType
 import mikufan.cx.songfinder.backend.db.entity.SongType
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
+import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
@@ -28,11 +30,14 @@ fun MainScreen() {
 
 
 @Composable
-fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnCentralizedWithSpacing {
+fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnCentralizedWithSpacing(
+  horizontalAlignment = Alignment.Start
+) {
   ProgressBar()
   Divider()
   RestOfPart(isAllFinished.value, { FinishMessagePanel() }, {
     SearchBar()
+    RegexMatchOption()
     ResultPanel()
   })
 }
@@ -62,6 +67,7 @@ fun PreviewMainScreen() {
             {},
           )
         )
+        RealRegexMatchOption(SearchRegexOption.Exact, {})
         RealResultPanel(
           listOf(
             SongSearchResult(

@@ -9,6 +9,7 @@ import mikufan.cx.songfinder.backend.db.projection.ArtistInSong
 import mikufan.cx.songfinder.backend.db.repository.*
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
+import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import org.springframework.stereotype.Service
 
 /**
@@ -50,16 +51,19 @@ class SongSearchService(
    * @param title The title to search for.
    * @return A list of SongSearchResult objects matching the search criteria.
    */
-  suspend fun search(title: String): List<SongSearchResult> {
-    log.info { "Searching '$title'" }
+  suspend fun search(title: String, regexOption: SearchRegexOption): List<SongSearchResult> {
+    val regexOptionDescription = regexOption.description
+    val pattern = regexOption.pattern
+    log.info { "Searching '$title' with $regexOptionDescription" }
     // search steps:
     // 1. search songs by title
+    val formattedTitle = pattern.format(title)
     val songs = withContext(ioDispatcher) {
-      songRepo.findByAllPossibleNamesContain(title)
+      songRepo.findByAllPossibleNames(formattedTitle)
     }
     log.debug { "found ${songs.size} entries" }
     if (songs.isEmpty()) {
-      log.info { "No song found for '$title'" }
+      log.info { "No song found for '$formattedTitle'" }
       return emptyList()
     }
     val songIds = songs.map { it.id }
@@ -122,7 +126,7 @@ class SongSearchService(
         .sortedBy { it.publishDate }
     }
 
-    log.info { "Found ${results.size} results for '$title'" }
+    log.info { "Found ${results.size} results for '$title' with $regexOptionDescription" }
     return results
   }
 

@@ -11,10 +11,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.SearchBarController
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
@@ -31,30 +31,25 @@ fun SearchBar(modifier: Modifier = Modifier) {
   val controller = getSpringBean<SearchBarController>()
   val inputState = controller.currentInputState
   val searchStatusState = controller.currentSearchStatusState
-  val searchFunc = controller::search
   val model = SearchBarModel(
     inputState,
     searchStatusState,
     controller::setInput,
   )
-  DoSearchComposition(inputState.value, searchFunc)
+  DoSearchComposition(inputState.value, controller::search)
   RealSearchBar(model, modifier)
 }
 
 /**
- * Performs a search operation after a small delay for user input.
+ * Performs a search operation upon entering this composable or recomposition
+ * (which is when the input value changes)
  *
  * @param value the search value provided by the user.
  * @param searchFunc the suspend function to execute the search operation.
  */
 @Composable
 fun DoSearchComposition(value: String, searchFunc: suspend () -> Unit) {
-//  val scope = rememberCoroutineScope()
-  LaunchedEffect(value) {
-//      println("start $value")
-//      delay(1300)
-//      println("end $value")
-    delay(500) // still do a small delay waiting for user input
+  rememberCoroutineScope().launch {
     searchFunc()
   }
 }

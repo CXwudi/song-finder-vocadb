@@ -38,8 +38,8 @@ fun main() = application {
         Text("Hello World")
         LazyVerticalGrid(
           columns = GridCells.Adaptive(300.dp),
-          horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
-          verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+          horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
+          verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
           modifier = Modifier.padding(horizontal = MaterialTheme.spacing.padding),
         ) {
           item {
@@ -134,7 +134,7 @@ fun MusicCard(onCardClicked: suspend () -> Unit) {
 @Composable
 private fun PvRows() {
   Row(
-    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
     verticalAlignment = Alignment.CenterVertically,
   ) {
     val uriHandler = LocalUriHandler.current
