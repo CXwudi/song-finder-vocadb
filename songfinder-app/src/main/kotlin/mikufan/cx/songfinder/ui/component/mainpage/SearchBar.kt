@@ -1,5 +1,6 @@
 package mikufan.cx.songfinder.ui.component.mainpage
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.material.icons.Icons
@@ -116,7 +117,7 @@ internal fun RowScope.SearchTextField(
       }
     },
     maxLines = 1,
-    modifier = Modifier.weight(1f),
+    modifier = Modifier.weight(1f).animateContentSize(),
   )
 }
 
