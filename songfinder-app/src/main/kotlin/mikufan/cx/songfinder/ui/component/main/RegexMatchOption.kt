@@ -1,9 +1,9 @@
 package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.onClick
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
@@ -71,6 +71,6 @@ fun RegexMatchOptionButton(
   )
   Text(
     text = renderedOption.displayName,
-    modifier = Modifier.onClick { scope.launch { onOptionSet(renderedOption) } }
+    modifier = Modifier.clickable { scope.launch { onOptionSet(renderedOption) } }
   )
 }
