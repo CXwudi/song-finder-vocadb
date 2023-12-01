@@ -1,11 +1,9 @@
 package mikufan.cx.songfinder.ui.component.mainpage
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyGridItemScope
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -63,17 +61,70 @@ fun ResultPanelGrid(
   modifier: Modifier = Modifier,
   cellContent: @Composable LazyGridItemScope.(SongSearchResult) -> Unit,
 ) {
-  LazyVerticalGrid(
-    columns = GridCells.Adaptive(256.dp),
-    horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
-    verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+  val gridState = rememberLazyGridState(0)
+//  val verticalBarState = rememberScrollbarAdapter(scrollState = gridState)
+//
+//  val scrollBarStyle = LocalScrollbarStyle.current.let { style ->
+//    if (isSystemInDarkTheme()) {
+//      // Reverse the scrollbar color
+//      style.copy(
+//        unhoverColor = Color.White.copy(style.unhoverColor.alpha),
+//        hoverColor = Color.White.copy(style.hoverColor.alpha),
+//      )
+//    } else {
+//      style
+//    }
+//  }
+  // have to use box here to draw the scrollbar on the right side
+  Box(
     modifier = modifier.padding(horizontal = MaterialTheme.spacing.padding),
   ) {
-    items(
-      items = resultList,
-      key = { result -> result.id }
-    ) { result ->
-      cellContent(result)
+    LazyVerticalGrid(
+      columns = GridCells.Adaptive(256.dp),
+      horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+      verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmaller),
+//      modifier = modifier.padding(end = MaterialTheme.spacing.paddingLarge),
+      state = gridState,
+    ) {
+      items(
+        items = resultList,
+        key = { result -> result.id }
+      ) { result ->
+        cellContent(result)
+      }
     }
+
+//    OnNotResizing {
+//      VerticalScrollbar(
+//        adapter = verticalBarState,
+//        modifier = Modifier.align(Alignment.CenterEnd),
+//        style = scrollBarStyle,
+//      )
+//    }
   }
 }
+//
+//@OptIn(ExperimentalComposeUiApi::class, FlowPreview::class)
+//@Composable
+//fun OnNotResizing(
+//  content: @Composable () -> Unit,
+//) {
+//  val windowInfo = LocalWindowInfo.current
+//  val isResizing = remember { mutableStateOf(false) }
+//
+//  LaunchedEffect(windowInfo) {
+//    snapshotFlow { windowInfo.containerSize }
+////      .debounce(100)
+//      .collect {
+//        val newIsResizing = it != windowInfo.containerSize
+//        if (newIsResizing != isResizing.value) {
+//          isResizing.value = newIsResizing
+//        }
+//      }
+//  }
+//
+//// do not draw if resizing
+//  if (!isResizing.value) {
+//    content()
+//  }
+//}
