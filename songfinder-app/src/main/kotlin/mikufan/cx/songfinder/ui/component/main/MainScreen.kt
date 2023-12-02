@@ -22,8 +22,11 @@ import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 import java.time.LocalDateTime
 
 @Composable
-fun MainScreen() {
-  val finishedState = getSpringBean<MainScreenController>().isFinishedState
+fun MainScreen(
+  mainScreenController: MainScreenController = getSpringBean(),
+  modifier: Modifier = Modifier,
+) {
+  val finishedState = mainScreenController.isFinishedState
   RealMainScreen(finishedState)
 }
 
@@ -66,7 +69,7 @@ fun PreviewMainScreen() {
             {},
           )
         )
-        RealRegexMatchOption(SearchRegexOption.Exact, {})
+        RealRegexMatchOption(mutableStateOf(SearchRegexOption.Exact)) {}
         RealResultPanel(
           listOf(
             SongSearchResult(

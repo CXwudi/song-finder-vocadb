@@ -1,6 +1,5 @@
 package mikufan.cx.songfinder.ui.component.main
 
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -8,7 +7,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RadioButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -24,10 +23,11 @@ import mikufan.cx.songfinder.ui.theme.spacing
  *
  */
 @Composable
-fun RegexMatchOption() {
-  val controller = getSpringBean<RegexMatchOptionController>()
-  val option by controller.currentRegexOptionState
-  RealRegexMatchOption(option, controller::setRegexOption)
+fun RegexMatchOption(
+  controller: RegexMatchOptionController = getSpringBean(),
+  modifier: Modifier = Modifier,
+) {
+  RealRegexMatchOption(controller.currentRegexOptionState, controller::setRegexOption)
 }
 
 
@@ -38,7 +38,8 @@ fun RegexMatchOption() {
  * @param onOptionSet The callback function called when a regex option is selected.
  */
 @Composable
-fun RealRegexMatchOption(option: SearchRegexOption, onOptionSet: suspend (SearchRegexOption) -> Unit) = RowCentralizedWithSpacing(
+fun RealRegexMatchOption(option: State<SearchRegexOption>, onOptionSet: suspend (SearchRegexOption) -> Unit) =
+  RowCentralizedWithSpacing(
   horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing)
 ) {
   Text("Regex Match Option: ")
@@ -51,14 +52,13 @@ fun RealRegexMatchOption(option: SearchRegexOption, onOptionSet: suspend (Search
  * Composable function to render a single regex match option.
  *
  * @param renderedOption The regex option to render.
- * @param selectedOption The currently selected regex option.
+ * @param selectedOptionState The currently selected regex option.
  * @param onOptionSet The callback function called when a regex option is selected.
  */
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun RegexMatchOptionButton(
   renderedOption: SearchRegexOption,
-  selectedOption: SearchRegexOption,
+  selectedOptionState: State<SearchRegexOption>,
   onOptionSet: suspend (SearchRegexOption) -> Unit
 ) = Row(
   modifier = Modifier,
@@ -66,7 +66,7 @@ fun RegexMatchOptionButton(
 ) {
   val scope = rememberCoroutineScope()
   RadioButton(
-    selected = renderedOption == selectedOption,
+    selected = renderedOption == selectedOptionState.value,
     onClick = { scope.launch { onOptionSet(renderedOption) } }
   )
   Text(

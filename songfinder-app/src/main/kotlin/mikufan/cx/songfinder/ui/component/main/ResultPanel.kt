@@ -20,10 +20,12 @@ import mikufan.cx.songfinder.ui.theme.spacing
  * Retrieves the current result state from the controller and passes it to the RealResultPanel composable.
  */
 @Composable
-fun ResultPanel() {
-  val controller = getSpringBean<ResultPanelController>()
+fun ResultPanel(
+  controller: ResultPanelController = getSpringBean<ResultPanelController>(),
+  modifier: Modifier = Modifier,
+) {
   val resultList = controller.currentResultState
-  RealResultPanel(resultList) { result ->
+  RealResultPanel(resultList, modifier) { result ->
     ResultGridCell(result)
   }
 }

@@ -22,8 +22,10 @@ import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 
 
 @Composable
-fun ProgressBar(modifier: Modifier = Modifier) {
-  val controller = getSpringBean<ProgressBarController>()
+fun ProgressBar(
+  controller: ProgressBarController = getSpringBean(),
+  modifier: Modifier = Modifier
+) {
   val currentCount by controller.currentIndexState
   val totalCount = remember { controller.totalCount }
   RealProgressBar(currentCount, totalCount, modifier)

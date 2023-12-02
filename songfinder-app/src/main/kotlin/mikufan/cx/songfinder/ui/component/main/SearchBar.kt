@@ -27,8 +27,10 @@ import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
  * @param modifier The modifier to be applied to the search bar.
  */
 @Composable
-fun SearchBar(modifier: Modifier = Modifier) {
-  val controller = getSpringBean<SearchBarController>()
+fun SearchBar(
+  controller: SearchBarController = getSpringBean(),
+  modifier: Modifier = Modifier
+) {
   val inputState = controller.currentInputState
   val searchStatusState = controller.currentSearchStatusState
   val model = SearchBarModel(
