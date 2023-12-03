@@ -40,7 +40,6 @@ import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.spacing
 import java.time.format.DateTimeFormatter
 
-@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyGridItemScope.ResultGridCell(
   result: SongSearchResult,
@@ -50,9 +49,10 @@ fun LazyGridItemScope.ResultGridCell(
     onCardClicked = { controller.handleRecord(it) },
     provideThumbnailUrl = { TODO() }
   )
-  RealResultGridCell(result, callbacks, Modifier.animateItemPlacement())
+  RealResultGridCell(result, callbacks)
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyGridItemScope.RealResultGridCell(
   result: SongSearchResult,
@@ -67,7 +67,10 @@ fun LazyGridItemScope.RealResultGridCell(
       PvService.Bilibili
     )
   }
-  MusicCardTemplate(onCardClicked = { callbacks.onCardClicked(result) }, modifier) {
+  MusicCardTemplate(
+    onCardClicked = { callbacks.onCardClicked(result) },
+    modifier.animateItemPlacement()
+  ) {
     LazyThumbnailImage(result, filteredPvs)
     MusicInfo(result, filteredPvs)
   }
