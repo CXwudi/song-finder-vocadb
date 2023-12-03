@@ -45,10 +45,6 @@ fun LazyGridItemScope.ResultGridCell(result: SongSearchResult) {
 }
 
 @Composable
-fun DebugUsedCell(result: SongSearchResult, modifier: Modifier = Modifier) {
-}
-
-@Composable
 fun LazyGridItemScope.RealResultGridCell(result: SongSearchResult, modifier: Modifier = Modifier) {
   val filteredPvs = result.pvs.filter {
     it.pvService in listOf(
