@@ -2,6 +2,7 @@ package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.MaterialTheme
@@ -43,8 +44,11 @@ fun RealResultPanel(
   cellContent: @Composable LazyGridItemScope.(SongSearchResult) -> Unit,
 ) {
   if (resultList.isEmpty()) {
-    RowCentralizedWithSpacing(furtherModifier = modifier) {
-      Text("No result found", style = MaterialTheme.typography.titleMedium)
+    RowCentralizedWithSpacing(furtherModifier = modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
+      Text(
+        "No result found",
+        style = MaterialTheme.typography.titleMedium,
+      )
     }
   } else {
     ResultPanelGrid(resultList, modifier, cellContent)

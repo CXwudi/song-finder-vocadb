@@ -89,7 +89,7 @@ fun RealSearchBar(
       SearchTextField(model)
     }
   }
-  Box(modifier = modifier.defaultMinSize(minWidth = 48.dp)) {
+  Box(modifier = modifier.width(48.dp)) {
     SearchProgressIndicator(model.searchStatusState.value, modifier.align(Alignment.Center))
   }
 }
