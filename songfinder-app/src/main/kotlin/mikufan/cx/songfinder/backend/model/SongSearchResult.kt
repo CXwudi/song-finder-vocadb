@@ -45,4 +45,19 @@ data class PVInfo(
   val id: String,
   val pvService: PvService,
   val pvType: PvType
-)
+) {
+
+  val url: String by lazy(LazyThreadSafetyMode.NONE) {
+    when (pvService) {
+      PvService.NicoNicoDouga -> "https://www.nicovideo.jp/watch/$id"
+      PvService.Youtube -> "https://www.youtube.com/watch?v=$id"
+      PvService.SoundCloud -> "https://soundcloud.com/${id.split(" ")[1]}"
+//      PvService.Vimeo -> "https://vimeo.com/$id"
+//      PvService.Piapro -> "https://piapro.jp/t/$id"
+      PvService.Bilibili -> "https://www.bilibili.com/video/av$id"
+//      PvService.Creofuga -> "https://creofuga.net/$id"
+//      PvService.Bandcamp -> "https://bandcamp.com/$id"
+      else -> throw IllegalArgumentException("Cannot convert PVInfo to url, pvService is $pvService")
+    }
+  }
+}
