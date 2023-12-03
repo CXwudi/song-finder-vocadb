@@ -14,7 +14,8 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.produceState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,6 +31,7 @@ import compose.icons.simpleicons.Bilibili
 import compose.icons.simpleicons.Niconico
 import compose.icons.simpleicons.Soundcloud
 import compose.icons.simpleicons.Youtube
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultCellController
 import mikufan.cx.songfinder.backend.db.entity.PvService
@@ -43,10 +45,11 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun LazyGridItemScope.ResultGridCell(
   result: SongSearchResult,
+  scopeFromIrremovableParent: CoroutineScope,
   controller: ResultCellController = getSpringBean(),
 ) {
   val callbacks = ResultCellCallbacks(
-    onCardClicked = { controller.handleRecord(it) },
+    onCardClicked = { scopeFromIrremovableParent.launch { controller.handleRecord(it) } },
     provideThumbnailUrl = { TODO() }
   )
   RealResultGridCell(result, callbacks)
@@ -59,13 +62,15 @@ fun LazyGridItemScope.RealResultGridCell(
   callbacks: ResultCellCallbacks,
   modifier: Modifier = Modifier
 ) {
-  val filteredPvs = result.pvs.filter {
-    it.pvService in listOf(
-      PvService.Youtube,
-      PvService.NicoNicoDouga,
-      PvService.SoundCloud,
-      PvService.Bilibili
-    )
+  val filteredPvs: List<PVInfo>? by produceState<List<PVInfo>?>(null) {
+    value = result.pvs.filter {
+      it.pvService in listOf(
+        PvService.Youtube,
+        PvService.NicoNicoDouga,
+        PvService.SoundCloud,
+        PvService.Bilibili
+      )
+    }
   }
   MusicCardTemplate(
     onCardClicked = { callbacks.onCardClicked(result) },
@@ -79,10 +84,13 @@ fun LazyGridItemScope.RealResultGridCell(
 @Composable
 fun LazyThumbnailImage(
   result: SongSearchResult,
-  pvs: List<PVInfo>
+  pvs: List<PVInfo>?
 ) {
   //TODO: use the first ever available PV's thumbnail, if no PVs, use image not found.
   // If exceptions (typically no available PVs), use image failed to load
+
+  // Loading process: starting from the first PV, if failed to load, try the next one. If all failed, use image not found
+
   Image(
     painter = painterResource("image/image-not-found-icon.svg"),
     contentDescription = "Thumbnail",
@@ -94,7 +102,7 @@ fun LazyThumbnailImage(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>) = Column {
+fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>?) = Column {
   val (id, title, type, vocals, producers, publishDate, _) = songInfo
   Row(
     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing, Alignment.CenterHorizontally),
@@ -122,15 +130,22 @@ fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>) = Column {
       )
     }
   }
+
+  val artistString by produceState("Loading Artists...") {
+    value = getArtistString(vocals, producers)
+  }
   Text(
-    text = getArtistString(vocals, producers),
+    text = artistString,
     style = MaterialTheme.typography.titleMedium,
     maxLines = 1,
     overflow = TextOverflow.Ellipsis,
     modifier = Modifier.basicMarquee(),
   )
+  val publishDateText by produceState("Loading...") {
+    value = publishDate?.format(DateTimeFormatter.ISO_DATE) ?: "Unknown"
+  }
   Text(
-    text = "Publish Date: ${publishDate?.format(DateTimeFormatter.ISO_DATE) ?: "Unknown"}",
+    text = "Publish Date: $publishDateText",
     style = MaterialTheme.typography.bodyMedium,
     maxLines = 1,
     modifier = Modifier.basicMarquee(),
@@ -141,7 +156,14 @@ fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>) = Column {
     maxLines = 1,
     modifier = Modifier.basicMarquee(),
   )
-  PvRows(filteredPvs)
+  if (filteredPvs == null) {
+    Text(
+      text = "Loading PVs...",
+      style = MaterialTheme.typography.bodyMedium,
+    )
+  } else {
+    PvRows(filteredPvs)
+  }
 }
 
 @Composable
@@ -194,36 +216,32 @@ private fun PvRows(pvs: List<PVInfo>) {
 /* --- Utils ---*/
 
 data class ResultCellCallbacks(
-  val onCardClicked: suspend (SongSearchResult) -> Unit,
+  val onCardClicked: (SongSearchResult) -> Unit,
   val provideThumbnailUrl: suspend (SongSearchResult) -> String,
 )
+
+private val UnknownArtist = "Unknown Artist"
 
 internal fun getArtistString(vocals: List<String>, producers: List<String>): String {
   val vocalString = vocals.joinToString(", ")
   val producerString = producers.joinToString(", ")
-  return if (vocalString.isEmpty()) {
-    producerString
-  } else if (producerString.isEmpty()) {
-    vocalString
-  } else {
-    "$producerString feat. $vocalString"
+  return when {
+    vocalString.isEmpty() && producerString.isEmpty() -> UnknownArtist
+    vocalString.isEmpty() -> producerString
+    producerString.isEmpty() -> vocalString
+    else -> "$producerString feat. $vocalString"
   }
 }
 
 @Composable
 internal fun MusicCardTemplate(
-  onCardClicked: suspend () -> Unit,
+  onCardClicked: () -> Unit,
   modifier: Modifier = Modifier,
   content: @Composable () -> Unit
 ) {
-  val scope = rememberCoroutineScope()
   Card(
     shape = RoundedCornerShape(MaterialTheme.spacing.cornerShapeLarge),
-    modifier = Modifier.then(modifier).clickable {
-      scope.launch {
-        onCardClicked()
-      }
-    }
+    modifier = Modifier.then(modifier).clickable { onCardClicked() }
   ) {
     Row(
       verticalAlignment = Alignment.CenterVertically,

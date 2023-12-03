@@ -8,6 +8,7 @@ import androidx.compose.foundation.lazy.grid.*
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultPanelController
@@ -26,8 +27,9 @@ fun ResultPanel(
   modifier: Modifier = Modifier,
 ) {
   val resultList = controller.currentResultState
+  val scope = rememberCoroutineScope()
   RealResultPanel(resultList, modifier) { result ->
-    ResultGridCell(result)
+    ResultGridCell(result, scope)
   }
 }
 

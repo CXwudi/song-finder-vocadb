@@ -4,10 +4,7 @@ import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.model.SongSearchResult
 import mikufan.cx.songfinder.backend.service.InputFileLineReader
 import mikufan.cx.songfinder.backend.service.OutputCsvLineWriter
-import mikufan.cx.songfinder.backend.statemodel.ProgressStateModel
-import mikufan.cx.songfinder.backend.statemodel.SearchInputStateModel
-import mikufan.cx.songfinder.backend.statemodel.SearchOptionsStateModel
-import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
+import mikufan.cx.songfinder.backend.statemodel.*
 import org.springframework.stereotype.Controller
 
 @Controller
@@ -17,6 +14,7 @@ class ResultCellController(
   private val inputFileLineReader: InputFileLineReader,
   private val inputStateModel: SearchInputStateModel,
   private val searchOptionsStateModel: SearchOptionsStateModel,
+  private val searchResultStateModel: SearchResultStateModel,
   private val songSearchIntermediateController: SongSearchIntermediateController,
 ) {
 
@@ -32,6 +30,7 @@ class ResultCellController(
     } else {
       inputStateModel.update(nextSongTitle)
       searchOptionsStateModel.searchRegexOptionState.value = SearchRegexOption.Contains
+      searchResultStateModel.resultState.clear()
       songSearchIntermediateController.triggerSearch(0)
     }
   }
