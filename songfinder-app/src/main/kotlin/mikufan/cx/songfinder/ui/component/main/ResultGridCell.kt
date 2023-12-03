@@ -31,21 +31,34 @@ import compose.icons.simpleicons.Niconico
 import compose.icons.simpleicons.Soundcloud
 import compose.icons.simpleicons.Youtube
 import kotlinx.coroutines.launch
+import mikufan.cx.songfinder.backend.controller.mainpage.ResultCellController
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
+import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.spacing
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun LazyGridItemScope.ResultGridCell(result: SongSearchResult) {
-  RealResultGridCell(result, Modifier.animateItemPlacement())
+fun LazyGridItemScope.ResultGridCell(
+  result: SongSearchResult,
+  controller: ResultCellController = getSpringBean(),
+) {
+  val callbacks = ResultCellCallbacks(
+    onCardClicked = { controller.handleRecord(it) },
+    provideThumbnailUrl = { TODO() }
+  )
+  RealResultGridCell(result, callbacks, Modifier.animateItemPlacement())
 }
 
 @Composable
-fun LazyGridItemScope.RealResultGridCell(result: SongSearchResult, modifier: Modifier = Modifier) {
+fun LazyGridItemScope.RealResultGridCell(
+  result: SongSearchResult,
+  callbacks: ResultCellCallbacks,
+  modifier: Modifier = Modifier
+) {
   val filteredPvs = result.pvs.filter {
     it.pvService in listOf(
       PvService.Youtube,
@@ -54,15 +67,19 @@ fun LazyGridItemScope.RealResultGridCell(result: SongSearchResult, modifier: Mod
       PvService.Bilibili
     )
   }
-  MusicCardTemplate({}, modifier) {
-    ThumbnailImage(filteredPvs)
+  MusicCardTemplate(onCardClicked = { callbacks.onCardClicked(result) }, modifier) {
+    LazyThumbnailImage(result, filteredPvs)
     MusicInfo(result, filteredPvs)
   }
 }
 
 @Composable
-fun ThumbnailImage(pvs: List<PVInfo>) {
-  //TODO: use the first ever available PV's thumbnail, if no PVs, use image not found. If no available PVs, use
+fun LazyThumbnailImage(
+  result: SongSearchResult,
+  pvs: List<PVInfo>
+) {
+  //TODO: use the first ever available PV's thumbnail, if no PVs, use image not found.
+  // If exceptions (typically no available PVs), use image failed to load
   Image(
     painter = painterResource("image/image-not-found-icon.svg"),
     contentDescription = "Thumbnail",
@@ -172,6 +189,11 @@ private fun PvRows(pvs: List<PVInfo>) {
 
 
 /* --- Utils ---*/
+
+data class ResultCellCallbacks(
+  val onCardClicked: suspend (SongSearchResult) -> Unit,
+  val provideThumbnailUrl: suspend (SongSearchResult) -> String,
+)
 
 internal fun getArtistString(vocals: List<String>, producers: List<String>): String {
   val vocalString = vocals.joinToString(", ")

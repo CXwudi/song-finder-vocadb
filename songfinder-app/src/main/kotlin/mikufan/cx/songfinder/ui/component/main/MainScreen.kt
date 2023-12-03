@@ -90,7 +90,7 @@ fun PreviewMainScreen() {
             )
           )
         ) {
-          RealResultGridCell(it)
+          RealResultGridCell(it, ResultCellCallbacks({}, { "" }))
         }
       }
     }
