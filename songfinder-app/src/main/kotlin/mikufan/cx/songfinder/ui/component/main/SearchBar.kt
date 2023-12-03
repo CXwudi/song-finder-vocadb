@@ -9,6 +9,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.State
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
@@ -37,24 +38,22 @@ fun SearchBar(
     inputState,
     searchStatusState,
     controller::setInput,
+    controller::search
   )
-  DoSearchComposition(inputState.value, controller::search)
+  DoSearchAtStart(controller::search)
   RealSearchBar(model, modifier)
 }
 
 /**
- * Performs a search operation upon entering this composable or recomposition
- * (which is when the input value changes)
+ * Performs a search operation once upon the app starts.
  *
- * @param value the search value provided by the user.
- * This parameter is not used in the code,
- * but it is necessary to trigger recomposition upon the right timing,
- * which is when the input is changed.
+ * The operation should be performed only once as it is wrapped in a [LaunchedEffect].
+ *
  * @param searchFunc the suspend function to execute the search operation.
  */
 @Composable
-fun DoSearchComposition(value: String, searchFunc: suspend () -> Unit) {
-  rememberCoroutineScope().launch {
+fun DoSearchAtStart(searchFunc: suspend () -> Unit) {
+  LaunchedEffect(Unit) {
     searchFunc()
   }
 }
@@ -103,11 +102,13 @@ fun RealSearchBar(
 internal fun RowScope.SearchTextField(
   model: SearchBarModel
 ) {
-  val (currentInputState, _, onValueChange) = model
+  val scope = rememberCoroutineScope()
+  val (currentInputState, _, onValueChange, doSearch) = model
   OutlinedTextField(
     value = currentInputState.value,
     onValueChange = {
       onValueChange(it)
+      scope.launch { doSearch() }
     },
     label = {
       RowCentralizedWithSpacing(
@@ -189,4 +190,5 @@ data class SearchBarModel(
   val currentInputState: State<String>,
   val searchStatusState: State<SearchStatus>,
   val onValueChange: (newInput: String) -> Unit,
+  val doSearch: suspend () -> Unit,
 )
