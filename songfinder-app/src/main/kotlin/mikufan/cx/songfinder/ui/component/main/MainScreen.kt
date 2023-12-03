@@ -67,6 +67,7 @@ fun PreviewMainScreen() {
             mutableStateOf(""),
             mutableStateOf(SearchStatus.Done),
             {},
+            {}
           )
         )
         RealRegexMatchOption(mutableStateOf(SearchRegexOption.Exact), mutableStateOf("title")) {}
@@ -89,7 +90,7 @@ fun PreviewMainScreen() {
             )
           )
         ) {
-          DebugUsedCell(it, Modifier.animateItemPlacement())
+          RealResultGridCell(it)
         }
       }
     }
