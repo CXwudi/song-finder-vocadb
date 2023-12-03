@@ -132,17 +132,10 @@ private fun PvRows(pvs: List<PVInfo>) {
     verticalAlignment = Alignment.CenterVertically,
   ) {
     item {
-      if (pvs.isEmpty()) {
-        Text(
-          text = "No PVs",
-          style = MaterialTheme.typography.bodyMedium,
-        )
-      } else {
-        Text(
-          text = "PVs:",
-          style = MaterialTheme.typography.bodyMedium,
-        )
-      }
+      Text(
+        text = if (pvs.isEmpty()) "No PVs" else "PVs:",
+        style = MaterialTheme.typography.bodyMedium,
+      )
     }
     if (pvs.isNotEmpty()) {
       items(pvs) { pv ->
