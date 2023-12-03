@@ -40,7 +40,7 @@ fun RegexMatchOption(
  * @param onOptionSet The callback function called when a regex option is selected.
  */
 @Composable
-fun RealRegexMatchOption(
+internal fun RealRegexMatchOption(
   option: State<SearchRegexOption>,
   currentInputState: State<String>,
   modifier: Modifier = Modifier,
@@ -63,7 +63,7 @@ fun RealRegexMatchOption(
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun RegexMatchOptionButton(
+internal fun RegexMatchOptionButton(
   renderedOption: SearchRegexOption,
   selectedOptionState: State<SearchRegexOption>,
   currentInputState: State<String>,

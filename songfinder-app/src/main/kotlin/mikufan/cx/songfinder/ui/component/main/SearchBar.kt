@@ -129,7 +129,7 @@ internal fun RowScope.SearchTextField(
  * @param status The current search status.
  */
 @Composable
-fun SearchProgressIndicator(status: SearchStatus, alignment: Modifier) {
+internal fun SearchProgressIndicator(status: SearchStatus, alignment: Modifier) {
   when (status) {
     SearchStatus.Searching -> {
       OnSearchingIndicator(alignment)
@@ -149,7 +149,7 @@ fun SearchProgressIndicator(status: SearchStatus, alignment: Modifier) {
  * When called, the method will display a tooltip area with a "Searching for the song, please wait..." text and a circular progress indicator.
  */
 @Composable
-fun OnSearchingIndicator(alignment: Modifier) {
+internal fun OnSearchingIndicator(alignment: Modifier) {
   TooltipAreaWithCard(
     tip = {
       Text("Searching for the song, please wait...")
@@ -167,7 +167,7 @@ fun OnSearchingIndicator(alignment: Modifier) {
  * Additionally, it shows an icon representing the completion of the search.
  */
 @Composable
-fun IsDoneIndicator(alignment: Modifier) {
+internal fun IsDoneIndicator(alignment: Modifier) {
   TooltipAreaWithCard(
     tip = {
       Text("Search is done")
