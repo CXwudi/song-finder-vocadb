@@ -35,14 +35,14 @@ fun ProgressBar(
 fun RealProgressBar(currentCount: ULong, totalCount: ULong, modifier: Modifier = Modifier) = RowCentralizedWithSpacing {
   TooltipAreaWithCard(
     tip = {
-      progressTooltipText()
+      ProgressTooltipText()
     },
   ) {
     Text("Progress:")
   }
   TooltipAreaWithCard(
     tip = {
-      progressTooltipText()
+      ProgressTooltipText()
     },
     modifier = modifier.weight(1f),
   ) {
@@ -55,7 +55,7 @@ fun RealProgressBar(currentCount: ULong, totalCount: ULong, modifier: Modifier =
 }
 
 @Composable
-private fun progressTooltipText() {
+private fun ProgressTooltipText() {
   Text(
     "The progress of the current task,\n" +
         "which is the number of songs that have been processed\n" +
