@@ -14,7 +14,7 @@ class SearchInputStateModel(
   /**
    * To record the current input content from the search bar
    */
-  var currentInputState: MutableState<String> = mutableStateOf(initialInput)
+  val currentInputState: MutableState<String> = mutableStateOf(initialInput)
 
   fun update(newInput: String) {
     currentInputState.value = newInput

@@ -18,7 +18,7 @@ import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
-import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
+import mikufan.cx.songfinder.ui.theme.MyAppTheme
 import java.time.LocalDateTime
 
 @Composable
@@ -57,7 +57,7 @@ fun RestOfPart(isAllFinished: Boolean, isAllFinishedContent: @Composable () -> U
 @Preview
 @Composable
 fun PreviewMainScreen() {
-  MyAppThemeWithSurface {
+  MyAppTheme {
     ColumnCentralizedWithSpacing {
       RealProgressBar(39u, 100u)
       Divider()
@@ -69,7 +69,7 @@ fun PreviewMainScreen() {
             {},
           )
         )
-        RealRegexMatchOption(mutableStateOf(SearchRegexOption.Exact)) {}
+        RealRegexMatchOption(mutableStateOf(SearchRegexOption.Exact), mutableStateOf("title")) {}
         RealResultPanel(
           listOf(
             SongSearchResult(
