@@ -2,6 +2,7 @@ package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.layout.ColumnScope
 import androidx.compose.material3.Divider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -45,7 +46,11 @@ fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnCentralizedWithSpacing
 }
 
 @Composable
-fun RestOfPart(isAllFinished: Boolean, isAllFinishedContent: @Composable () -> Unit, notFinishedContent: @Composable () -> Unit) =
+fun ColumnScope.RestOfPart(
+  isAllFinished: Boolean,
+  isAllFinishedContent: @Composable ColumnScope.() -> Unit,
+  notFinishedContent: @Composable ColumnScope.() -> Unit
+) =
   if (isAllFinished) {
     isAllFinishedContent()
   } else {
