@@ -64,7 +64,7 @@ fun ColumnScope.RestOfPart(
 fun PreviewMainScreen() {
   MyAppTheme {
     ColumnCentralizedWithSpacing {
-      RealProgressBar(39u, 100u)
+      RealProgressBar(mutableStateOf(39u), 100u)
       Divider()
       RestOfPart(false, {}) {
         RealSearchBar(
