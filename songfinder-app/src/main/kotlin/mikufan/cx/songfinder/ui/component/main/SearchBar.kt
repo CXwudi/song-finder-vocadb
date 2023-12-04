@@ -1,5 +1,6 @@
 package mikufan.cx.songfinder.ui.component.main
 
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Done
@@ -131,14 +132,18 @@ internal fun RowScope.SearchTextField(
  */
 @Composable
 internal fun SearchProgressIndicator(status: SearchStatus, alignment: Modifier) {
-  when (status) {
-    SearchStatus.Searching -> {
-      OnSearchingIndicator(alignment)
-    }
-    SearchStatus.Done -> {
-      IsDoneIndicator(alignment)
+  AnimatedContent(status, modifier = alignment) {
+    when (it) {
+      SearchStatus.Searching -> {
+        OnSearchingIndicator()
+      }
+
+      SearchStatus.Done -> {
+        IsDoneIndicator()
+      }
     }
   }
+
 }
 
 /**
@@ -150,14 +155,14 @@ internal fun SearchProgressIndicator(status: SearchStatus, alignment: Modifier) 
  * When called, the method will display a tooltip area with a "Searching for the song, please wait..." text and a circular progress indicator.
  */
 @Composable
-internal fun OnSearchingIndicator(alignment: Modifier) {
+internal fun OnSearchingIndicator(alignment: Modifier = Modifier) {
   TooltipAreaWithCard(
     tip = {
       Text("Searching for the song, please wait...")
     },
     modifier = alignment,
   ) {
-    CircularProgressIndicator()
+    CircularProgressIndicator(modifier = alignment)
   }
 }
 
@@ -168,14 +173,18 @@ internal fun OnSearchingIndicator(alignment: Modifier) {
  * Additionally, it shows an icon representing the completion of the search.
  */
 @Composable
-internal fun IsDoneIndicator(alignment: Modifier) {
+internal fun IsDoneIndicator(alignment: Modifier = Modifier) {
   TooltipAreaWithCard(
     tip = {
       Text("Search is done")
     },
     modifier = alignment,
   ) {
-    Icon(Icons.Default.Done, contentDescription = "Search is Done")
+    Icon(
+      Icons.Default.Done,
+      contentDescription = "Search is Done",
+      modifier = alignment
+    )
   }
 }
 
