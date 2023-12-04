@@ -3,6 +3,7 @@ package mikufan.cx.songfinder.backend.controller.mainpage
 import kotlinx.coroutines.*
 import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.service.SongSearchService
+import mikufan.cx.songfinder.backend.statemodel.ResultGridStateModel
 import mikufan.cx.songfinder.backend.statemodel.SearchInputStateModel
 import mikufan.cx.songfinder.backend.statemodel.SearchOptionsStateModel
 import mikufan.cx.songfinder.backend.statemodel.SearchResultStateModel
@@ -22,6 +23,7 @@ class SongSearchIntermediateController(
   private val searchInputStateModel: SearchInputStateModel,
   private val searchOptionsStateModel: SearchOptionsStateModel,
   private val searchResultStateModel: SearchResultStateModel,
+  private val resultGridStateModel: ResultGridStateModel,
   private val songSearchService: SongSearchService,
 ) {
 
@@ -65,6 +67,9 @@ class SongSearchIntermediateController(
       emptyList()
     }
     searchResultStateModel.setAsDoneWith(results)
+    if (results.isNotEmpty()) {
+      resultGridStateModel.scrollToTop()
+    }
   }
 }
 

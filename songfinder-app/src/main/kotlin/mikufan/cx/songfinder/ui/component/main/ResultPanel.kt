@@ -1,5 +1,6 @@
 package mikufan.cx.songfinder.ui.component.main
 
+import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -27,8 +28,9 @@ fun ResultPanel(
   modifier: Modifier = Modifier,
 ) {
   val resultList = controller.currentResultState
+  val gridState = controller.resultGridState
   val scope = rememberCoroutineScope()
-  RealResultPanel(resultList, modifier) { result ->
+  RealResultPanel(resultList, gridState, modifier) { result ->
     ResultGridCell(result, scope)
   }
 }
@@ -42,6 +44,7 @@ fun ResultPanel(
 @Composable
 fun RealResultPanel(
   resultList: List<SongSearchResult>,
+  gridState: LazyGridState = rememberLazyGridState(),
   modifier: Modifier = Modifier,
   cellContent: @Composable LazyGridItemScope.(SongSearchResult) -> Unit,
 ) {
@@ -53,7 +56,7 @@ fun RealResultPanel(
       )
     }
   } else {
-    ResultPanelGrid(resultList, modifier, cellContent)
+    ResultPanelGrid(resultList, gridState, modifier, cellContent)
   }
 }
 
@@ -66,10 +69,10 @@ fun RealResultPanel(
 @Composable
 fun ResultPanelGrid(
   resultList: List<SongSearchResult>,
+  gridState: LazyGridState,
   modifier: Modifier = Modifier,
-  cellContent: @Composable LazyGridItemScope.(SongSearchResult) -> Unit,
+  cellContent: @Composable() (LazyGridItemScope.(SongSearchResult) -> Unit),
 ) {
-  val gridState = rememberLazyGridState(0)
 //  val verticalBarState = rememberScrollbarAdapter(scrollState = gridState)
 //
 //  val scrollBarStyle = LocalScrollbarStyle.current.let { style ->
@@ -83,7 +86,6 @@ fun ResultPanelGrid(
 //      style
 //    }
 //  }
-  // have to use box here to draw the scrollbar on the right side
   Box(
     modifier = modifier.padding(horizontal = MaterialTheme.spacing.padding),
   ) {
@@ -92,6 +94,7 @@ fun ResultPanelGrid(
       horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
       verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
 //      modifier = modifier.padding(end = MaterialTheme.spacing.paddingLarge),
+      modifier = modifier.animateContentSize(),
       state = gridState,
     ) {
       items(
@@ -111,6 +114,7 @@ fun ResultPanelGrid(
 //    }
   }
 }
+
 //
 //@OptIn(ExperimentalComposeUiApi::class, FlowPreview::class)
 //@Composable
