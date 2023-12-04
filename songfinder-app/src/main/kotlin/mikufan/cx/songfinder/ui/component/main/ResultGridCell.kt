@@ -44,6 +44,13 @@ import mikufan.cx.songfinder.ui.theme.spacing
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
+/**
+ * Composable function that represents a grid cell in a lazy grid.
+ *
+ * @param result The song search result to display in the grid cell.
+ * @param scopeFromIrremovableParent The coroutine scope from the parent that cannot be removed.
+ * @param controller The result cell controller to handle interactions with the grid cell.
+ */
 @Composable
 fun LazyGridItemScope.ResultGridCell(
   result: SongSearchResult,
@@ -57,6 +64,13 @@ fun LazyGridItemScope.ResultGridCell(
   RealResultGridCell(result, callbacks)
 }
 
+/**
+ * The real composable for displaying a real music search result.
+ *
+ * @param result The search result for the music.
+ * @param callbacks The callbacks for interacting with the result.
+ * @param modifier The modifier for styling the grid cell.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun LazyGridItemScope.RealResultGridCell(
@@ -83,6 +97,12 @@ fun LazyGridItemScope.RealResultGridCell(
   }
 }
 
+/**
+ * Composable function to display a lazy loading thumbnail image for a song search result.
+ *
+ * @param result The song search result
+ * @param pvs The list of PV (Promotional Video) information
+ */
 @Composable
 fun LazyThumbnailImage(
   result: SongSearchResult,
@@ -102,6 +122,12 @@ fun LazyThumbnailImage(
   )
 }
 
+/**
+ * Displays music information for a given song.
+ *
+ * @param songInfo the information of the song being displayed, including its id, title, type, vocals, producers, and publish date.
+ * @param filteredPvs a list of PVInfo objects representing the PVs (promotional videos) related to the song.
+ */
 @Composable
 fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>) = Column {
   val (id, title, type, vocals, producers, publishDate, _) = songInfo
@@ -112,6 +138,12 @@ fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>) = Column {
   PvField(filteredPvs)
 }
 
+/**
+ * Displays the title of a song.
+ *
+ * @param id The ID of the song.
+ * @param title The title of the song.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SongTitle(id: Long, title: String) {
@@ -143,6 +175,12 @@ private fun SongTitle(id: Long, title: String) {
   }
 }
 
+/**
+ * Displays the artist string based on the given vocals and producers lists.
+ *
+ * @param vocals A list of vocal artists.
+ * @param producers A list of producer artists.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun ArtistField(vocals: List<String>, producers: List<String>) {
@@ -158,6 +196,12 @@ private fun ArtistField(vocals: List<String>, producers: List<String>) {
   )
 }
 
+/**
+ * Displays the publish date of the song.
+ *
+ * @param publishDate The publish date of the song.
+ * @optIn Requires [ExperimentalFoundationApi] to be enabled.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun PublishDateField(publishDate: LocalDateTime?) {
@@ -172,6 +216,11 @@ private fun PublishDateField(publishDate: LocalDateTime?) {
   )
 }
 
+/**
+ * Displays the type of song.
+ *
+ * @param type The type of the song.
+ */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 private fun SongTypeField(type: SongType) {
@@ -183,6 +232,13 @@ private fun SongTypeField(type: SongType) {
   )
 }
 
+/**
+ * Displays a list of PVs.
+ *
+ * @param pvs The list of PVInfo objects representing the PVs to be displayed.
+ *
+ * @see PVInfo
+ */
 @Composable
 private fun PvField(pvs: List<PVInfo>) {
   val uriHandler = LocalUriHandler.current
@@ -231,13 +287,33 @@ private fun PvField(pvs: List<PVInfo>) {
 
 /* --------- Utils --------- */
 
+/**
+ * Represents a set of callback functions used by a result cell in a search interface.
+ *
+ * @property onCardClicked A callback function that is invoked when the result cell is clicked.
+ *                         It takes a [SongSearchResult] as a parameter and does not return any value.
+ * @property provideThumbnailUrl A callback function that asynchronously provides a thumbnail URL for the result cell.
+ *                               It takes a [SongSearchResult] as a parameter and returns a [String] representing the URL.
+ */
 data class ResultCellCallbacks(
   val onCardClicked: (SongSearchResult) -> Unit,
   val provideThumbnailUrl: suspend (SongSearchResult) -> String,
 )
 
-private val UnknownArtist = "Unknown Artist"
+private const val UnknownArtist = "Unknown Artist"
 
+/**
+ * Returns a formatted string representing an artist based on the given vocals and producers lists.
+ *
+ * @param vocals The list of vocals for the artist.
+ * @param producers The list of producers for the artist.
+ * @return A formatted string representing the artist.
+ *         If both vocals and producers lists are empty, returns "UnknownArtist".
+ *         If vocals list is empty, returns the formatted string of producers.
+ *         If producers list is empty, returns the formatted string of vocals.
+ *         Otherwise, returns the formatted string of producers followed by "feat."
+ *         and the formatted string of vocals.
+ */
 internal fun getArtistString(vocals: List<String>, producers: List<String>): String {
   val vocalString = vocals.joinToString(", ")
   val producerString = producers.joinToString(", ")
@@ -249,6 +325,13 @@ internal fun getArtistString(vocals: List<String>, producers: List<String>): Str
   }
 }
 
+/**
+ * A Composable function that creates a music card template.
+ *
+ * @param onCardClicked A callback function to be executed when the card is clicked.
+ * @param modifier Optional modifier for the card.
+ * @param content The content of the card.
+ */
 @Composable
 internal fun MusicCardTemplate(
   onCardClicked: () -> Unit,
