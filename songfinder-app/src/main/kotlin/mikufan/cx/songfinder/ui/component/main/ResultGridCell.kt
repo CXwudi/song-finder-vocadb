@@ -35,11 +35,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultCellController
 import mikufan.cx.songfinder.backend.db.entity.PvService
+import mikufan.cx.songfinder.backend.db.entity.SongType
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.spacing
+import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
 @Composable
@@ -62,7 +64,7 @@ fun LazyGridItemScope.RealResultGridCell(
   callbacks: ResultCellCallbacks,
   modifier: Modifier = Modifier
 ) {
-  val filteredPvs: List<PVInfo>? by produceState<List<PVInfo>?>(null) {
+  val filteredPvs: List<PVInfo> by produceState(listOf()) {
     value = result.pvs.filter {
       it.pvService in listOf(
         PvService.Youtube,
@@ -84,7 +86,7 @@ fun LazyGridItemScope.RealResultGridCell(
 @Composable
 fun LazyThumbnailImage(
   result: SongSearchResult,
-  pvs: List<PVInfo>?
+  pvs: List<PVInfo>
 ) {
   //TODO: use the first ever available PV's thumbnail, if no PVs, use image not found.
   // If exceptions (typically no available PVs), use image failed to load
@@ -100,10 +102,19 @@ fun LazyThumbnailImage(
   )
 }
 
+@Composable
+fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>) = Column {
+  val (id, title, type, vocals, producers, publishDate, _) = songInfo
+  SongTitle(id, title)
+  ArtistField(vocals, producers)
+  PublishDateField(publishDate)
+  SongTypeField(type)
+  PvField(filteredPvs)
+}
+
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>?) = Column {
-  val (id, title, type, vocals, producers, publishDate, _) = songInfo
+private fun SongTitle(id: Long, title: String) {
   Row(
     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing, Alignment.CenterHorizontally),
     modifier = Modifier.fillMaxWidth()
@@ -130,7 +141,11 @@ fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>?) = Column {
       )
     }
   }
+}
 
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun ArtistField(vocals: List<String>, producers: List<String>) {
   val artistString by produceState("Loading Artists...") {
     value = getArtistString(vocals, producers)
   }
@@ -141,6 +156,11 @@ fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>?) = Column {
     overflow = TextOverflow.Ellipsis,
     modifier = Modifier.basicMarquee(),
   )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun PublishDateField(publishDate: LocalDateTime?) {
   val publishDateText by produceState("Loading...") {
     value = publishDate?.format(DateTimeFormatter.ISO_DATE) ?: "Unknown"
   }
@@ -150,24 +170,21 @@ fun MusicInfo(songInfo: SongSearchResult, filteredPvs: List<PVInfo>?) = Column {
     maxLines = 1,
     modifier = Modifier.basicMarquee(),
   )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+private fun SongTypeField(type: SongType) {
   Text(
     text = "Song Type: $type",
     style = MaterialTheme.typography.bodyMedium,
     maxLines = 1,
     modifier = Modifier.basicMarquee(),
   )
-  if (filteredPvs == null) {
-    Text(
-      text = "Loading PVs...",
-      style = MaterialTheme.typography.bodyMedium,
-    )
-  } else {
-    PvRows(filteredPvs)
-  }
 }
 
 @Composable
-private fun PvRows(pvs: List<PVInfo>) {
+private fun PvField(pvs: List<PVInfo>) {
   val uriHandler = LocalUriHandler.current
   LazyRow(
     horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacingSmall),
@@ -212,8 +229,7 @@ private fun PvRows(pvs: List<PVInfo>) {
   }
 }
 
-
-/* --- Utils ---*/
+/* --------- Utils --------- */
 
 data class ResultCellCallbacks(
   val onCardClicked: (SongSearchResult) -> Unit,
