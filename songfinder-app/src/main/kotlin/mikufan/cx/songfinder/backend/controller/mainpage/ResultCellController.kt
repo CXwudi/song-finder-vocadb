@@ -1,7 +1,10 @@
 package mikufan.cx.songfinder.backend.controller.mainpage
 
 import mikufan.cx.inlinelogging.KInlineLogging
+import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
+import mikufan.cx.songfinder.backend.model.ThumbnailInfo
+import mikufan.cx.songfinder.backend.service.FindThumbnailService
 import mikufan.cx.songfinder.backend.service.InputFileLineReader
 import mikufan.cx.songfinder.backend.service.OutputCsvLineWriter
 import mikufan.cx.songfinder.backend.statemodel.*
@@ -16,6 +19,7 @@ class ResultCellController(
   private val searchOptionsStateModel: SearchOptionsStateModel,
   private val searchResultStateModel: SearchResultStateModel,
   private val songSearchIntermediateController: SongSearchIntermediateController,
+  private val findThumbnailService: FindThumbnailService,
 ) {
 
   suspend fun handleRecord(chosenSong: SongSearchResult) {
@@ -33,6 +37,10 @@ class ResultCellController(
       searchResultStateModel.resultState.clear()
       songSearchIntermediateController.triggerSearch(0)
     }
+  }
+
+  suspend fun tryGetThumbnail(pv: PVInfo): Result<ThumbnailInfo> {
+    return findThumbnailService.tryGetThumbnail(pv)
   }
 }
 
