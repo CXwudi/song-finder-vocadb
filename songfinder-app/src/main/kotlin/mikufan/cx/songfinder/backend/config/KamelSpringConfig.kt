@@ -5,8 +5,7 @@ import io.kamel.core.config.httpFetcher
 import io.kamel.core.config.takeFrom
 import io.kamel.image.config.Default
 import io.kamel.image.config.resourcesFetcher
-import io.ktor.client.plugins.*
-import io.ktor.http.*
+import io.ktor.client.*
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 
@@ -14,20 +13,14 @@ import org.springframework.context.annotation.Configuration
 class KamelSpringConfig {
 
   @Bean
-  fun kamelConfig() = KamelConfig {
+  fun kamelConfig(ktorClient: HttpClient) = KamelConfig {
     takeFrom(KamelConfig.Default)
     // Available only on Desktop.
     resourcesFetcher()
     imageBitmapCacheSize = 250
     httpFetcher {
       httpCache(50 * 1024 * 1024  /* 50 MiB */)
-      followRedirects = true
-      install(HttpRequestRetry) {
-        maxRetries = 1
-        retryIf { _, httpResponse ->
-          !httpResponse.status.isSuccess()
-        }
-      }
+      install(ktorClient)
     }
   }
 }

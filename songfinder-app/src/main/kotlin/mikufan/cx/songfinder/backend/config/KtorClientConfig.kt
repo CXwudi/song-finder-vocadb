@@ -22,7 +22,12 @@ class KtorClientConfig {
     install(UserAgent) {
       agent = "Song Finder by VocaDB @ https://github.com/CXwudi/song-finder-vocadb"
     }
-//    BrowserUserAgent()
+    install(HttpRequestRetry) {
+      maxRetries = 1
+      retryIf { _, httpResponse ->
+        !httpResponse.status.isSuccess()
+      }
+    }
 
     followRedirects = true
 
