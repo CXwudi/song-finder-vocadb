@@ -17,6 +17,8 @@ dependencies {
     exclude(group = "org.apache.xmlgraphics", module = "batik-transcoder")
   }
   implementation(libs.dep.ktorJavaClient)
+  implementation(libs.dep.ktorContentNegotiation)
+  implementation(libs.dep.ktorJackson)
 
   // kotest
   testImplementation(platform(libs.bom.kotest))
@@ -35,6 +37,7 @@ dependencies {
   implementation(sbs("data-jdbc"))
   runtimeOnly("org.mariadb.jdbc:mariadb-java-client")
   implementation(sbs("json"))
+  implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
   testImplementation(sbs("test")) {
     exclude(group = "org.mockito")
