@@ -92,7 +92,7 @@ fun LazyGridItemScope.RealResultGridCell(
     onCardClicked = { callbacks.onCardClicked(result) },
     modifier.animateItemPlacement()
   ) {
-    LazyThumbnailImage(result, filteredPvs)
+    LazyThumbnailImage(filteredPvs)
     MusicInfo(result, filteredPvs)
   }
 }
@@ -105,7 +105,6 @@ fun LazyGridItemScope.RealResultGridCell(
  */
 @Composable
 fun LazyThumbnailImage(
-  result: SongSearchResult,
   pvs: List<PVInfo>
 ) {
   //TODO: use the first ever available PV's thumbnail, if no PVs, use image not found.
