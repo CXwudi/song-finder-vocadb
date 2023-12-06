@@ -73,11 +73,10 @@ class SongSearchService(
       .filter { it.defaultNameLanguage == NameLanguage.Unspecified }
       .map { it.id }
     log.debug { "${songIdsOfUnspecifiedName.size} songs has unspecified names, requires additional checking" }
-    val songIdOfUnspecifiedNameToNames: Map<SongId, List<SongName>> =
-      withContext(ioDispatcher) {
-        songNameRepo.findAllBySongIdInAndLanguageIn(songIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
-      }
-        .groupBy { it.songId }
+    val songIdOfUnspecifiedNameToNames: Map<SongId, List<SongName>> = withContext(ioDispatcher) {
+      songNameRepo.findAllBySongIdInAndLanguageIn(songIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
+    }
+      .groupBy { it.songId }
 
     // 3. search all PVs
     val songIdToPv: Map<SongId, List<Pv>> = withContext(ioDispatcher) {
@@ -97,11 +96,10 @@ class SongSearchService(
     val artistIdsOfUnspecifiedName = artistsInSongs
       .filter { it.defaultNameLanguage == NameLanguage.Unspecified }
       .map { it.id }
-    val artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>> =
-      withContext(ioDispatcher) {
-        artistNameRepo.findAllByArtistIdInAndLanguageIn(artistIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
-      }
-        .groupBy { it.artistId }
+    val artistIdWithUnspecifiedNameToNames: Map<ArtistId, List<ArtistName>> = withContext(ioDispatcher) {
+      artistNameRepo.findAllByArtistIdInAndLanguageIn(artistIdsOfUnspecifiedName, listOf(NameLanguage.Unspecified))
+    }
+      .groupBy { it.artistId }
 
     // 6. concurrently assemble the result, with order preserving
     val results = withContext(defaultDispatcher) {
