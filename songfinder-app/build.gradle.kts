@@ -39,6 +39,8 @@ dependencies {
   implementation(sbs("json"))
   implementation("com.fasterxml.jackson.module:jackson-module-kotlin")
   implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-csv")
+  implementation(sbs("cache"))
+  implementation("com.github.ben-manes.caffeine:caffeine")
   testImplementation(sbs("test")) {
     exclude(group = "org.mockito")
   }
