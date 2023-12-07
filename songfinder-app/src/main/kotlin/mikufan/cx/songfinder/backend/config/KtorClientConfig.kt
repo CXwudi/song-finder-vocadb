@@ -7,18 +7,30 @@ import io.ktor.client.plugins.*
 import io.ktor.client.plugins.contentnegotiation.*
 import io.ktor.http.*
 import io.ktor.serialization.jackson.*
+import org.springframework.beans.factory.annotation.Qualifier
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
+import org.springframework.context.annotation.Primary
 
 @Configuration(proxyBeanMethods = false)
 class KtorClientConfig {
 
   @Bean("thumbnail-fetcher")
-  fun thumbnailFetcher(mapper: ObjectMapper) = HttpClient(Java) {
+  @Primary
+  fun thumbnailFetcher(
+    mapper: ObjectMapper,
+    @Qualifier("base-client")
+    baseClient: HttpClient,
+  ) = HttpClient(Java) {
+    install(baseClient)
     install(ContentNegotiation) {
       // use spring jackson mapper
       register(ContentType.Application.Json, JacksonConverter(mapper))
     }
+  }
+
+  @Bean("base-client")
+  fun baseClient() = HttpClient(Java) {
     install(UserAgent) {
       agent = "Song Finder by VocaDB @ https://github.com/CXwudi/song-finder-vocadb"
     }
@@ -30,6 +42,5 @@ class KtorClientConfig {
     }
 
     followRedirects = true
-
   }
 }
