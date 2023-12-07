@@ -1,5 +1,6 @@
 package mikufan.cx.songfinder.backend.component.thumbnailfinder
 
+import kotlinx.coroutines.Dispatchers
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.ThumbnailInfo
@@ -30,4 +31,9 @@ interface ThumbnailFinder {
    * @return the [ThumbnailInfo] containing the URL and request builder for the thumbnail
    */
   suspend fun findThumbnail(pv: PVInfo): ThumbnailInfo
+
+  companion object {
+    val ioDispatcher = Dispatchers.IO
+    val defaultDispatcher = Dispatchers.Default
+  }
 }
