@@ -44,7 +44,8 @@ data class SongSearchResult(
 data class PVInfo(
   val id: String,
   val pvService: PvService,
-  val pvType: PvType
+  val pvType: PvType,
+  val extendedMetadata: String? = null,
 ) {
 
   val url: String by lazy(LazyThreadSafetyMode.NONE) {

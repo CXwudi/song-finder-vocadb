@@ -167,7 +167,7 @@ class SongSearchService(
     songIdToPvs: Map<SongId, List<Pv>>
   ): List<PVInfo> = songIdToPvs[songId]?.let { pvs ->
     pvs.filter { it.pvService.isOnlineService() }
-      .map { PVInfo(it.pvId, it.pvService, it.pvType) }
+      .map { PVInfo(it.pvId, it.pvService, it.pvType, it.extendedMetadata) }
   } ?: emptyList<PVInfo>().also {
     log.warn { "No PV found for song $songId" }
   }
