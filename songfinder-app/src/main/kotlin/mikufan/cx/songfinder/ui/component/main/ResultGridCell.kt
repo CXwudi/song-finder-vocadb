@@ -1,5 +1,7 @@
 package mikufan.cx.songfinder.ui.component.main
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.basicMarquee
@@ -9,13 +11,8 @@ import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.grid.LazyGridItemScope
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.Icon
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.produceState
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -31,13 +28,17 @@ import compose.icons.simpleicons.Bilibili
 import compose.icons.simpleicons.Niconico
 import compose.icons.simpleicons.Soundcloud
 import compose.icons.simpleicons.Youtube
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import mikufan.cx.songfinder.backend.component.thumbnailfinder.ThumbnailFinder
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultCellController
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.db.entity.SongType
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
+import mikufan.cx.songfinder.backend.model.ThumbnailInfo
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.spacing
@@ -59,7 +60,7 @@ fun LazyGridItemScope.ResultGridCell(
 ) {
   val callbacks = ResultCellCallbacks(
     onCardClicked = { scopeFromIrremovableParent.launch { controller.handleRecord(it) } },
-    provideThumbnailUrl = { TODO() }
+    provideThumbnailInfo = controller::tryGetThumbnail
   )
   RealResultGridCell(result, callbacks)
 }
@@ -92,33 +93,103 @@ fun LazyGridItemScope.RealResultGridCell(
     onCardClicked = { callbacks.onCardClicked(result) },
     modifier.animateItemPlacement()
   ) {
-    LazyThumbnailImage(filteredPvs)
+    LazyThumbnailImage(filteredPvs, provideThumbnailInfoCallback = callbacks.provideThumbnailInfo)
     MusicInfo(result, filteredPvs)
   }
 }
 
 /**
- * Composable function to display a lazy loading thumbnail image for a song search result.
+ * Lazily fetch and display thumbnail, using the first ever successful thumbnail URL from the
+ * given list of PVs.
  *
- * @param result The song search result
- * @param pvs The list of PV (Promotional Video) information
+ * @param pvs The list of PVInfo objects representing the thumbnail images to display.
+ * @param imageHolderModifier The modifier for styling the image holder.
+ * @param provideThumbnailInfoCallback The callback function for providing thumbnail information.
  */
 @Composable
 fun LazyThumbnailImage(
-  pvs: List<PVInfo>
+  pvs: List<PVInfo>,
+  imageHolderModifier: Modifier = Modifier
+    .size(120.dp)
+    .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape)),
+  provideThumbnailInfoCallback: suspend (PVInfo) -> Result<ThumbnailInfo>
 ) {
-  //TODO: use the first ever available PV's thumbnail, if no PVs, use image not found.
-  // If exceptions (typically no available PVs), use image failed to load
+  // if no PVs, display a "no image" icon
+  if (pvs.isEmpty()) {
+    Image(
+      painter = painterResource("image/image-not-found-icon.svg"),
+      contentDescription = "Failed Thumbnail",
+      modifier = imageHolderModifier,
+    )
+  } else {
+    // else, starting from index 0
+    val urlHandler = LocalUriHandler.current
+    var currentPvInfoIndex by remember { mutableStateOf(0) }
 
-  // Loading process: starting from the first PV, if failed to load, try the next one. If all failed, use image not found
+    var loadStatus: ThumbnailInfoLoadStatus by remember { mutableStateOf(ThumbnailInfoLoadStatus.Loading) }
+    LaunchedEffect(currentPvInfoIndex) {
+      loadStatus = ThumbnailInfoLoadStatus.Loading
+      provideThumbnailInfoCallback(pvs[currentPvInfoIndex]).fold(
+        // if success, continue, else, try next
+        onSuccess = { loadStatus = ThumbnailInfoLoadStatus.Success(it) },
+        onFailure = {
+          if (currentPvInfoIndex < pvs.size - 1) {
+            currentPvInfoIndex++
+          } else {
+            loadStatus = ThumbnailInfoLoadStatus.Failure
+          }
+        }
+      )
+    }
 
-  Image(
-    painter = painterResource("image/image-not-found-icon.svg"),
-    contentDescription = "Thumbnail",
-    modifier = Modifier
-      .size(120.dp)
-      .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape))
-  )
+    Crossfade(loadStatus, animationSpec = tween()) {
+      when (loadStatus) {
+        is ThumbnailInfoLoadStatus.Loading -> Box(
+          modifier = imageHolderModifier,
+          contentAlignment = Alignment.Center
+        ) {
+          CircularProgressIndicator()
+        }
+        // we reach here if all PVs failed to load the thumbnail
+        // render an "image failed" icon
+        is ThumbnailInfoLoadStatus.Failure -> Image(
+          painter = painterResource("image/image-load-failed.svg"),
+          contentDescription = "Failed Thumbnail",
+          modifier = imageHolderModifier,
+        )
+
+        is ThumbnailInfoLoadStatus.Success -> {
+          val thumbnailInfo = (loadStatus as ThumbnailInfoLoadStatus.Success).info
+          val resource = asyncPainterResource(thumbnailInfo.url) {
+            coroutineContext += ThumbnailFinder.ioDispatcher
+
+            requestBuilder {
+              thumbnailInfo.requestBuilder.invoke(this)
+            }
+          }
+
+          // using KamelImage, if the thumbnail URL works, it will be rendered
+          // else, move on the next PV
+          KamelImage(
+            resource = resource,
+            contentDescription = "Thumbnail",
+            modifier = imageHolderModifier
+              .clickable { urlHandler.openUri(thumbnailInfo.url) },
+            onLoading = { CircularProgressIndicator() },
+            onFailure = {
+              if (currentPvInfoIndex < pvs.size - 1) {
+                currentPvInfoIndex++
+              } else {
+                loadStatus = ThumbnailInfoLoadStatus.Failure
+              }
+            },
+            animationSpec = tween()
+          )
+        }
+      }
+    }
+
+  }
 }
 
 /**
@@ -291,12 +362,12 @@ private fun PvField(pvs: List<PVInfo>) {
  *
  * @property onCardClicked A callback function that is invoked when the result cell is clicked.
  *                         It takes a [SongSearchResult] as a parameter and does not return any value.
- * @property provideThumbnailUrl A callback function that asynchronously provides a thumbnail URL for the result cell.
+ * @property provideThumbnailInfo A callback function that asynchronously provides a thumbnail URL for the result cell.
  *                               It takes a [SongSearchResult] as a parameter and returns a [String] representing the URL.
  */
 data class ResultCellCallbacks(
   val onCardClicked: (SongSearchResult) -> Unit,
-  val provideThumbnailUrl: suspend (SongSearchResult) -> String,
+  val provideThumbnailInfo: suspend (PVInfo) -> Result<ThumbnailInfo>,
 )
 
 private const val UnknownArtist = "Unknown Artist"
@@ -349,4 +420,13 @@ internal fun MusicCardTemplate(
       content()
     }
   }
+}
+
+sealed interface ThumbnailInfoLoadStatus {
+  data object Loading : ThumbnailInfoLoadStatus
+  data class Success(
+    val info: ThumbnailInfo
+  ) : ThumbnailInfoLoadStatus
+
+  data object Failure : ThumbnailInfoLoadStatus
 }

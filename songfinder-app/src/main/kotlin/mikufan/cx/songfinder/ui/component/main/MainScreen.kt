@@ -15,6 +15,7 @@ import mikufan.cx.songfinder.backend.db.entity.PvType
 import mikufan.cx.songfinder.backend.db.entity.SongType
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
+import mikufan.cx.songfinder.backend.model.ThumbnailInfo
 import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
@@ -95,7 +96,7 @@ fun PreviewMainScreen() {
             )
           )
         ) {
-          RealResultGridCell(it, ResultCellCallbacks({}, { "" }))
+          RealResultGridCell(it, ResultCellCallbacks({}, { Result.success(ThumbnailInfo("url", {})) }))
         }
       }
     }

@@ -26,6 +26,7 @@ class ResultCellController(
     // First, write the chosen song to csv
     csvLineWriter.writeSongId(chosenSong.id.toULong())
     progressStateModel.increment()
+    findThumbnailService.evictCache()
 
     // Then, read the next song title from the input file. If no more song, then we are done
     val nextSongTitle = inputFileLineReader.readNext()
