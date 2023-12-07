@@ -5,9 +5,11 @@ import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.staticCompositionLocalOf
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.cache.annotation.EnableCaching
 import org.springframework.context.ConfigurableApplicationContext
 
 @SpringBootApplication
+@EnableCaching
 class SongFinderSpringBootApp
 
 val SpringCtx = staticCompositionLocalOf<ConfigurableApplicationContext> {
