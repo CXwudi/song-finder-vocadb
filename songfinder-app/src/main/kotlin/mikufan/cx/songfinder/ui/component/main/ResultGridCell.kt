@@ -93,7 +93,10 @@ fun LazyGridItemScope.RealResultGridCell(
     onCardClicked = { callbacks.onCardClicked(result) },
     modifier.animateItemPlacement()
   ) {
-    LazyThumbnailImage(filteredPvs, provideThumbnailInfoCallback = callbacks.provideThumbnailInfo)
+    LazyThumbnailImage(
+      filteredPvs,
+      provideThumbnailInfoCallback = callbacks.provideThumbnailInfo,
+    )
     MusicInfo(result, filteredPvs)
   }
 }
@@ -112,15 +115,21 @@ fun LazyThumbnailImage(
   imageHolderModifier: Modifier = Modifier
     .size(120.dp)
     .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape)),
-  provideThumbnailInfoCallback: suspend (PVInfo) -> Result<ThumbnailInfo>
+  iconSizeModifier: Modifier = Modifier.size(72.dp),
+  provideThumbnailInfoCallback: suspend (PVInfo) -> Result<ThumbnailInfo>,
 ) {
   // if no PVs, display a "no image" icon
   if (pvs.isEmpty()) {
-    Image(
-      painter = painterResource("image/image-not-found-icon.svg"),
-      contentDescription = "Failed Thumbnail",
+    Box(
       modifier = imageHolderModifier,
-    )
+      contentAlignment = Alignment.Center
+    ) {
+      Image(
+        painter = painterResource("image/image-not-found-icon.svg"),
+        contentDescription = "Failed Thumbnail",
+        modifier = iconSizeModifier,
+      )
+    }
   } else {
     // else, starting from index 0
     val urlHandler = LocalUriHandler.current
@@ -152,11 +161,16 @@ fun LazyThumbnailImage(
         }
         // we reach here if all PVs failed to load the thumbnail
         // render an "image failed" icon
-        is ThumbnailInfoLoadStatus.Failure -> Image(
-          painter = painterResource("image/image-load-failed.svg"),
-          contentDescription = "Failed Thumbnail",
+        is ThumbnailInfoLoadStatus.Failure -> Box(
           modifier = imageHolderModifier,
-        )
+          contentAlignment = Alignment.Center
+        ) {
+          Image(
+            painter = painterResource("image/image-load-failed.svg"),
+            contentDescription = "Failed Thumbnail",
+            modifier = iconSizeModifier,
+          )
+        }
 
         is ThumbnailInfoLoadStatus.Success -> {
           val thumbnailInfo = (loadStatus as ThumbnailInfoLoadStatus.Success).info
