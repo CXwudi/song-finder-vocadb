@@ -93,7 +93,7 @@ fun LazyGridItemScope.RealResultGridCell(
     onCardClicked = { callbacks.onCardClicked(result) },
     modifier.animateItemPlacement()
   ) {
-    LazyThumbnailImage(
+    LazilyFetchedThumbnail(
       filteredPvs,
       provideThumbnailInfoCallback = callbacks.provideThumbnailInfo,
     )
@@ -110,30 +110,23 @@ fun LazyGridItemScope.RealResultGridCell(
  * @param provideThumbnailInfoCallback The callback function for providing thumbnail information.
  */
 @Composable
-fun LazyThumbnailImage(
+fun LazilyFetchedThumbnail(
   pvs: List<PVInfo>,
   imageHolderModifier: Modifier = Modifier
     .size(120.dp)
     .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape)),
-  iconSizeModifier: Modifier = Modifier.size(72.dp),
   provideThumbnailInfoCallback: suspend (PVInfo) -> Result<ThumbnailInfo>,
 ) {
   // if no PVs, display a "no image" icon
   if (pvs.isEmpty()) {
-    Box(
-      modifier = imageHolderModifier,
-      contentAlignment = Alignment.Center
-    ) {
-      Image(
-        painter = painterResource("image/image-not-found-icon.svg"),
-        contentDescription = "Failed Thumbnail",
-        modifier = iconSizeModifier,
-      )
-    }
+    IconFromResources(
+      iconResourcePath = "image/image-not-found-icon.svg",
+      contentDescription = "No Thumbnail"
+    )
   } else {
     // else, starting from index 0
-    val urlHandler = LocalUriHandler.current
-    var currentPvInfoIndex by remember { mutableStateOf(0) }
+    val currentPvInfoIndexStatue = remember { mutableStateOf(0) }
+    var currentPvInfoIndex by currentPvInfoIndexStatue
 
     var loadStatus: ThumbnailInfoLoadStatus by remember { mutableStateOf(ThumbnailInfoLoadStatus.Loading) }
     LaunchedEffect(currentPvInfoIndex) {
@@ -152,58 +145,82 @@ fun LazyThumbnailImage(
     }
 
     Crossfade(loadStatus, animationSpec = tween()) {
-      when (loadStatus) {
-        is ThumbnailInfoLoadStatus.Loading -> Box(
-          modifier = imageHolderModifier,
-          contentAlignment = Alignment.Center
-        ) {
+      when (it) {
+        is ThumbnailInfoLoadStatus.Loading -> ThumbnailBox {
           CircularProgressIndicator()
         }
         // we reach here if all PVs failed to load the thumbnail
         // render an "image failed" icon
-        is ThumbnailInfoLoadStatus.Failure -> Box(
-          modifier = imageHolderModifier,
-          contentAlignment = Alignment.Center
-        ) {
-          Image(
-            painter = painterResource("image/image-load-failed.svg"),
-            contentDescription = "Failed Thumbnail",
-            modifier = iconSizeModifier,
-          )
-        }
+        is ThumbnailInfoLoadStatus.Failure -> IconFromResources(
+          iconResourcePath = "image/image-load-failed.svg",
+          contentDescription = "Failed Thumbnail"
+        )
 
-        is ThumbnailInfoLoadStatus.Success -> {
-          val thumbnailInfo = (loadStatus as ThumbnailInfoLoadStatus.Success).info
-          val resource = asyncPainterResource(thumbnailInfo.url) {
-            coroutineContext += ThumbnailFinder.ioDispatcher
-
-            requestBuilder {
-              thumbnailInfo.requestBuilder.invoke(this)
-            }
-          }
-
-          // using KamelImage, if the thumbnail URL works, it will be rendered
-          // else, move on the next PV
-          KamelImage(
-            resource = resource,
-            contentDescription = "Thumbnail",
-            modifier = imageHolderModifier
-              .clickable { urlHandler.openUri(thumbnailInfo.url) },
-            onLoading = { CircularProgressIndicator() },
-            onFailure = {
-              if (currentPvInfoIndex < pvs.size - 1) {
-                currentPvInfoIndex++
-              } else {
-                loadStatus = ThumbnailInfoLoadStatus.Failure
-              }
-            },
-            animationSpec = tween()
-          )
-        }
+        is ThumbnailInfoLoadStatus.Success -> RealThumbnail(
+          load = it,
+          currentPvInfoIndexStatue = currentPvInfoIndexStatue,
+          pvSize = pvs.size,
+          imageHolderModifier = imageHolderModifier,
+          onCurrentPvInfoIndexChange = { newVal -> currentPvInfoIndex = newVal },
+          onLoadStatusChanged = { newVal -> loadStatus = newVal },
+        )
       }
     }
 
   }
+}
+
+@Composable
+fun IconFromResources(
+  iconResourcePath: String,
+  contentDescription: String,
+) = ThumbnailBox {
+  Image(
+    painter = painterResource(iconResourcePath),
+    contentDescription = contentDescription,
+    modifier = Modifier.size(72.dp),
+  )
+}
+
+@Composable
+fun RealThumbnail(
+  load: ThumbnailInfoLoadStatus.Success,
+  currentPvInfoIndexStatue: MutableState<Int>,
+  pvSize: Int,
+  imageHolderModifier: Modifier = Modifier
+    .size(120.dp)
+    .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape)),
+  onCurrentPvInfoIndexChange: (Int) -> Unit,
+  onLoadStatusChanged: (ThumbnailInfoLoadStatus) -> Unit,
+) {
+  val (url, requestBuilder) = load.info
+  val resource = asyncPainterResource(url) {
+    coroutineContext += ThumbnailFinder.ioDispatcher
+
+    requestBuilder {
+      requestBuilder.invoke(this)
+    }
+  }
+
+  // using KamelImage, if the thumbnail URL works, it will be rendered
+  // else, move on the next PV
+  val urlHandler = LocalUriHandler.current
+  val currentPvInfoIndex = currentPvInfoIndexStatue.value
+  KamelImage(
+    resource = resource,
+    contentDescription = "Thumbnail",
+    modifier = imageHolderModifier
+      .clickable { urlHandler.openUri(url) },
+    onLoading = { CircularProgressIndicator(it) },
+    onFailure = {
+      if (currentPvInfoIndex < pvSize - 1) {
+        onCurrentPvInfoIndexChange(currentPvInfoIndex + 1)
+      } else {
+        onLoadStatusChanged(ThumbnailInfoLoadStatus.Failure)
+      }
+    },
+    animationSpec = tween()
+  )
 }
 
 /**
@@ -435,6 +452,21 @@ internal fun MusicCardTemplate(
     }
   }
 }
+
+
+@Composable
+fun ThumbnailBox(
+  modifier: Modifier = Modifier,
+  content: @Composable () -> Unit
+) = Box(
+  contentAlignment = Alignment.Center,
+  modifier = modifier
+    .size(120.dp)
+    .clip(RoundedCornerShape(MaterialTheme.spacing.cornerShape)),
+) {
+  content()
+}
+
 
 sealed interface ThumbnailInfoLoadStatus {
   data object Loading : ThumbnailInfoLoadStatus
