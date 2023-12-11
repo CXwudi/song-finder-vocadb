@@ -12,8 +12,7 @@ class YoutubeThumbnailFinder : ThumbnailFinder {
   override suspend fun findThumbnail(pv: PVInfo): ThumbnailInfo {
     val id = pv.id
     // https://orbitingweb.com/blog/view-youtube-thumbnail-image/
-    // It mentioned that not all videos have maxresdefault.jpg, so we should use hqdefault.jpg as the fallback
-    // but for now let's just use maxresdefault.jpg
-    return ThumbnailInfo("https://img.youtube.com/vi/$id/maxresdefault.jpg")
+    // It mentioned that not all videos have maxresdefault.jpg, so we should use hqdefault.jpg for better compatibility
+    return ThumbnailInfo("https://img.youtube.com/vi/$id/hqdefault.jpg")
   }
 }
