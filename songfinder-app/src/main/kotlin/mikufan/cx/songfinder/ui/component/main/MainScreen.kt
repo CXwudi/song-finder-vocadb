@@ -17,7 +17,7 @@ import mikufan.cx.songfinder.backend.model.ThumbnailInfo
 import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
-import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
+import mikufan.cx.songfinder.ui.common.ColumnWithSpacing
 import mikufan.cx.songfinder.ui.common.FillInSpacer
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
 import java.time.LocalDateTime
@@ -32,7 +32,7 @@ fun MainScreen(
 
 
 @Composable
-fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnCentralizedWithSpacing(
+fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing(
   horizontalAlignment = Alignment.Start
 ) {
   ProgressBar()
@@ -64,7 +64,9 @@ fun ColumnScope.RestOfPart(
 @Composable
 fun PreviewMainScreen() {
   MyAppTheme {
-    ColumnCentralizedWithSpacing {
+    ColumnWithSpacing(
+      horizontalAlignment = Alignment.Start
+    ) {
       RealProgressBar(mutableStateOf(39u), 100u)
       Divider()
       RestOfPart(false, {}) {

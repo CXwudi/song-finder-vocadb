@@ -14,7 +14,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import com.darkrockstudios.libraries.mpfilepicker.FilePicker
 import mikufan.cx.songfinder.backend.model.IOFiles
-import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
+import mikufan.cx.songfinder.ui.common.ColumnWithSpacing
 import mikufan.cx.songfinder.ui.common.MyDefaultAlertDialog
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
@@ -38,7 +38,7 @@ fun InputScreen(
   val outputFileChosenModel = remember { FileChosenModel() }
   var startingLine by remember { mutableStateOf(0UL) }
 
-  ColumnCentralizedWithSpacing {
+  ColumnWithSpacing {
     LoadingScreenHeader()
     Divider()
     InputFilePicker(inputFileChosenModel)

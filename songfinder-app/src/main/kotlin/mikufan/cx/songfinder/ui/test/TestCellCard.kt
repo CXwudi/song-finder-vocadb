@@ -26,7 +26,7 @@ import compose.icons.SimpleIcons
 import compose.icons.simpleicons.Niconico
 import compose.icons.simpleicons.Youtube
 import kotlinx.coroutines.launch
-import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
+import mikufan.cx.songfinder.ui.common.ColumnWithSpacing
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 import mikufan.cx.songfinder.ui.theme.spacing
@@ -34,7 +34,7 @@ import mikufan.cx.songfinder.ui.theme.spacing
 fun main() = application {
   Window(onCloseRequest = ::exitApplication) {
     MyAppThemeWithSurface {
-      ColumnCentralizedWithSpacing {
+      ColumnWithSpacing {
         Text("Hello World")
         LazyVerticalGrid(
           columns = GridCells.Adaptive(300.dp),

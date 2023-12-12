@@ -34,7 +34,7 @@ fun RowCentralizedWithSpacing(
 }
 
 /**
- * A column layout with centralized content and added spacing.
+ * A column layout with added spacing.
  *
  * @param modifier The modifier to be applied to the column layout.
  * @param furtherModifier The further modifier to be applied to the column layout.
@@ -43,11 +43,11 @@ fun RowCentralizedWithSpacing(
  * @param content The content of the column layout.
  */
 @Composable
-fun ColumnCentralizedWithSpacing(
+fun ColumnWithSpacing(
   modifier: Modifier = Modifier.padding(vertical = MaterialTheme.spacing.padding),
   furtherModifier: Modifier = Modifier,
   verticalArrangement: Arrangement.Vertical = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
-  horizontalAlignment: Alignment.Horizontal = Alignment.CenterHorizontally,
+  horizontalAlignment: Alignment.Horizontal = Alignment.Start,
   content: @Composable ColumnScope.() -> Unit
 ) {
   Column(

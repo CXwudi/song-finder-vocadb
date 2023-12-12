@@ -13,7 +13,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
-import mikufan.cx.songfinder.ui.common.ColumnCentralizedWithSpacing
+import mikufan.cx.songfinder.ui.common.ColumnWithSpacing
 import mikufan.cx.songfinder.ui.common.RowCentralizedWithSpacing
 import mikufan.cx.songfinder.ui.theme.MyAppThemeWithSurface
 
@@ -22,7 +22,7 @@ fun main() = application {
   Window(onCloseRequest = ::exitApplication) {
     MyAppThemeWithSurface {
       var progress by remember { mutableStateOf(0.5f) }
-      ColumnCentralizedWithSpacing {
+      ColumnWithSpacing {
         BeautifulProgressIndicator(progress)
         RowCentralizedWithSpacing {
           Button(onClick = { progress += 0.05f }) { Text("+ 5%") }
