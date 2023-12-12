@@ -43,6 +43,8 @@ class ResultSelectedIntermediateController(
     if (nextSongTitle == null) {
       log.info { "No more song to handle, the app should display a congratulation screen soon" }
     } else {
+      // upon finding the next song, we trigger a search with the next song title
+      // by setting the input text field and search option, then manually trigger the search
       inputStateModel.update(nextSongTitle)
       searchOptionsStateModel.searchRegexOptionState.value = SearchRegexOption.Contains
       searchResultStateModel.resultState.clear()
