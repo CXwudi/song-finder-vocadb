@@ -21,55 +21,59 @@ import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.spacing
 
 /**
- * Composable function for handling regex match options.
+ * Displaying a Regex Match Option UI.
+ *
+ * @param controller The RegexMatchOptionController object used for managing the state of the Regex Match Option UI.
  *
  */
 @Composable
 fun RegexMatchOption(
   controller: RegexMatchOptionController = getSpringBean(),
-  modifier: Modifier = Modifier,
 ) {
-  RealRegexMatchOption(controller.currentRegexOptionState, controller.currentInputState, modifier, controller::setRegexOption)
+  val model = RegexMatchOptionModel(
+    controller.currentRegexOptionState,
+    controller.currentInputState,
+    controller::setRegexOption
+  )
+  RealRegexMatchOption(model)
 }
 
-
 /**
- * Composable function to render a row of regex match options.
+ * Composable function that renders the Regex Match Option UI.
  *
- * @param option The currently selected search regex option.
- * @param onOptionSet The callback function called when a regex option is selected.
+ * @param model The RegexMatchOptionModel containing the current state and callbacks for the Regex Match Option.
+ * @param modifier The modifier to apply to the UI element.
  */
 @Composable
 internal fun RealRegexMatchOption(
-  option: State<SearchRegexOption>,
-  currentInputState: State<String>,
-  modifier: Modifier = Modifier,
-  onOptionSet: suspend (SearchRegexOption) -> Unit
+  model: RegexMatchOptionModel,
+  modifier: Modifier = Modifier
 ) = RowCentralizedWithSpacing(
   horizontalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing)
 ) {
   Text("Regex Match Option: ")
-  RegexMatchOptionButton(SearchRegexOption.Exact, option, currentInputState, modifier, onOptionSet)
-  RegexMatchOptionButton(SearchRegexOption.StartWith, option, currentInputState, modifier, onOptionSet)
-  RegexMatchOptionButton(SearchRegexOption.Contains, option, currentInputState, modifier, onOptionSet)
+  RegexMatchOptionButton(SearchRegexOption.Exact, model, modifier)
+  RegexMatchOptionButton(SearchRegexOption.StartWith, model, modifier)
+  RegexMatchOptionButton(SearchRegexOption.Contains, model, modifier)
 }
 
+
 /**
- * Composable function to render a single regex match option.
+ * Displays a radio button with a label for a search option
+ * in a regular expression search.
  *
- * @param renderedOption The regex option to render.
- * @param selectedOptionState The currently selected regex option.
- * @param onOptionSet The callback function called when a regex option is selected.
+ * @param renderedOption The search option to be displayed.
+ * @param model The model that contains the current state and event handlers for the search options.
+ * @param modifier The modifier to apply to the button.
  */
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 internal fun RegexMatchOptionButton(
   renderedOption: SearchRegexOption,
-  selectedOptionState: State<SearchRegexOption>,
-  currentInputState: State<String>,
-  modifier: Modifier,
-  onOptionSet: suspend (SearchRegexOption) -> Unit
+  model: RegexMatchOptionModel,
+  modifier: Modifier = Modifier,
 ) {
+  val (currentRegexOptionState, currentInputState, onOptionSet) = model
   val scope = rememberCoroutineScope()
   TooltipAreaWithCard(
     tip = {
@@ -81,7 +85,7 @@ internal fun RegexMatchOptionButton(
       verticalAlignment = Alignment.CenterVertically
     ) {
       RadioButton(
-        selected = renderedOption == selectedOptionState.value,
+        selected = renderedOption == currentRegexOptionState.value,
         onClick = { scope.launch { onOptionSet(renderedOption) } },
       )
       Text(
@@ -90,3 +94,16 @@ internal fun RegexMatchOptionButton(
     }
   }
 }
+
+/**
+ * Represents the model for the [RegexMatchOption].
+ *
+ * @property currentRegexOptionState The state object representing the current regex option state.
+ * @property currentInputState The state object representing the current input state.
+ * @property onOptionSet The function to be called when a regex option is set.
+ */
+data class RegexMatchOptionModel(
+  val currentRegexOptionState: State<SearchRegexOption>,
+  val currentInputState: State<String>,
+  val onOptionSet: suspend (SearchRegexOption) -> Unit,
+)
