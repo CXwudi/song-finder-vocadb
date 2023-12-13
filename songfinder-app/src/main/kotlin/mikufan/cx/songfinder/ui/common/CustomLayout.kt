@@ -5,12 +5,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 
 
+/**
+ * Column with specialized spacing for the first item using [SubcomposeLayout]
+ */
 @Composable
 fun ColumnThatResizesFirstItem(
   modifier: Modifier = Modifier,
   spacing: Int = 0,
   content: @Composable () -> Unit
 ) {
+  // see https://foso.github.io/Jetpack-Compose-Playground/ui/layout/subcomposelayout/
+  // and https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/package-summary#SubcomposeLayout(androidx.compose.ui.Modifier,kotlin.Function2)
   SubcomposeLayout(modifier = modifier) { constraints ->
     val placeables = subcompose(ColumnItem.Main, content).map {
       it.measure(constraints.copy(minHeight = 0, minWidth = 0))
