@@ -84,15 +84,6 @@ fun GuideToCreateNewSong() = RowCentralizedWithSpacing {
 
 @Composable
 fun OverrideResultRow(model: ResultOverridingPanelModel) = RowCentralizedWithSpacing {
-//  var inputValueState by remember { mutableStateOf(0uL) }
-//  val shouldBeDisabled by remember { derivedStateOf { inputValueState == 0uL } }
-//  val onOverrideCallback = {
-//    if (!shouldBeDisabled) {
-//      model.onOverride(inputValueState)
-//      inputValueState = 0uL
-//    }
-//
-//  }
   Text("And override the result with any VocaDB Song ID")
   VocaDbIdOverridingTextField(model)
   Button(onClick = { model.scope.launch { model.onOverride() } }, enabled = model.buttonEnabledState.value) {
