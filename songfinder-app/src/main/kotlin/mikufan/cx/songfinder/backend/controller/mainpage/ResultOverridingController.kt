@@ -19,7 +19,9 @@ class ResultOverridingController(
 
   suspend fun overrideResultAndContinue() {
     check(buttonEnabledState.value) { "button should be enabled when calling this function" }
-    resultSelectedIntermediateController.writeRecordAndMoveOn(inputIdState.value.toULong())
+    val id = inputIdState.value.toULong()
+    updateInputId(0L)
+    resultSelectedIntermediateController.writeRecordAndMoveOn(id)
   }
 
   fun updateInputId(id: Long) {

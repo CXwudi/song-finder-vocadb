@@ -19,6 +19,7 @@ import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultOverridingController
 import mikufan.cx.songfinder.getSpringBean
@@ -32,7 +33,8 @@ fun ResultOverridingPanel(
 ) {
   val scope = rememberCoroutineScope()
   val model = ResultOverridingPanelModel(
-    { scope.launch { controller.overrideResultAndContinue() } },
+    scope,
+    controller::overrideResultAndContinue,
     controller.currentInputState,
     controller.inputIdState,
     controller::updateInputId,
@@ -93,7 +95,7 @@ fun OverrideResultRow(model: ResultOverridingPanelModel) = RowCentralizedWithSpa
 //  }
   Text("And override the result with any VocaDB Song ID")
   VocaDbIdOverridingTextField(model)
-  Button(onClick = model.onOverride, enabled = model.buttonEnabledState.value) {
+  Button(onClick = { model.scope.launch { model.onOverride() } }, enabled = model.buttonEnabledState.value) {
     Text("Override and continue")
   }
 }
@@ -102,7 +104,7 @@ fun OverrideResultRow(model: ResultOverridingPanelModel) = RowCentralizedWithSpa
 fun VocaDbIdOverridingTextField(
   model: ResultOverridingPanelModel,
 ) {
-  val (onOverride, _, inputIdState, onInputIdChange, _, shouldShowAlertState) = model
+  val (scope, onOverride, _, inputIdState, onInputIdChange, _, shouldShowAlertState) = model
   OutlinedTextField(
     value = inputIdState.value.toString(),
     onValueChange = {
@@ -111,13 +113,15 @@ fun VocaDbIdOverridingTextField(
     },
     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
     keyboardActions = KeyboardActions(onDone = {
-      onOverride()
-      onInputIdChange(0L)
+      scope.launch {
+        onOverride()
+      }
     }),
     modifier = Modifier.onKeyEvent {
       if (it.key != Key.Enter) return@onKeyEvent false
-      onOverride()
-      onInputIdChange(0L)
+      scope.launch {
+        onOverride()
+      }
       true
     }
   )
@@ -146,7 +150,8 @@ fun VocaDbIdOverridingTextField(
 
 
 data class ResultOverridingPanelModel(
-  val onOverride: () -> Unit,
+  val scope: CoroutineScope,
+  val onOverride: suspend () -> Unit,
   val currentInputState: State<String>,
   val inputIdState: State<Long>,
   val onInputIdChange: (Long) -> Unit,
