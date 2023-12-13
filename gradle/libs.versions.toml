@@ -39,7 +39,7 @@ dep-kotlinJvmInlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
 dep-kotestExtensionsSpring = "io.kotest.extensions:kotest-extensions-spring:1.1.3"
 dep-mockk = "io.mockk:mockk:1.13.8"
 dep-springMockk = "com.ninja-squad:springmockk:4.0.2"
-dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:3.0.0"
+dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:3.1.0"
 dep-composeSimpleIcons = { module = "br.com.devsrsouza.compose.icons:simple-icons", version.ref = "composeIcons" }
 dep-composeFontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 dep-composeKamelImage = "media.kamel:kamel-image:0.9.0" # it is a powerful library but contain too much dependencies
