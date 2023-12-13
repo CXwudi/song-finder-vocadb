@@ -54,6 +54,11 @@ compose.desktop {
     mainClass = "mikufan.cx.songfinder.EntrypointKt"
     nativeDistributions {
       includeAllModules = true
+//      file(project.sourceSets.main.get().resources.matching { include("**/icon.png") }.singleFile ).let {
+//        windows.iconFile.set(it)
+//        linux.iconFile.set(it)
+//        macOS.iconFile.set(it)
+//      }
     }
   }
 }
