@@ -2,11 +2,14 @@ package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.ColumnScope
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import mikufan.cx.songfinder.backend.controller.MainScreenController
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.db.entity.PvType
@@ -17,8 +20,10 @@ import mikufan.cx.songfinder.backend.model.ThumbnailInfo
 import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
+import mikufan.cx.songfinder.ui.common.ColumnThatResizesFirstItem
 import mikufan.cx.songfinder.ui.common.ColumnWithSpacing
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
+import mikufan.cx.songfinder.ui.theme.spacing
 import java.time.LocalDateTime
 
 @Composable
@@ -39,9 +44,11 @@ fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing(
   RestOfPart(isAllFinished.value, { FinishMessagePanel() }, {
     SearchBar()
     RegexMatchOption()
-    ResultPanel()
-    Divider()
-    ResultOverridingPanel()
+    ColumnThatResizesFirstItem(Modifier.fillMaxSize(), spacing = MaterialTheme.spacing.spacing.value.toInt()) {
+      ResultPanel()
+      Divider()
+      ResultOverridingPanel()
+    }
   })
 }
 
