@@ -58,7 +58,9 @@ fun TitleRow() = RowCentralizedWithSpacing {
 fun DoubleCheckHint(currentInputState: State<String>) = RowCentralizedWithSpacing {
   val uriHandler = LocalUriHandler.current
   Text("Please check again on the official VocaDB site")
-  OutlinedButton(onClick = { uriHandler.openUri("https://vocadb.net/Search?searchType=Song&filter=${currentInputState.value}") }) {
+  OutlinedButton(onClick = {
+    uriHandler.openUri("https://vocadb.net/Search?searchType=Song&filter=${currentInputState.value}")
+  }) {
     Text("Search on VocaDB")
   }
 }
