@@ -1,6 +1,7 @@
 package mikufan.cx.songfinder
 
 import androidx.compose.runtime.*
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.DpSize
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.ApplicationScope
@@ -37,6 +38,7 @@ private fun ApplicationScope.launchInputApplication(onTargetFilesReady: (IOFiles
   Window(
     onCloseRequest = ::exitApplication,
     title = "Loading Input and Output Files",
+    icon = painterResource("image/icon.png"),
   ) {
     MyAppThemeWithSurface {
       InputScreen(onReady = onTargetFilesReady)
@@ -56,6 +58,7 @@ private fun ApplicationScope.launchMainApplication(
     Window(
       title = "Song Finder powered by VocaDB",
       state = rememberWindowState(size = DpSize(1280.dp, 900.dp)),
+      icon = painterResource("image/icon.png"),
       onCloseRequest = {
         springCtx!!.close()
         exitApplication()
