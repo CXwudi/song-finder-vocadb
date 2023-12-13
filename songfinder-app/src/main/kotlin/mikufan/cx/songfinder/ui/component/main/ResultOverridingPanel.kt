@@ -3,6 +3,7 @@ package mikufan.cx.songfinder.ui.component.main
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
@@ -10,8 +11,11 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.Key
+import androidx.compose.ui.input.key.key
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalUriHandler
-import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import kotlinx.coroutines.launch
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultOverridingController
@@ -24,7 +28,11 @@ import mikufan.cx.songfinder.ui.theme.spacing
 fun ResultOverridingPanel(
   controller: ResultOverridingController = getSpringBean(),
 ) {
-  val model = ResultOverridingPanelModel(controller::overrideResultAndContinue, controller.currentInputState)
+  val scope = rememberCoroutineScope()
+  val model = ResultOverridingPanelModel(
+    { scope.launch { controller.overrideResultAndContinue(it) } },
+    controller.currentInputState
+  )
   RealResultOverridingPanel(model)
 }
 
@@ -43,7 +51,7 @@ fun RealResultOverridingPanel(model: ResultOverridingPanelModel) {
 
 @Composable
 fun TitleRow() = RowCentralizedWithSpacing {
-  Text("No result found?", style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Bold))
+  Text("No result found?", style = MaterialTheme.typography.titleMedium)
 }
 
 @Composable
@@ -65,15 +73,15 @@ fun GuideToCreateNewSong() = RowCentralizedWithSpacing {
 }
 
 @Composable
-fun OverrideResultRow(onOverride: suspend (ULong) -> Unit) = RowCentralizedWithSpacing {
+fun OverrideResultRow(onOverride: (ULong) -> Unit) = RowCentralizedWithSpacing {
   var inputValueState by remember { mutableStateOf(0uL) }
-  val scope = rememberCoroutineScope()
-  Text("And override the result with any VocaDB Song ID")
-  VocaDbIdOverridingTextField(inputValueState) { inputValueState = it }
-  OutlinedButton(onClick = {
-    scope.launch { onOverride(inputValueState) }
+  val onOverrideCallback = {
+    onOverride(inputValueState)
     inputValueState = 0uL
-  }) {
+  }
+  Text("And override the result with any VocaDB Song ID")
+  VocaDbIdOverridingTextField(inputValueState, onOverrideCallback) { inputValueState = it }
+  Button(onClick = onOverrideCallback) {
     Text("Override and continue")
   }
 }
@@ -81,6 +89,7 @@ fun OverrideResultRow(onOverride: suspend (ULong) -> Unit) = RowCentralizedWithS
 @Composable
 fun VocaDbIdOverridingTextField(
   initialInputValue: ULong,
+  onOverrideCallback: () -> Unit,
   onValueChange: (ULong) -> Unit,
 ) {
   var inputValue by mutableStateOf(initialInputValue.toLong())
@@ -92,7 +101,13 @@ fun VocaDbIdOverridingTextField(
       val toSetValue = if (inputValue >= 0L) inputValue.toULong() else 0UL
       onValueChange(toSetValue)
     },
-    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number),
+    keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
+    keyboardActions = KeyboardActions(onDone = { onOverrideCallback() }),
+    modifier = Modifier.onKeyEvent {
+      if (it.key != Key.Enter) return@onKeyEvent false
+      onOverrideCallback()
+      true
+    }
   )
   val showNegativeNumberDialog by remember { derivedStateOf { inputValue < 0L } }
   if (showNegativeNumberDialog) {
@@ -119,6 +134,6 @@ fun VocaDbIdOverridingTextField(
 
 
 data class ResultOverridingPanelModel(
-  val onOverride: suspend (ULong) -> Unit,
+  val onOverride: (ULong) -> Unit,
   val currentInputState: State<String>,
 )
