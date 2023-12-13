@@ -32,13 +32,12 @@ import kotlin.io.path.absolutePathString
 @Composable
 fun InputScreen(
   onReady: (IOFiles) -> Unit,
-  modifier: Modifier = Modifier,
 ) {
   val inputFileChosenModel = remember { FileChosenModel() }
   val outputFileChosenModel = remember { FileChosenModel() }
   var startingLine by remember { mutableStateOf(0UL) }
 
-  ColumnWithSpacing {
+  ColumnWithSpacing(horizontalAlignment = Alignment.CenterHorizontally) {
     LoadingScreenHeader()
     Divider()
     InputFilePicker(inputFileChosenModel)
