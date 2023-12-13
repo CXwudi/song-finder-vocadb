@@ -18,7 +18,6 @@ import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
 import mikufan.cx.songfinder.backend.statemodel.SearchStatus
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.ColumnWithSpacing
-import mikufan.cx.songfinder.ui.common.FillInSpacer
 import mikufan.cx.songfinder.ui.theme.MyAppTheme
 import java.time.LocalDateTime
 
@@ -41,7 +40,6 @@ fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing(
     SearchBar()
     RegexMatchOption()
     ResultPanel()
-    FillInSpacer()
     Divider()
     ResultOverridingPanel()
   })
@@ -100,9 +98,8 @@ fun PreviewMainScreen() {
         ) {
           RealResultGridCell(it, ResultCellCallbacks({}, { Result.success(ThumbnailInfo("url", {})) }))
         }
-        FillInSpacer()
         Divider()
-        RealResultOverridingPanel(ResultOverridingPanelModel({}))
+        RealResultOverridingPanel(ResultOverridingPanelModel({}, mutableStateOf("unknown title")))
       }
     }
   }
