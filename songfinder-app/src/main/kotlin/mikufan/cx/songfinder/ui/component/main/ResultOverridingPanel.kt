@@ -8,7 +8,9 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Warning
 import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.key.Key
@@ -30,8 +32,12 @@ fun ResultOverridingPanel(
 ) {
   val scope = rememberCoroutineScope()
   val model = ResultOverridingPanelModel(
-    { scope.launch { controller.overrideResultAndContinue(it) } },
-    controller.currentInputState
+    { scope.launch { controller.overrideResultAndContinue() } },
+    controller.currentInputState,
+    controller.inputIdState,
+    controller::updateInputId,
+    controller.buttonEnabledState,
+    controller.shouldShowAlertState,
   )
   RealResultOverridingPanel(model)
 }
@@ -45,7 +51,7 @@ fun RealResultOverridingPanel(model: ResultOverridingPanelModel) {
     TitleRow()
     DoubleCheckHint(model.currentInputState)
     GuideToCreateNewSong()
-    OverrideResultRow(model.onOverride)
+    OverrideResultRow(model)
   }
 }
 
@@ -75,44 +81,48 @@ fun GuideToCreateNewSong() = RowCentralizedWithSpacing {
 }
 
 @Composable
-fun OverrideResultRow(onOverride: (ULong) -> Unit) = RowCentralizedWithSpacing {
-  var inputValueState by remember { mutableStateOf(0uL) }
-  val onOverrideCallback = {
-    onOverride(inputValueState)
-    inputValueState = 0uL
-  }
+fun OverrideResultRow(model: ResultOverridingPanelModel) = RowCentralizedWithSpacing {
+//  var inputValueState by remember { mutableStateOf(0uL) }
+//  val shouldBeDisabled by remember { derivedStateOf { inputValueState == 0uL } }
+//  val onOverrideCallback = {
+//    if (!shouldBeDisabled) {
+//      model.onOverride(inputValueState)
+//      inputValueState = 0uL
+//    }
+//
+//  }
   Text("And override the result with any VocaDB Song ID")
-  VocaDbIdOverridingTextField(inputValueState, onOverrideCallback) { inputValueState = it }
-  Button(onClick = onOverrideCallback) {
+  VocaDbIdOverridingTextField(model)
+  Button(onClick = model.onOverride, enabled = model.buttonEnabledState.value) {
     Text("Override and continue")
   }
 }
 
 @Composable
 fun VocaDbIdOverridingTextField(
-  initialInputValue: ULong,
-  onOverrideCallback: () -> Unit,
-  onValueChange: (ULong) -> Unit,
+  model: ResultOverridingPanelModel,
 ) {
-  var inputValue by mutableStateOf(initialInputValue.toLong())
-
+  val (onOverride, _, inputIdState, onInputIdChange, _, shouldShowAlertState) = model
   OutlinedTextField(
-    value = inputValue.toString(),
+    value = inputIdState.value.toString(),
     onValueChange = {
-      inputValue = if (it.isBlank()) 0L else it.toLongOrNull() ?: return@OutlinedTextField
-      val toSetValue = if (inputValue >= 0L) inputValue.toULong() else 0UL
-      onValueChange(toSetValue)
+      val inputValue = if (it.isBlank()) 0L else it.toLongOrNull() ?: return@OutlinedTextField
+      onInputIdChange(inputValue)
     },
     keyboardOptions = KeyboardOptions.Default.copy(keyboardType = KeyboardType.Number, imeAction = ImeAction.Done),
-    keyboardActions = KeyboardActions(onDone = { onOverrideCallback() }),
+    keyboardActions = KeyboardActions(onDone = {
+      onOverride()
+      onInputIdChange(0L)
+    }),
     modifier = Modifier.onKeyEvent {
       if (it.key != Key.Enter) return@onKeyEvent false
-      onOverrideCallback()
+      onOverride()
+      onInputIdChange(0L)
       true
     }
   )
-  val showNegativeNumberDialog by remember { derivedStateOf { inputValue < 0L } }
-  if (showNegativeNumberDialog) {
+
+  if (shouldShowAlertState.value) {
     MyDefaultAlertDialog(
       title = {
         Row(
@@ -129,13 +139,17 @@ fun VocaDbIdOverridingTextField(
       },
       text = { Text("The VocaDB Song ID cannot be negative.") },
     ) {
-      inputValue = 0L
+      onInputIdChange(0L)
     }
   }
 }
 
 
 data class ResultOverridingPanelModel(
-  val onOverride: (ULong) -> Unit,
+  val onOverride: () -> Unit,
   val currentInputState: State<String>,
+  val inputIdState: State<Long>,
+  val onInputIdChange: (Long) -> Unit,
+  val buttonEnabledState: State<Boolean>,
+  val shouldShowAlertState: State<Boolean>,
 )

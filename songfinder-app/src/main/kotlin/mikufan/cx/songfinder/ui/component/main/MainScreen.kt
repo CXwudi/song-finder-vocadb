@@ -106,7 +106,16 @@ fun PreviewMainScreen() {
           RealResultGridCell(it, ResultCellCallbacks({}, { Result.success(ThumbnailInfo("url", {})) }))
         }
         Divider()
-        RealResultOverridingPanel(ResultOverridingPanelModel({}, mutableStateOf("unknown title")))
+        RealResultOverridingPanel(
+          ResultOverridingPanelModel(
+            {},
+            mutableStateOf("unknown title"),
+            mutableStateOf(0L),
+            {},
+            mutableStateOf(false),
+            mutableStateOf(false),
+          )
+        )
       }
     }
   }
