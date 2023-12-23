@@ -42,7 +42,7 @@ dep-springMockk = "com.ninja-squad:springmockk:4.0.2"
 dep-composeFilePicker = "com.darkrockstudios:mpfilepicker:3.1.0"
 dep-composeSimpleIcons = { module = "br.com.devsrsouza.compose.icons:simple-icons", version.ref = "composeIcons" }
 dep-composeFontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
-dep-composeKamelImage = "media.kamel:kamel-image:0.9.0" # it is a powerful library but contain too much dependencies
+dep-composeKamelImage = "media.kamel:kamel-image:0.9.1" # it is a powerful library but contain too much dependencies
 dep-ktorJavaClient = { module = "io.ktor:ktor-client-java", version.ref = "ktor" } # required by kamel-image
 dep-ktorContentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" } # required for using jackson
 dep-ktorJackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }
