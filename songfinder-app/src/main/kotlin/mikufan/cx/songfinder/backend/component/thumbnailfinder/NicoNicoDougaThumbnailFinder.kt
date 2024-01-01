@@ -11,7 +11,6 @@ import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.ThumbnailInfo
 import mikufan.cx.songfinder.backend.util.MyDispatchers
 import org.springframework.stereotype.Component
-import kotlin.random.Random
 
 @Component
 class NicoNicoDougaThumbnailFinder(
@@ -21,7 +20,7 @@ class NicoNicoDougaThumbnailFinder(
 
   companion object {
     // thanks for the unofficial API from https://niconicolibs.github.io/api/other/index.html
-    private const val INFO_API = "https://www.nicovideo.jp/api/watch/v3_guest/%s"
+    private const val INFO_API = "https://nvapi.nicovideo.jp/v1/videos?watchIds=%s"
     private val defaultHeaders = mapOf(
       "x-Frontend-Id" to "6",
       "x-Frontend-version" to "0",
@@ -38,38 +37,21 @@ class NicoNicoDougaThumbnailFinder(
         headers {
           defaultHeaders.forEach { (k, v) -> append(k, v) }
         }
-        parameter("actionTrackId", generateRandomTrackId())
       }
     }
     val infoJson = response.body<JsonNode>()
     return when (response.status.value) {
       in (400..<500) -> {
+        val status = infoJson["meta"]["status"].asText()
         val errorCode = infoJson["meta"]["errorCode"].asText()
-        val reasonCode = infoJson["data"]["reasonCode"].asText()
-        throw ThumbnailNotAvailableException("The video $id is not available, error code: $errorCode, reason: $reasonCode")
+        throw ThumbnailNotAvailableException("The video $id is not available, status: $errorCode, error code: $status")
       }
-
       in (200..<300) -> {
-        val thumbnailUrl = infoJson["data"]["video"]["thumbnail"]["ogp"].asText()
-        ThumbnailInfo(thumbnailUrl) {
-          headers {
-            defaultHeaders.forEach { (k, v) -> append(k, v) }
-          }
-        }
+        val thumbnailUrl = infoJson["data"]["items"][0]["video"]["thumbnail"]["nHdUrl"].asText()
+        ThumbnailInfo(thumbnailUrl)
       }
-
       else -> error("Failed to get thumbnail for PV $pv, response status: ${response.status}")
     }
 
   }
-
-  private fun generateRandomTrackId(): String {
-    val random = Random(System.currentTimeMillis())
-    val intChars = ('0'..'9')
-    val stringChars = ('A'..'Z') + ('a'..'z') + intChars
-    val stringPart = (0..<10).map { stringChars.random(random) }.joinToString("")
-    val intPart = (0..<13).map { intChars.random(random) }.joinToString("")
-    return "${stringPart}_${intPart}"
-  }
-
 }
