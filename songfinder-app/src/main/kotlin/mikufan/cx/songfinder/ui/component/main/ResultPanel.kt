@@ -49,7 +49,7 @@ fun ColumnScope.RealResultPanel(
     Row(
       horizontalArrangement = Arrangement.Center,
       verticalAlignment = Alignment.CenterVertically,
-      modifier = modifier.padding(horizontal = MaterialTheme.spacing.padding).fillMaxWidth()
+      modifier = modifier.fillMaxSize().padding(horizontal = MaterialTheme.spacing.padding)
     ) {
       Text(
         "No result found",
@@ -75,7 +75,7 @@ fun ResultPanelGrid(
   cellContent: @Composable LazyGridItemScope.(SongSearchResult) -> Unit,
 ) {
   Box(
-    modifier = modifier.padding(horizontal = MaterialTheme.spacing.padding)
+    modifier = modifier.fillMaxSize().padding(horizontal = MaterialTheme.spacing.padding)
   ) {
     LazyVerticalGrid(
       columns = GridCells.Adaptive(320.dp),

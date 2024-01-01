@@ -45,12 +45,7 @@ fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing {
     ColumnThatResizesFirstItem(
       modifier = Modifier.fillMaxSize(),
       resizibleFirstContent = {
-        Column(
-          modifier = Modifier.fillMaxSize(),
-          verticalArrangement = Arrangement.Center
-        ) {
-          ResultPanel()
-        }
+        ResultPanel()
       },
       fixedSizeSecondContent = {
         Column(
