@@ -1,8 +1,7 @@
 package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
-import androidx.compose.foundation.layout.ColumnScope
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.*
 import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
@@ -37,19 +36,32 @@ fun MainScreen(
 
 
 @Composable
-fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing(
-  horizontalAlignment = Alignment.Start
-) {
+fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing {
   ProgressBar()
   Divider()
   RestOfPart(isAllFinished.value, { FinishMessagePanel() }, {
     SearchBar()
     RegexMatchOption()
-    ColumnThatResizesFirstItem(Modifier.fillMaxSize(), spacing = MaterialTheme.spacing.spacing.value.toInt()) {
-      ResultPanel()
-      Divider()
-      ResultOverridingPanel()
-    }
+    ColumnThatResizesFirstItem(
+      modifier = Modifier.fillMaxSize(),
+      resizibleFirstContent = {
+        Column(
+          modifier = Modifier.fillMaxSize(),
+          verticalArrangement = Arrangement.Center
+        ) {
+          ResultPanel()
+        }
+      },
+      fixedSizeSecondContent = {
+        Column(
+          modifier = Modifier.padding(top = MaterialTheme.spacing.padding),
+          verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
+        ) {
+          Divider()
+          ResultOverridingPanel()
+        }
+      }
+    )
   })
 }
 

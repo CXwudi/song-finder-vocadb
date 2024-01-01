@@ -4,46 +4,43 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.SubcomposeLayout
 
-
 /**
- * Column with specialized spacing for the first item using [SubcomposeLayout]
+ * A two-item column that resizes its first item to make sure the second item is always visible.
+ *
+ * @param modifier The modifier to be applied to the [SubcomposeLayout]
+ * @param resizibleFirstContent The composable function that draws the first item
+ * @param fixedSizeSecondContent The composable function that draws the second item
  */
 @Composable
 fun ColumnThatResizesFirstItem(
   modifier: Modifier = Modifier,
-  spacing: Int = 0,
-  content: @Composable () -> Unit
+  resizibleFirstContent: @Composable () -> Unit,
+  fixedSizeSecondContent: @Composable () -> Unit
 ) {
-  // see https://foso.github.io/Jetpack-Compose-Playground/ui/layout/subcomposelayout/
-  // and https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/package-summary#SubcomposeLayout(androidx.compose.ui.Modifier,kotlin.Function2)
   SubcomposeLayout(modifier = modifier) { constraints ->
-    val placeables = subcompose(ColumnItem.Main, content).map {
+    val fixedSizePlacebles = subcompose(Phase.One, fixedSizeSecondContent).map {
       it.measure(constraints.copy(minHeight = 0, minWidth = 0))
     }
+    val firstContentMaxHeight = fixedSizePlacebles.maxOfOrNull { it.height } ?: 0
+    val remainingHeight: Int = constraints.maxHeight - firstContentMaxHeight
 
-    val remainingHeight: Int = constraints.maxHeight - placeables.drop(1).fold(0) { acc, placeable ->
-      acc + placeable.height
-    } - spacing * (placeables.size - 1)
-
-    val restMeasurables = subcompose(ColumnItem.Rest, content)
-    val firstPlaceable =
-      restMeasurables.first().measure(constraints.copy(minHeight = remainingHeight, maxHeight = remainingHeight))
-    val restPlaceables = restMeasurables.drop(1).map {
-      it.measure(constraints.copy(minHeight = 0, minWidth = 0))
+    val resiziblePlacebles = subcompose(Phase.Two, resizibleFirstContent).map {
+      it.measure(constraints.copy(minHeight = 0, maxHeight = remainingHeight))
     }
 
-    val resizedPlaceables = listOf(firstPlaceable) + restPlaceables
+    val yPosition = resiziblePlacebles.maxOfOrNull { it.height } ?: 0
 
     layout(constraints.maxWidth, constraints.maxHeight) {
-      var yPosition = 0
-      resizedPlaceables.forEach { placeable ->
+      resiziblePlacebles.forEach { placeable ->
+        placeable.placeRelative(0, 0)
+      }
+      fixedSizePlacebles.forEach { placeable ->
         placeable.placeRelative(0, yPosition)
-        yPosition += placeable.measuredHeight + spacing
       }
     }
   }
 }
 
-enum class ColumnItem {
-  Main, Rest
+private enum class Phase {
+  One, Two
 }
