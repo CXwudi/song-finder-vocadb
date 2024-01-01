@@ -26,7 +26,7 @@ class FindThumbnailService(
 
   //  @Cacheable("thumbnail", key = "#pv.id + #pv.pvService")
   suspend fun tryGetThumbnail(pv: PVInfo): Result<ThumbnailInfo> = withContext(MyDispatchers.defaultDispatcher) {
-    val cachedThumbnailInfoResult = cacheManager[CACHE_NAME]?.get<Result<ThumbnailInfo>>(pv.id + pv.pvService)
+    val cachedThumbnailInfoResult = cacheManager[CACHE_NAME]?.get<Result<ThumbnailInfo>>(pv.cacheId)
     if (cachedThumbnailInfoResult != null) {
       log.debug { "Found cached thumbnail info $cachedThumbnailInfoResult for PV $pv" }
       cachedThumbnailInfoResult
@@ -71,8 +71,11 @@ class FindThumbnailService(
   }
 
   private fun cachePut(pv: PVInfo, thumbnailInfoResult: Result<ThumbnailInfo>) {
-    cacheManager[CACHE_NAME]?.put(pv.id + pv.pvService, thumbnailInfoResult)
+    cacheManager[CACHE_NAME]?.put(pv.cacheId, thumbnailInfoResult)
   }
+
+  private val PVInfo.cacheId
+    get() = id + pvService
 
   //  @CacheEvict("thumbnail", allEntries = true)
   fun evictCache() {
