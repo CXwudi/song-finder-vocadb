@@ -18,6 +18,11 @@ fun ColumnThatResizesFirstItem(
   fixedSizeSecondContent: @Composable () -> Unit
 ) {
   // SubcomposeLayout allows us to measure and place child layouts manually
+  // See more guides here:
+  // https://foso.github.io/Jetpack-Compose-Playground/ui/layout/subcomposelayout/
+  // https://developer.android.com/reference/kotlin/androidx/compose/ui/layout/package-summary#SubcomposeLayout(androidx.compose.ui.Modifier,kotlin.Function2)
+  // https://stackoverflow.com/questions/69663194/jetpack-compose-how-does-subcomposelayout-work
+  // https://stackoverflow.com/questions/73354911/how-to-get-exact-size-without-recomposition/73357119
   SubcomposeLayout(modifier = modifier) { constraints ->
     // Measure the second item first to ensure it's always visible
     val fixedSizePlacebles = subcompose(Phase.One, fixedSizeSecondContent).map {
