@@ -10,7 +10,9 @@
   "packageRules": [
     {
       "matchPackageNames": [
-        "org.jetbrains.kotlin:*"
+        "org.jetbrains.kotlin:kotlin-gradle-plugin",
+        "org.jetbrains.kotlin.jvm",
+        "org.jetbrains.kotlin.plugin.spring"
       ],
       "enabled": false
     }
