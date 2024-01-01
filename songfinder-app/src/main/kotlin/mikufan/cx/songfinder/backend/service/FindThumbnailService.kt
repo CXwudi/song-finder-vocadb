@@ -7,6 +7,7 @@ import mikufan.cx.songfinder.backend.component.thumbnailfinder.ThumbnailExceptio
 import mikufan.cx.songfinder.backend.component.thumbnailfinder.ThumbnailFinder
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.ThumbnailInfo
+import mikufan.cx.songfinder.backend.util.MyDispatchers
 import org.springframework.cache.CacheManager
 import org.springframework.cache.get
 import org.springframework.stereotype.Service
@@ -24,7 +25,7 @@ class FindThumbnailService(
   }
 
   //  @Cacheable("thumbnail", key = "#pv.id + #pv.pvService")
-  suspend fun tryGetThumbnail(pv: PVInfo): Result<ThumbnailInfo> = withContext(ThumbnailFinder.defaultDispatcher) {
+  suspend fun tryGetThumbnail(pv: PVInfo): Result<ThumbnailInfo> = withContext(MyDispatchers.defaultDispatcher) {
     val cachedThumbnailInfoResult = cacheManager[CACHE_NAME]?.get<Result<ThumbnailInfo>>(pv.id + pv.pvService)
     if (cachedThumbnailInfoResult != null) {
       log.debug { "Found cached thumbnail info $cachedThumbnailInfoResult for PV $pv" }

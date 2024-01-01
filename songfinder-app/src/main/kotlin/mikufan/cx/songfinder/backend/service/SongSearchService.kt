@@ -1,6 +1,5 @@
 package mikufan.cx.songfinder.backend.service
 
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
 import mikufan.cx.inlinelogging.KInlineLogging
@@ -10,6 +9,7 @@ import mikufan.cx.songfinder.backend.db.repository.*
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
 import mikufan.cx.songfinder.backend.statemodel.SearchRegexOption
+import mikufan.cx.songfinder.backend.util.MyDispatchers
 import org.springframework.stereotype.Service
 
 /**
@@ -41,8 +41,8 @@ class SongSearchService(
 
   companion object {
     const val UNKNOWN = "Unknown"
-    val ioDispatcher = Dispatchers.IO
-    val defaultDispatcher = Dispatchers.Default
+    val ioDispatcher = MyDispatchers.ioDispatcher
+    val defaultDispatcher = MyDispatchers.defaultDispatcher
   }
 
   /**
@@ -83,7 +83,7 @@ class SongSearchService(
       pvRepo.findAllBySongIdIn(songIds)
     }
       .groupBy { it.songId }
-    log.debug { "found ${songIdToPv} PVs" }
+    log.debug { "found $songIdToPv PVs" }
 
     // 4. search all artists
     val artistsInSongs = withContext(ioDispatcher) {

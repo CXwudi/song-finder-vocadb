@@ -32,13 +32,13 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-import mikufan.cx.songfinder.backend.component.thumbnailfinder.ThumbnailFinder
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultCellController
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.db.entity.SongType
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.SongSearchResult
 import mikufan.cx.songfinder.backend.model.ThumbnailInfo
+import mikufan.cx.songfinder.backend.util.MyDispatchers
 import mikufan.cx.songfinder.getSpringBean
 import mikufan.cx.songfinder.ui.common.TooltipAreaWithCard
 import mikufan.cx.songfinder.ui.theme.spacing
@@ -195,7 +195,7 @@ fun RealThumbnail(
 ) {
   val (url, requestBuilder) = load.info
   val resource = asyncPainterResource(url) {
-    coroutineContext += ThumbnailFinder.ioDispatcher
+    coroutineContext += MyDispatchers.ioDispatcher
 
     requestBuilder {
       requestBuilder.invoke(this)

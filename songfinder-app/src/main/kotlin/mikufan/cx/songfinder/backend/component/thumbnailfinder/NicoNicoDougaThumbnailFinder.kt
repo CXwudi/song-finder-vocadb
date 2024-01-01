@@ -9,6 +9,7 @@ import kotlinx.coroutines.withContext
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.ThumbnailInfo
+import mikufan.cx.songfinder.backend.util.MyDispatchers
 import org.springframework.stereotype.Component
 import kotlin.random.Random
 
@@ -32,7 +33,7 @@ class NicoNicoDougaThumbnailFinder(
     val id = pv.id
     val url = INFO_API.format(id)
 
-    val response = withContext(ThumbnailFinder.ioDispatcher) {
+    val response = withContext(MyDispatchers.ioDispatcher) {
       client.get(url) {
         headers {
           defaultHeaders.forEach { (k, v) -> append(k, v) }
