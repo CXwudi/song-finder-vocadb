@@ -1,9 +1,11 @@
 package mikufan.cx.songfinder.backend.component.thumbnailfinder
 
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.asCoroutineDispatcher
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.model.PVInfo
 import mikufan.cx.songfinder.backend.model.ThumbnailInfo
+import java.util.concurrent.Executors
 
 interface ThumbnailFinder {
   /**
@@ -33,7 +35,7 @@ interface ThumbnailFinder {
   suspend fun findThumbnail(pv: PVInfo): ThumbnailInfo
 
   companion object {
-    val ioDispatcher = Dispatchers.IO
+    val ioDispatcher = Executors.newVirtualThreadPerTaskExecutor().asCoroutineDispatcher()
     val defaultDispatcher = Dispatchers.Default
   }
 }
