@@ -4,24 +4,21 @@ import mikufan.cx.songfinder.backend.db.entity.ArtistRole
 import mikufan.cx.songfinder.backend.db.entity.ArtistType
 import mikufan.cx.songfinder.backend.db.entity.NameLanguage
 import org.springframework.data.annotation.Transient
-import org.springframework.data.relational.core.mapping.Column
 
 
-data class ArtistInSong(
+class ArtistInSong(
   val id: Long,
   val artistType: ArtistType,
   val defaultNameLanguage: NameLanguage,
   val japaneseName: String,
   val englishName: String,
   val romajiName: String,
-  @Column("roles")
-  private val rolesBitStr: Int,
+  roles: Int,
   val songId: Long,
 ) {
 
   @get:Transient
-  val roles: List<ArtistRole>
-    get() = ArtistRole.rolesFromBitString(rolesBitStr)
+  val roles: List<ArtistRole> = ArtistRole.rolesFromBitString(roles)
 
   override fun toString(): String =
     "ArtistInSong(id=$id, artistType=$artistType, defaultNameLanguage=$defaultNameLanguage, japaneseName='$japaneseName', englishName='$englishName', romajiName='$romajiName', roles=$roles, songId=$songId)"
