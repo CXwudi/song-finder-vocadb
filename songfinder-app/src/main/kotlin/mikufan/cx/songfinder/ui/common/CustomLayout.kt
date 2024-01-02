@@ -37,7 +37,7 @@ fun ColumnThatResizesFirstItem(
       it.measure(constraints.copy(minHeight = 0, maxHeight = remainingHeight))
     }
 
-    // Calculate the y position for placing the first item
+    // Calculate the y position for the second item when placed below the first item
     val yPosition = resiziblePlacebles.maxOfOrNull { it.height } ?: 0
 
     // Layout the items
