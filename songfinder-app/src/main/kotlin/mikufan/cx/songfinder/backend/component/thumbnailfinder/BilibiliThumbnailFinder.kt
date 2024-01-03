@@ -23,10 +23,14 @@ class BilibiliThumbnailFinder(
   override suspend fun findThumbnail(pv: PVInfo): ThumbnailInfo {
     val bvid: String? = tryGetBvid(pv.extendedMetadata)
     val rsp: HttpResponse = withContext(MyDispatchers.ioDispatcher) {
-      if (bvid == null) {
-        client.get("https://api.bilibili.com/x/web-interface/view?aid=${pv.id}")
-      } else {
-        client.get("https://api.bilibili.com/x/web-interface/view?bvid=$bvid")
+      client.get("https://api.bilibili.com/x/web-interface/view") {
+        url {
+          if (bvid != null) {
+            parameters.append("bvid", bvid)
+          } else {
+            parameters.append("aid", pv.id)
+          }
+        }
       }
     }
 
