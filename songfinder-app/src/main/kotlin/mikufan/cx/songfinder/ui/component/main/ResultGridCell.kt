@@ -79,25 +79,16 @@ fun LazyGridItemScope.RealResultGridCell(
   callbacks: ResultCellCallbacks,
   modifier: Modifier = Modifier
 ) {
-  val filteredPvs: List<PVInfo> by produceState(listOf()) {
-    value = result.pvs.filter {
-      it.pvService in listOf(
-        PvService.Youtube,
-        PvService.NicoNicoDouga,
-        PvService.SoundCloud,
-        PvService.Bilibili
-      )
-    }
-  }
+  val pvs = result.pvs
   MusicCardTemplate(
     onCardClicked = { callbacks.onCardClicked(result) },
     modifier.animateItemPlacement()
   ) {
     LazilyFetchedThumbnail(
-      filteredPvs,
+      pvs,
       provideThumbnailInfoCallback = callbacks.provideThumbnailInfo,
     )
-    MusicInfo(result, filteredPvs)
+    MusicInfo(result, pvs)
   }
 }
 

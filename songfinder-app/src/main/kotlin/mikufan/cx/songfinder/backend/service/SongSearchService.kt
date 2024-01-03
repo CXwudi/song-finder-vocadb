@@ -80,7 +80,7 @@ class SongSearchService(
 
     // 3. search all PVs
     val songIdToPv: Map<SongId, List<Pv>> = withContext(ioDispatcher) {
-      pvRepo.findAllBySongIdIn(songIds)
+      pvRepo.findAllBySongIdInAndPvServiceIn(songIds)
     }
       .groupBy { it.songId }
     log.debug { "found $songIdToPv PVs" }
@@ -166,8 +166,7 @@ class SongSearchService(
     songId: SongId,
     songIdToPvs: Map<SongId, List<Pv>>
   ): List<PVInfo> = songIdToPvs[songId]?.let { pvs ->
-    pvs.filter { it.pvService.isOnlineService() }
-      .map { PVInfo(it.pvId, it.pvService, it.pvType, it.extendedMetadata) }
+    pvs.map { PVInfo(it.pvId, it.pvService, it.pvType, it.extendedMetadata) }
   } ?: emptyList<PVInfo>().also {
     log.warn { "No PV found for song $songId" }
   }

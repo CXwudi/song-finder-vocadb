@@ -40,4 +40,13 @@ enum class PvService {
   Bandcamp;
 
   fun isOnlineService() = this != File && this != LocalFile
+
+  companion object {
+    val currentlyRenderableEntries = listOf(
+      NicoNicoDouga,
+      Youtube,
+      SoundCloud,
+      Bilibili,
+    )
+  }
 }
