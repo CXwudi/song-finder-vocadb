@@ -19,8 +19,8 @@ class NicoNicoDougaThumbnailFinder(
   override val matchedPvService: PvService = PvService.NicoNicoDouga
 
   companion object {
-    // thanks for the unofficial API from https://niconicolibs.github.io/api/other/index.html
-    private const val INFO_API = "https://nvapi.nicovideo.jp/v1/videos?watchIds=%s"
+    // thanks for the unofficial API from https://niconicolibs.github.io/api/nvapi/index.html#tag/Video/operation/get-v1-videos
+    private const val INFO_API = "https://nvapi.nicovideo.jp/v1/videos"
     private val defaultHeaders = mapOf(
       "x-Frontend-Id" to "6",
       "x-Frontend-version" to "0",
@@ -30,12 +30,14 @@ class NicoNicoDougaThumbnailFinder(
 
   override suspend fun findThumbnail(pv: PVInfo): ThumbnailInfo {
     val id = pv.id
-    val url = INFO_API.format(id)
 
     val response = withContext(MyDispatchers.ioDispatcher) {
-      client.get(url) {
+      client.get(INFO_API) {
         headers {
           defaultHeaders.forEach { (k, v) -> append(k, v) }
+        }
+        url {
+          parameters["watchIds"] = id
         }
       }
     }
