@@ -44,7 +44,10 @@ class NicoNicoDougaThumbnailFinder(
       in (400..<500) -> {
         val status = infoJson["meta"]["status"].asText()
         val errorCode = infoJson["meta"]["errorCode"].asText()
-        throw ThumbnailNotAvailableException("The video $id is not available, status: $errorCode, error code: $status")
+        throw ThumbnailNotAvailableException(
+          "The $matchedPvService video $id is not available, " +
+              "status: $errorCode, error code: $status"
+        )
       }
       in (200..<300) -> {
         val thumbnailUrl = infoJson["data"]["items"][0]["video"]["thumbnail"]["nHdUrl"].asText()
