@@ -44,7 +44,8 @@ spring:
     password: my_password
 ```
 
-Place this yaml file beside the executable file in `songfinder-app\build\compose\binaries\main\app`, and run:
+Place this yaml file beside the executable file in `songfinder-app\build\compose\binaries\main\app`,
+open a terminal in that folder and run:
 
 ```shell
 ./songfinder-app --spring.config.import=file:./<your yaml file>
