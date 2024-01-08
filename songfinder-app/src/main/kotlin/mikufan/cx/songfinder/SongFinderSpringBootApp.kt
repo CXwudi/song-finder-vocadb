@@ -2,6 +2,7 @@ package mikufan.cx.songfinder
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.ReadOnlyComposable
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.staticCompositionLocalOf
 import org.springframework.beans.factory.getBean
 import org.springframework.boot.autoconfigure.SpringBootApplication
@@ -19,3 +20,9 @@ val SpringCtx = staticCompositionLocalOf<ConfigurableApplicationContext> {
 @ReadOnlyComposable
 @Composable
 inline fun <reified T> getSpringBean(): T = SpringCtx.current.getBean()
+
+@Composable
+inline fun <reified T> getSpringBeanAndRemember(): T {
+  val bean = getSpringBean<T>()
+  return remember { bean }
+}
