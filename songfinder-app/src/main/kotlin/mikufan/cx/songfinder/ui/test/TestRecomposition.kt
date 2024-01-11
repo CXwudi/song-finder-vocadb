@@ -34,7 +34,8 @@ private fun MyContent() {
 
 @Composable
 private fun MyCard(count: Int, onClick: () -> Unit) {
-  val anotherValue by remember { mutableStateOf(count) }
+  // remember with key is powerful
+  val anotherValue by remember(count) { mutableStateOf(count) }
 //  val anotherValue by mutableStateOf(count)
   Card {
     Button(onClick = onClick) {
