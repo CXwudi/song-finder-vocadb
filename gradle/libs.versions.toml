@@ -33,7 +33,7 @@ pluginDep-springBoot = { module = "org.springframework.boot:spring-boot-gradle-p
 pluginDep-composeJb = "org.jetbrains.compose:compose-gradle-plugin:1.5.11"
 # "io.spring.gradle:dependency-management-plugin" is unneeded because we prefer Gradle's native dependency management
 settingDep-gradleEnterprise = "com.gradle.enterprise:com.gradle.enterprise.gradle.plugin:3.16.1"
-settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.7.0"
+settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.8.0"
 # dependencies, naming convention: dep-<name>
 dep-kotlinJvmInlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
 dep-kotestExtensionsSpring = "io.kotest.extensions:kotest-extensions-spring:1.1.3"
