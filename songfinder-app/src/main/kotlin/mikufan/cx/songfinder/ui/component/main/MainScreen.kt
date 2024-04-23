@@ -2,7 +2,7 @@ package mikufan.cx.songfinder.ui.component.main
 
 import androidx.compose.desktop.ui.tooling.preview.Preview
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.State
@@ -38,7 +38,7 @@ fun MainScreen(
 @Composable
 fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing {
   ProgressBar()
-  Divider()
+  HorizontalDivider()
   RestOfPart(isAllFinished.value, { FinishMessagePanel() }, {
     SearchBar()
     RegexMatchOption()
@@ -52,7 +52,7 @@ fun RealMainScreen(isAllFinished: State<Boolean>) = ColumnWithSpacing {
           modifier = Modifier.padding(top = MaterialTheme.spacing.padding),
           verticalArrangement = Arrangement.spacedBy(MaterialTheme.spacing.spacing),
         ) {
-          Divider()
+          HorizontalDivider()
           ResultOverridingPanel()
         }
       }
@@ -81,7 +81,7 @@ fun PreviewMainScreen() {
       horizontalAlignment = Alignment.Start
     ) {
       RealProgressBar(mutableStateOf(39u), 100u)
-      Divider()
+      HorizontalDivider()
       RestOfPart(false, {}) {
         RealSearchBar(
           SearchBarModel(
@@ -113,7 +113,7 @@ fun PreviewMainScreen() {
         ) {
           RealResultGridCell(it, ResultCellCallbacks({}, { Result.success(ThumbnailInfo("url", {})) }))
         }
-        Divider()
+        HorizontalDivider()
         RealResultOverridingPanel(
           ResultOverridingPanelModel(
             rememberCoroutineScope(),

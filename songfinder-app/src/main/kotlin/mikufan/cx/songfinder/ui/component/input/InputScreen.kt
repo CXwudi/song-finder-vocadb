@@ -39,7 +39,7 @@ fun InputScreen(
 
   ColumnWithSpacing(horizontalAlignment = Alignment.CenterHorizontally) {
     LoadingScreenHeader()
-    Divider()
+    HorizontalDivider()
     InputFilePicker(inputFileChosenModel)
     StartingLineInputField { startingLine = it }
     OutputFilePicker(outputFileChosenModel)
