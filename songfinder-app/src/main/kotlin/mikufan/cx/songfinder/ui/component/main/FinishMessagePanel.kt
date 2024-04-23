@@ -12,5 +12,6 @@ fun FinishMessagePanel(modifier: Modifier = Modifier) {
     "All Done!",
     style = MaterialTheme.typography.titleMedium,
     overflow = TextOverflow.Ellipsis,
+    modifier = modifier
   )
 }
