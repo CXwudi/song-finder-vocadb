@@ -202,7 +202,11 @@ fun RealThumbnail(
     contentDescription = "Thumbnail",
     modifier = imageHolderModifier
       .clickable { urlHandler.openUri(url) },
-    onLoading = { CircularProgressIndicator(it) },
+    onLoading = {
+      CircularProgressIndicator(
+        progress = { it },
+      )
+    },
     onFailure = {
       if (currentPvInfoIndex < pvSize - 1) {
         onCurrentPvInfoIndexChange(currentPvInfoIndex + 1)
