@@ -3,6 +3,8 @@
 A song finder GUI app powered by [VocaDB Dump](https://github.com/CXwudi/hoshizora.sql).
 Scan each title and try to find matching VocaDB records.
 
+![UI](doc/2024-04-30%2010-36-01.png)
+
 ## Requirements
 
 - Java 21
