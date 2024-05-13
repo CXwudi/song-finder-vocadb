@@ -17,7 +17,7 @@
 kotlin = "1.9.21" # !important, the version is upbounded by each compose multiplatform version
 springBoot = "3.2.5"
 composeIcons = "1.1.0"
-ktor = "2.3.10"
+ktor = "2.3.11"
 
 # plugin dep versions
 # empty for now
@@ -25,14 +25,14 @@ ktor = "2.3.10"
 # unless there is a keyword conflict or the name is wired
 # bom, naming convention: bom-<name>
 bom-springBoot = { module = "org.springframework.boot:spring-boot-dependencies", version.ref = "springBoot" }
-bom-kotest = "io.kotest:kotest-bom:5.8.1"
-bom-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.0"
+bom-kotest = "io.kotest:kotest-bom:5.9.0"
+bom-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.1"
 # plugin dependencies (for both projects and settings), naming convention: s/p + plugin-<name>
 pluginDep-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
 pluginDep-springBoot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot" }
 pluginDep-composeJb = "org.jetbrains.compose:compose-gradle-plugin:1.6.2"
 # "io.spring.gradle:dependency-management-plugin" is unneeded because we prefer Gradle's native dependency management
-settingDep-gradleEnterprise = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:3.17.2"
+settingDep-gradleEnterprise = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:3.17.3"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.8.0"
 # dependencies, naming convention: dep-<name>
 dep-kotlinJvmInlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
