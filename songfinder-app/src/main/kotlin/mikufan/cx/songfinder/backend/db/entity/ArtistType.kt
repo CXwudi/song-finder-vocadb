@@ -4,7 +4,7 @@ enum class ArtistType {
   Unknown, Circle, Label, Producer, Animator, Illustrator, Lyricist, Vocaloid, UTAU, CeVIO,
   OtherVoiceSynthesizer, OtherVocalist, OtherGroup, OtherIndividual, Utaite,
   Band, Vocalist, Character, SynthesizerV, CoverArtist, NEUTRINO,
-  VoiSona, NewType, Voiceroid;
+  VoiSona, NewType, Voiceroid, Instrumentalist, Designer;
 
   fun isVirtualSinger() = this in setOf(
     Vocaloid, UTAU, Utaite, CeVIO, OtherVoiceSynthesizer, SynthesizerV, NEUTRINO,
@@ -16,6 +16,6 @@ enum class ArtistType {
   )
 
   fun isSongProducer() = this in setOf(
-    Circle, Producer, CoverArtist
+    Circle, Producer, CoverArtist, Instrumentalist
   )
 }
