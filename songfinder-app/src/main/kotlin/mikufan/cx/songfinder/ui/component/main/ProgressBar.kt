@@ -104,7 +104,7 @@ internal fun RowScope.BeautifulProgressIndicator(progress: Float, modifier: Modi
     )
   )
   LinearProgressIndicator(
-    progress = progressAnimated,
+    progress = { progressAnimated },
     modifier = modifier.clip(MaterialTheme.shapes.medium).weight(1f),
     strokeCap = StrokeCap.Round,
   )

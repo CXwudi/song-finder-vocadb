@@ -48,7 +48,7 @@ internal fun BeautifulProgressIndicator(progress: Float) {
 //    )
   )
   LinearProgressIndicator(
-    progress = progressAnimated,
+    progress = { progressAnimated },
     modifier = Modifier.clip(MaterialTheme.shapes.medium),
     strokeCap = StrokeCap.Round,
   )
