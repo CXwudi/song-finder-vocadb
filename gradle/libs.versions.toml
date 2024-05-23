@@ -14,7 +14,8 @@
 [versions]
 # java version is defined in my.jvm-base.gradle.kts
 # lib versions
-kotlin = "1.9.21" # !important, the version is upbounded by each compose multiplatform version
+kotlin = "2.0.0" # !important, the version is upbounded by each compose multiplatform version
+compose = "1.6.10"
 springBoot = "3.2.6"
 composeIcons = "1.1.0"
 ktor = "2.3.11"
@@ -29,8 +30,9 @@ bom-kotest = "io.kotest:kotest-bom:5.9.0"
 bom-coroutines = "org.jetbrains.kotlinx:kotlinx-coroutines-bom:1.8.1"
 # plugin dependencies (for both projects and settings), naming convention: s/p + plugin-<name>
 pluginDep-kotlin = { module = "org.jetbrains.kotlin:kotlin-gradle-plugin", version.ref = "kotlin" }
+pluginDep-kotlinCompose = { module = "org.jetbrains.kotlin:compose-compiler-gradle-plugin", version.ref = "kotlin" }
 pluginDep-springBoot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot" }
-pluginDep-composeJb = "org.jetbrains.compose:compose-gradle-plugin:1.6.10"
+pluginDep-composeJb = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
 # "io.spring.gradle:dependency-management-plugin" is unneeded because we prefer Gradle's native dependency management
 settingDep-gradleEnterprise = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:3.17.4"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.8.0"
@@ -54,5 +56,7 @@ dep-ktorJackson = { module = "io.ktor:ktor-serialization-jackson", version.ref =
 
 # this is only used by the workaround in root build.gradle.kts
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+compose = { id = "org.jetbrains.compose", version.ref = "compose" }
+composeCompiler = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 # used by the app
 kotlinSpring = { id = "org.jetbrains.kotlin.plugin.spring", version.ref = "kotlin" }

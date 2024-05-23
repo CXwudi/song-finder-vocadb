@@ -2,6 +2,7 @@ plugins {
   id("my.root.jvm")
   kotlin("jvm")
   id("org.jetbrains.compose")
+  kotlin("plugin.compose")
 }
 
 

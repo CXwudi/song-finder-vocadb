@@ -5,5 +5,6 @@ plugins {
 dependencies {
   implementation(project(":root"))
   implementation(libs.pluginDep.kotlin)
+  implementation(libs.pluginDep.kotlinCompose)
   implementation(libs.pluginDep.composeJb)
 }
