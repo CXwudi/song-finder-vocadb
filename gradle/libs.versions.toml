@@ -16,7 +16,7 @@
 # lib versions
 kotlin = "2.0.0" # !important, the version is upbounded by each compose multiplatform version
 compose = "1.6.10"
-springBoot = "3.3.0"
+springBoot = "3.3.1"
 composeIcons = "1.1.0"
 ktor = "2.3.11"
 
