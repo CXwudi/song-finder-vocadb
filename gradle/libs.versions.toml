@@ -17,7 +17,7 @@
 kotlin = "2.0.20" # !important, the version is upbounded by each compose multiplatform version
 compose = "1.6.11"
 springBoot = "3.3.3"
-composeIcons = "1.1.0"
+composeIcons = "1.1.1"
 ktor = "2.3.12"
 
 # plugin dep versions
