@@ -19,7 +19,7 @@ class OutputCsvLineWriter(
 ) {
 
   fun writeSongId(vocadbId: ULong) {
-    val line = "${nextCount++},$vocadbId,"
+    val line = "$vocadbId,"
     csvWriter.write(line)
     csvWriter.newLine()
     csvWriter.flush()
