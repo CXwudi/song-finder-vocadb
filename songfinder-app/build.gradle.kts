@@ -12,10 +12,8 @@ dependencies {
   implementation(libs.dep.composeFilePicker)
   implementation(libs.dep.composeSimpleIcons)
   implementation(libs.dep.composeFontAwesome)
-  implementation(libs.dep.composeKamelImage) {
-    // exclude batik svg decoder
-    exclude(group = "org.apache.xmlgraphics", module = "batik-transcoder")
-  }
+  implementation(libs.dep.composeKamelImage)
+  implementation(libs.dep.composeKamelImage.resources)
   implementation(libs.dep.ktorJavaClient)
   implementation(libs.dep.ktorContentNegotiation)
   implementation(libs.dep.ktorJackson)
