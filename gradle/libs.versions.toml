@@ -35,7 +35,7 @@ pluginDep-kotlinCompose = { module = "org.jetbrains.kotlin:compose-compiler-grad
 pluginDep-springBoot = { module = "org.springframework.boot:spring-boot-gradle-plugin", version.ref = "springBoot" }
 pluginDep-composeJb = { module = "org.jetbrains.compose:compose-gradle-plugin", version.ref = "compose" }
 # "io.spring.gradle:dependency-management-plugin" is unneeded because we prefer Gradle's native dependency management
-settingDep-gradleEnterprise = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:3.18.1"
+settingDep-gradleEnterprise = "com.gradle.develocity:com.gradle.develocity.gradle.plugin:3.18.2"
 settingDep-foojayResolver = "org.gradle.toolchains:foojay-resolver:0.8.0"
 # dependencies, naming convention: dep-<name>
 dep-kotlinJvmInlineLogging = "com.github.CXwudi:kotlin-jvm-inline-logging:1.0.1"
