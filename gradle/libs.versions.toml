@@ -47,6 +47,8 @@ dep-composeSimpleIcons = { module = "br.com.devsrsouza.compose.icons:simple-icon
 dep-composeFontAwesome = { module = "br.com.devsrsouza.compose.icons:font-awesome", version.ref = "composeIcons" }
 dep-composeKamelImage = { module = "media.kamel:kamel-image", version.ref = "kamel" }
 dep-composeKamelImage-resources = { module = "media.kamel:kamel-fetcher-resources-jvm", version.ref = "kamel" }
+dep-composeKamelImage-decoder-bitmap = { module = "media.kamel:kamel-decoder-image-bitmap", version.ref = "kamel" }
+dep-composeKamelImage-decoder-vector = { module = "media.kamel:kamel-decoder-image-vector", version.ref = "kamel" }
 dep-ktorJavaClient = { module = "io.ktor:ktor-client-java", version.ref = "ktor" } # required by kamel-image
 dep-ktorContentNegotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" } # required for using jackson
 dep-ktorJackson = { module = "io.ktor:ktor-serialization-jackson", version.ref = "ktor" }

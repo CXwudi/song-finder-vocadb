@@ -14,6 +14,8 @@ dependencies {
   implementation(libs.dep.composeFontAwesome)
   implementation(libs.dep.composeKamelImage)
   implementation(libs.dep.composeKamelImage.resources)
+  implementation(libs.dep.composeKamelImage.decoder.bitmap)
+  implementation(libs.dep.composeKamelImage.decoder.vector)
   implementation(libs.dep.ktorJavaClient)
   implementation(libs.dep.ktorContentNegotiation)
   implementation(libs.dep.ktorJackson)
