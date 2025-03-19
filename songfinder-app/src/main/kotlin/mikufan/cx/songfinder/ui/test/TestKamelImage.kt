@@ -6,12 +6,12 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.window.singleWindowApplication
+import io.kamel.core.config.Core
 import io.kamel.core.config.KamelConfig
-import io.kamel.core.config.httpFetcher
+import io.kamel.core.config.httpUrlFetcher
 import io.kamel.core.config.takeFrom
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
-import io.kamel.image.config.Default
 import io.kamel.image.config.LocalKamelConfig
 import io.kamel.image.config.resourcesFetcher
 import io.ktor.client.plugins.*
@@ -23,12 +23,12 @@ import mikufan.cx.songfinder.ui.theme.MyAppTheme
 fun main() = singleWindowApplication {
   MyAppTheme(darkTheme = true) {
     val desktopConfig = KamelConfig {
-      takeFrom(KamelConfig.Default)
+      takeFrom(KamelConfig.Core)
       // Available only on Desktop.
       resourcesFetcher()
       imageBitmapCacheSize = 250
       // by adding this http fetcher, we lose the ability to get image from resources
-      httpFetcher {
+      httpUrlFetcher {
         install(UserAgent) {
           agent = "Song Finder by VocaDB @ https://github.com/CXwudi/song-finder-vocadb"
         }
@@ -61,10 +61,12 @@ fun Draw() {
     imageSrc = "image/image-not-found-icon.svg"
   }
   KamelImage(
-    asyncPainterResource("image/image-load-failed.svg") {
-      coroutineContext += Dispatchers.IO
-      requestBuilder {
+    resource = {
+      asyncPainterResource("image/image-load-failed.svg") {
+        coroutineContext += Dispatchers.IO
+        requestBuilder {
 
+        }
       }
     },
     contentDescription = "A image",
