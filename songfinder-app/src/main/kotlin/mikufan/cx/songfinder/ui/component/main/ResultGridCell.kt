@@ -32,6 +32,7 @@ import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import mikufan.cx.inlinelogging.KInlineLogging
 import mikufan.cx.songfinder.backend.controller.mainpage.ResultCellController
 import mikufan.cx.songfinder.backend.db.entity.PvService
 import mikufan.cx.songfinder.backend.db.entity.SongType
@@ -82,7 +83,7 @@ fun LazyGridItemScope.RealResultGridCell(
   val pvs = result.pvs
   MusicCardTemplate(
     onCardClicked = { callbacks.onCardClicked(result) },
-    modifier.animateItemPlacement()
+    modifier = modifier.animateItem()
   ) {
     LazilyFetchedThumbnail(
       pvs,
@@ -185,20 +186,21 @@ fun RealThumbnail(
   onLoadStatusChanged: (ThumbnailInfoLoadStatus) -> Unit,
 ) {
   val (url, requestBuilder) = load.info
-  val resource = asyncPainterResource(url) {
-    coroutineContext += MyDispatchers.ioDispatcher
-
-    requestBuilder {
-      requestBuilder.invoke(this)
-    }
-  }
 
   // using KamelImage, if the thumbnail URL works, it will be rendered
   // else, move on the next PV
   val urlHandler = LocalUriHandler.current
   val currentPvInfoIndex = currentPvInfoIndexStatue.value
   KamelImage(
-    resource = resource,
+    resource = {
+      asyncPainterResource(url) {
+        coroutineContext += MyDispatchers.ioDispatcher
+
+        requestBuilder {
+          requestBuilder.invoke(this)
+        }
+      }
+    },
     contentDescription = "Thumbnail",
     modifier = imageHolderModifier
       .clickable { urlHandler.openUri(url) },
@@ -211,6 +213,7 @@ fun RealThumbnail(
       if (currentPvInfoIndex < pvSize - 1) {
         onCurrentPvInfoIndexChange(currentPvInfoIndex + 1)
       } else {
+        log.warn(it) { "Kamel failed to load thumbnail for $url" }
         onLoadStatusChanged(ThumbnailInfoLoadStatus.Failure)
       }
     },
@@ -471,3 +474,5 @@ sealed interface ThumbnailInfoLoadStatus {
 
   data object Failure : ThumbnailInfoLoadStatus
 }
+
+private val log = KInlineLogging.logger()
